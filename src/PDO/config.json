@@ -1,0 +1,10 @@
+{   
+    "pdo":{
+        "host":     "localhost",
+        "name":     "vorc",
+        "driver":   "mysql",
+        "port":     "3306",
+        "user":     "cron",
+        "pass":     "robotix"
+	}
+}

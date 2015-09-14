@@ -1,0 +1,70 @@
+{
+	"title":"MIDI",
+	"homeurl":"index.php",
+	"favicon":"img/favicon.png",
+	"menusearch":false,
+	"css":[
+		"bootstrap/css/bootstrap.min.css",
+    	"dist/css/font-awesome/4.3.0/font-awesome.min.css",
+	    "dist/css/ionicons/2.0.0/ionicons.min.css",
+    	"dist/css/AdminLTE.min.css",
+    	"dist/css/skins/_all-skins.min.css"
+	],
+	"js":[
+	    "plugins/jQuery/jQuery-2.1.3.min.js",
+    	"bootstrap/js/bootstrap.min.js",
+    	"dist/js/app.min.js"
+	],
+	"layout":{
+		"skin":"skin-black",
+		"fixed":false,
+		"layout-boxed":false,
+		"sidebar-collapse":false
+	},
+	"menu":{
+		
+		"english":{
+	   		"text":"English",
+	   		"class":"header"
+	   	},
+	   	
+	   	"newsEn":{
+			"text":"News EN",
+			"url":"news_en/index.php"
+	   	},
+
+	   	"wikiEn":{
+			"text":"Wiki EN",
+			"url":"wiki_en/index.php"
+	   	},
+
+		
+
+	   	"japanese":{
+	   		"text":"Japanese",
+	   		"class":"header"
+	   	},
+
+		"newsJp":{
+			"text":"News JP",
+			"url":"news_jp/index.php"
+	   	},
+
+		"wikiJp":{
+			"text":"Wiki JP",
+			"url":"wiki_jp/index.php"
+	   	},
+
+
+	   "separator":{
+	   		"text":"Separator",
+	   		"class":"header"
+	   },
+	   "logout":{	      
+	      "text":"Logout",
+	      "id":"btn_logout",
+	      "icon":"fa fa-sign-out",
+	      "url":"login/logout.php"
+	   }
+	}
+}
