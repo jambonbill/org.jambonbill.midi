@@ -3,7 +3,7 @@
 
 var context=null;   // the Web Audio "context" object
 var midiAccess=null;  // the MIDIAccess object.
-
+var portId='';
 
 window.addEventListener('load', function() {
   // patch up prefixes
@@ -51,9 +51,13 @@ function onMIDIInit(midi) {
     haveAtLeastOneDevice = true;
   }  
 
-  if (!haveAtLeastOneDevice)
+  if (!haveAtLeastOneDevice){
+    document.getElementById("midi_outputs").hide();
     alert("No MIDI input devices present.");
+  }
+    
 }
+
 
 function onMIDIReject(err) {
   alert("The MIDI system failed to start.");
@@ -75,10 +79,58 @@ function MIDIMessageEventHandler(event) {
       return;
   }
 }
+
+
+/*
+function sendMiddleC( mid, portID ) {
+  
+  console.log('sendMiddleC(mid, portID)',mid, portID);
+  
+  var noteOnMessage = [0x90, 60, 0x7f];    // note on, middle C, full velocity
+  var output = mid.outputs.get(portID);
+  
+  output.send( noteOnMessage );  //omitting the timestamp means send immediately.
+  // note off
+  output.send( [0x80, 60, 0x40], window.performance.now() + 1000.0 ); // Inlined array creation- note off, middle C,  
+                                                                      // release velocity = 64, timestamp = now + 1000ms.
+}
+*/
+
+function noteOn(noteNumber){
+    
+    console.log('noteOn()',note);
+    
+    var noteOnMessage = [0x90, noteNumber, 0x7f];    // note on, middle C, full velocity
+    var output = midiAccess.outputs.get(portId);
+}
+
+function noteOff(noteNumber){
+    
+    console.log('noteOff()',note);
+    
+    var output = midiAccess.outputs.get(portId);
+    // note off
+    output.send( [0x80, noteNumber, 0x40]);
+}
+
+
 $(function(){
-	
-  $("body").keypress(function(e) {
-    console.log( "Handler for .keypress() called." ,e);
+  
+  var pressedKeys = [];
+	 
+  
+  $("#midi_outputs").change(function(e){
+    portId=$("#midi_outputs").val();
+    console.log("portId",portId);
+  });
+  
+  
+  $("body").keydown(function(e) {
+    console.log( ".keydown()",e.keyCode );
+  });
+
+  $("body").keyup(function(e) {
+    console.log( ".keyup()",e.keyCode );
   });
 
   console.log('keyboard.js');

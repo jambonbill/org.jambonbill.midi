@@ -57,22 +57,49 @@ function onMIDIReject(err) {
   alert("The MIDI system failed to start.  You're gonna have a bad time.");
 }
 
+var midilog=[];
+function monlog(str){
+
+}
 
 function MIDIMessageEventHandler(event) {
-  console.log('MIDIMessageEventHandler(event)',event);
+  
   // Mask off the lower nibble (MIDI channel, which we don't care about)
   switch (event.data[0] & 0xf0) {
+    
     case 0x90:
       if (event.data[2]!=0) {  // if velocity != 0, this is a note-on message
-        noteOn(event.data[1]);
+        var note=event.data[1];
+        var velo=event.data[2];
+        console.log('note-on',event.data[0] & 0x0f,note,velo);
+        //noteOn(event.data[1]);
         return;
       }
       // if velocity == 0, fall thru: it's a note-off.  MIDI's weird, y'all.
     case 0x80:
-      noteOff(event.data[1]);
+      //noteOff(event.data[1]);
+      console.log('note-off',event.data[0] & 0x0f,event.data[1],event.data[2]);
       return;
+    
+    case 0xb0://modulation
+      console.log("modulation");
+      break;
+
+    case 0xe0://pitch
+      console.log("pitch");
+      break;
+
+    case 0xf0://continue
+      break;
+
+    default:
+      hexString = (event.data[0] & 0xf0).toString(16);
+      console.log(hexString);
+      //console.log('MIDIMessageEventHandler(event)',event);    
+      break;
   }
 }
+
 $(function(){
-	console.log('midi.js');
+	console.log('monitor.js');
 });

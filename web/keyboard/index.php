@@ -27,12 +27,20 @@ echo $admin;
 
 	<div class='col-sm-6'>
 	<?php
+	$htm=[];
+	$htm[]="<select class='form-control'>";
+	$htm[]="<option value=''>Select midi channel</option>";
+	for($i=0;$i<16;$i++){
+		$htm[]="<option value=$i>Channel #".($i+1)."</option>";
+	}
+	$htm[]="</select>";
+
 	$box=new LTE\Box;
 	$box->title("Keyboard");
 	$box->icon("fa fa-keyboard-o");
 	$box->id("boxKeyboard");
 	$box->collapsable(true);
-	$box->body("Yo");
+	$box->body($htm);
 	echo $box;
 	?>
 	</div>
