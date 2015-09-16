@@ -31,13 +31,19 @@
 	   	"monitor":{
 			"text":"Monitor",
 			"icon":"fa fa-search",
-			"url":"monitor/index.php"
+			"url":"monitor/"
+	   	},
+
+	   	"keyboard":{
+			"text":"Keyboard",
+			"icon":"fa fa-keyboard-o",
+			"url":"keyboard/"
 	   	},
 
 	   	"play":{
 			"text":"Play",
 			"icon":"fa fa-play",
-			"url":"play/index.php"
+			"url":"play/"
 	   	}
 	}
 }
