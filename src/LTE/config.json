@@ -24,47 +24,20 @@
 	"menu":{
 		
 		"english":{
-	   		"text":"English",
+	   		"text":"Midi tools",
 	   		"class":"header"
 	   	},
 	   	
-	   	"newsEn":{
-			"text":"News EN",
-			"url":"news_en/index.php"
+	   	"monitor":{
+			"text":"Monitor",
+			"icon":"fa fa-search",
+			"url":"monitor/index.php"
 	   	},
 
-	   	"wikiEn":{
-			"text":"Wiki EN",
-			"url":"wiki_en/index.php"
-	   	},
-
-		
-
-	   	"japanese":{
-	   		"text":"Japanese",
-	   		"class":"header"
-	   	},
-
-		"newsJp":{
-			"text":"News JP",
-			"url":"news_jp/index.php"
-	   	},
-
-		"wikiJp":{
-			"text":"Wiki JP",
-			"url":"wiki_jp/index.php"
-	   	},
-
-
-	   "separator":{
-	   		"text":"Separator",
-	   		"class":"header"
-	   },
-	   "logout":{	      
-	      "text":"Logout",
-	      "id":"btn_logout",
-	      "icon":"fa fa-sign-out",
-	      "url":"login/logout.php"
-	   }
+	   	"play":{
+			"text":"Play",
+			"icon":"fa fa-play",
+			"url":"play/index.php"
+	   	}
 	}
 }
