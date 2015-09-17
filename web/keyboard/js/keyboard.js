@@ -4,7 +4,9 @@
 var context=null;   // the Web Audio "context" object
 var midiAccess=null;  // the MIDIAccess object.
 var portId='';
+var octave=0;
 var notes=[];// notes currently on
+var notestr=['C-','C#','D-','D#','E-','F-','F#','G-','G#','A-','A#','B-'];
 
 var kmap=[];// Keyboard mapping
 // QWERTY //
@@ -39,21 +41,6 @@ kmap[48]=27;// 0 - Octave 3
 kmap[80]=28;// P - Octave 3
 
 
-var notes=['C-','C#','D-','D#','E-','F-','F#','G-','G#','A-','A#','B-'];
-
-window.addEventListener('load', function() {
-	// patch up prefixes
-	window.AudioContext=window.AudioContext||window.webkitAudioContext;
-
-	context = new AudioContext();
-
-	if (navigator.requestMIDIAccess)
-		navigator.requestMIDIAccess().then( onMIDIInit, onMIDIReject );
-	else
-		alert("No MIDI support present in your browser")
-} );
-
-
 function onMIDIInit(midi) {
 	
 	//console.log('onMIDIInit(midi)',midi);
@@ -64,8 +51,7 @@ function onMIDIInit(midi) {
 
 	var outputs=midiAccess.outputs.values();
 	for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
-		console.log("output",output);
-
+		//console.log("output",output);
 		var x = document.getElementById("midi_outputs");
 		var option = document.createElement("option");
 		option.value = output.value.id;
@@ -77,34 +63,23 @@ function onMIDIInit(midi) {
 	if (!haveAtLeastOneDevice){
 		document.getElementById("midi_outputs").hide();
 		alert("No MIDI input devices present.");
+        return;
 	}
-	$('#boxLog .box-body').html('Midi ready !')	
-}
+	
+    if ($.cookie('midi_portId')) {
+        portId=$.cookie('midi_portId'); 
+        $("#midi_outputs").val($.cookie('midi_portId'));
 
+    }else{
+        $('#boxLog .box-body').html('Midi ready. Select midi output');    
+    }
+
+}
 
 function onMIDIReject(err) {
 	alert("The MIDI system failed to start.");
 	$('#midi_outputs').attr('disabled','disabled')
 }
-
-/*
-function MIDIMessageEventHandler(event) {
-	console.log('MIDIMessageEventHandler(event)',event);
-	// Mask off the lower nibble (MIDI channel, which we don't care about)
-	switch (event.data[0] & 0xf0) {
-		case 0x90:
-			if (event.data[2]!=0) {  // if velocity != 0, this is a note-on message
-				noteOn(event.data[1]);
-				return;
-			}
-			// if velocity == 0, fall thru: it's a note-off.  MIDI's weird, y'all.
-		case 0x80:
-			noteOff(event.data[1]);
-			return;
-	}
-}
-*/
-
 
 function noteOn(noteNumber){
 	
@@ -113,7 +88,7 @@ function noteOn(noteNumber){
 	for(var i=0;i<notes.length;i++){
 		if(notes[i]==noteNumber)return;//dont play it twice
 	}
-	console.log('noteOn()',noteNumber);
+	//console.log('noteOn()',noteNumber);
 	var noteOnMessage = [0x90, noteNumber, 0x7f];    // note on, middle C, full velocity
 	var output = midiAccess.outputs.get(portId);
 	notes.push(noteNumber);
@@ -123,7 +98,7 @@ function noteOff(noteNumber){
 	
 	if(!portId||!noteNumber)return;
 	
-	console.log('noteOff()',noteNumber);
+	//console.log('noteOff()',noteNumber);
 	
 	var output = midiAccess.outputs.get(portId);
 	// note off
@@ -135,6 +110,31 @@ function noteOff(noteNumber){
 		if(notes[i]!=noteNumber)nn.push(notes[i]);
 	}
 	notes=nn;
+}
+
+
+function displayKeyMap()
+{
+    console.log('displayKeyMap()');
+    var htm=[];
+    htm.push('<table class="table table-condensed">');
+    htm.push('<thead>');
+    htm.push('<th>Key</th>');
+    htm.push('<th>Note</th>');
+    htm.push('<th>Value</th>');
+    htm.push('</thead>');
+    htm.push('<tbody>');
+    for (var i=0;i<kmap.length;i++) {
+        if(!kmap[i])continue;
+        var n=keyCodeToMidiNote(i);
+        htm.push("<tr>")
+        htm.push("<td>"+i);
+        htm.push("<td>"+notestr[n]);
+        htm.push("<td>"+n);
+    }
+    htm.push('</tbody>');
+    htm.push('</table>');
+    $('#boxLog .box-body').html(htm.join(''));
 }
 
 /**
@@ -162,18 +162,40 @@ function keyCodeToMidiNote(keyCode){
 
 $(function(){
 
-	var pressedKeys = [];
+	//var pressedKeys = [];
 	 
 	$("#midi_outputs").change(function(e){
 		portId=$("#midi_outputs").val();
 		console.log("portId",portId);
+        $.cookie('midi_portId', portId);
+        $('#boxLog .box-body').html("Output : "+portId);
+        $('#midiChannel,#octave').attr('disabled',false);
 	});
+    
+    $("#octave").change(function(e){
+        octave=$("#octave").val()*1;
+        console.log("octave",octave);
+        //$('#midiChannel,#octave').attr('disabled',false);
+    });
+
+    $('#btnMapping').click(function(){
+        displayKeyMap();
+    });
 
 
+    // Keyboard //
 	$("body").keydown(function(e) {
-
-		//console.log( ".keydown()",e.keyCode );
-		var htm='Key:'+e.keyCode;
+		
+        if (!portId) {
+            $('#boxLog .box-body').html("<i class='fa fa-warning'></i> Select midi output");
+            $('#midi_outputs').focus();
+            return;
+        }
+		
+        $('#keyname').val('test');
+        $('#keycode').val(e.keyCode);
+        
+        var htm='Key:'+e.keyCode;
 		
 		if (kmap[e.keyCode]) {
 			
@@ -181,22 +203,45 @@ $(function(){
 			var nid=n%12;
 			var oct=Math.floor(n/12);
 
-			noteOn(n);
+			noteOn(n+(octave*1));
 
-			htm="<i class='fa fa-music'></i> Note: "+notes[nid]+oct;
+			htm="<i class='fa fa-music'></i> "+notestr[nid]+octave;
+            $('#boxLog .box-body').html(htm); 
 		} else {
-			htm="<i class='fa fa-warning'></i> Key:"+e.keyCode+" not mapped !";
+			//htm="<i class='fa fa-warning'></i> Key:"+e.keyCode+" not mapped !";
+            
+            if (e.keyCode>=112&&e.keyCode<=115) {//F1234-Keys
+                console.log("F"+e.keyCode);
+                e.stopPropagation();
+                e.preventDefault();
+                return;
+            }
+            
+            switch(e.keyCode){
+                case 27://ESC
+                    midiPanic();
+                    break;
+            }
 		}
-
-		$('#boxLog .box-body').html(htm);
+		
 	});
 
 	$("body").keyup(function(e) {
 		//console.log( ".keyup()",e.keyCode );
 		var n=keyCodeToMidiNote(e.keyCode);
-		noteOff(n);
+		noteOff(n+(octave*12));
 	});
+    
+    $('#midi_outputs').focus();
+	
+    // patch up prefixes
+    window.AudioContext=window.AudioContext||window.webkitAudioContext;
 
-	console.log('keyboard.js');
+    context = new AudioContext();
+
+    if (navigator.requestMIDIAccess)
+        navigator.requestMIDIAccess().then( onMIDIInit, onMIDIReject );
+    else
+        alert("No MIDI support present in your browser")
 
 });

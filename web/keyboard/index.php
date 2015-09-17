@@ -12,7 +12,7 @@ echo $admin;
 ?>
 <section class="content-header">
   <h1><i class='fa fa-keyboard-o'></i> MIDI Keyboard
-  <small></small>
+  <small>Use you keyboard as a midi keyboard/controller</small>
   </h1>
 </section>
 
@@ -20,26 +20,35 @@ echo $admin;
 <section class="content">
 
 <div class='row'>
-	<div class='col-md-12'><pre>Use you computer keyboard as a midi keyboard/controller</pre></div>
-</div>
 
-<div class='row'>
+	<div class='col-sm-6'>
+	<?php
+	$box=new LTE\Box;
+	$box->title("Output(s)");
+	$box->icon("fa fa-plug");
+	$box->id("boxOutputs");
+	$box->collapsable(true);
+	$box->body("<select class='form-control' id=midi_outputs size=4></select>");
+	echo $box;
+	?>
+	</div>
 
+	
 	<div class='col-sm-6'>
 	<?php
 	$htm=[];
 	$htm[]="<div class='row'>";
 	$htm[]="<div class='col-xs-6'>";
-	$htm[]="<select class='form-control' id=midiChannel>";
+	$htm[]="<select class='form-control' id=midiChannel disabled=disabled>";
 	for($i=0;$i<16;$i++){
 		$htm[]="<option value=$i>Channel #".($i+1)."</option>";
 	}
 	$htm[]="</select>";
 	$htm[]="</div>";
 	$htm[]="<div class='col-xs-6'>";
-	$htm[]="<select class='form-control' id=ocyave>";
+	$htm[]="<select class='form-control' id=octave disabled=disabled>";
 	for($i=0;$i<5;$i++){
-		$htm[]="<option value=$i>Octave #".($i+1)."</option>";
+		$htm[]="<option value='$i'>Octave #".($i+1)."</option>";
 	}
 	$htm[]="</select>";
 	$htm[]="</div>";
@@ -50,37 +59,18 @@ echo $admin;
 	$box->id("boxKeyboard");
 	$box->collapsable(true);
 	$box->body($htm);
+	$box->footer("<a href=#list class='btn btn-default'>Test</a> <a href=#list class='btn btn-default'><i class='fa fa-times'></i> Midi panic</a>");
 	echo $box;
 	?>
 	</div>
 
-	<div class='col-sm-6'>
-	<?php
-	$box=new LTE\Box;
-	$box->title("Output(s)");
-	$box->icon("fa fa-plug");
-	$box->id("boxOutputs");
-	$box->collapsable(true);
-	$box->body("<select class='form-control' id=midi_outputs size=3></select>");
-	echo $box;
-	?>
-	</div>
+	
 	
 </div>
 
 <div class='row'>
 	
-	<div class='col-sm-6'>
-	<?php
-	$box=new LTE\Box;
-	$box->title("Log");
-	$box->icon("fa fa-list");
-	$box->id("boxLog");
-	$box->collapsable(true);
-	$box->body("logs...");
-	echo $box;
-	?>
-	</div>
+
 
 	<div class='col-sm-6'>
 	<?php
@@ -90,21 +80,34 @@ echo $admin;
 	$htm[]="<div class=row>";
 	
 	$htm[]="<div class=col-sm-6>";
-	$htm[]="<input type=text class='form-control' placeholder='Hit a key !'>";
+	$htm[]="<input type=text class='form-control' id='keyname' placeholder='Hit a key !'>";
 	$htm[]="</div>";
 	
 	$htm[]="<div class=col-sm-6>";
-	$htm[]="<input type=text class='form-control' placeholder='Keycode'>";
+	$htm[]="<input type=text class='form-control' id='keycode' placeholder='Keycode' readonly>";
 	$htm[]="</div>";
 	
 	$htm[]="</div>";
 
 	$box=new LTE\Box;
 	$box->title("Keyboard mapping");
-	$box->icon("fa fa-list");
+	$box->icon("fa fa-cogs");
 	$box->id("boxMapping");
 	//$box->collapsed(true);
 	$box->body($htm);
+	$box->footer("<a href=#btn id=btnMapping class='btn btn-default'><i class='fa fa-list'></i> Mapping</a>");
+	echo $box;
+	?>
+	</div>
+
+	<div class='col-sm-6'>
+	<?php
+	$box=new LTE\Box;
+	$box->title("Messages");
+	$box->icon("fa fa-terminal");
+	$box->id("boxLog");
+	$box->collapsable(true);
+	$box->body("Select midi output");
 	echo $box;
 	?>
 	</div>

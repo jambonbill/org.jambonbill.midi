@@ -1,7 +1,7 @@
 // jambonbill midi.js 
 var context=null;   // the Web Audio "context" object
 var midiAccess=null;  // the MIDIAccess object.
-
+var logs=[];
 
 window.addEventListener('load', function() {
   // patch up prefixes
@@ -57,26 +57,48 @@ function onMIDIReject(err) {
   alert("The MIDI system failed to start.  You're gonna have a bad time.");
 }
 
-var midilog=[];
-function monlog(str){
 
+function dispLog()
+{
+    for(var i=0;i<logs.length;i++){
+
+    }
 }
 
+
+/*
+http://www.gweep.net/~prefect/eng/reference/protocol/midispec.html
+Messages :
+8 = Note Off 
+9 = Note On 
+A = AfterTouch (ie, key pressure) 
+B = Control Change 
+C = Program (patch) change 
+D = Channel Pressure 
+E = Pitch Wheel
+ */
 function MIDIMessageEventHandler(event) {
   
+  logs.push({'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
+
+  var msg=event.data[0] & 0xf0;
+  var midichannel=event.data[0] & 0x0f;
   // Mask off the lower nibble (MIDI channel, which we don't care about)
   switch (event.data[0] & 0xf0) {
     
-    case 0x90:
+    case 0x90://note on
+      
       if (event.data[2]!=0) {  // if velocity != 0, this is a note-on message
         var note=event.data[1];
         var velo=event.data[2];
         console.log('note-on',event.data[0] & 0x0f,note,velo);
-        //noteOn(event.data[1]);
+        
+        // if velocity == 0, fall thru: it's a note-off
         return;
+
       }
-      // if velocity == 0, fall thru: it's a note-off.  MIDI's weird, y'all.
-    case 0x80:
+      
+    case 0x80://note off
       //noteOff(event.data[1]);
       console.log('note-off',event.data[0] & 0x0f,event.data[1],event.data[2]);
       return;
