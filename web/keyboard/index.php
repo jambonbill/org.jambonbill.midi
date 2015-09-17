@@ -11,7 +11,7 @@ echo $admin;
 
 ?>
 <section class="content-header">
-  <h1><i class='fa fa-music'></i> MIDI Keyboard
+  <h1><i class='fa fa-keyboard-o'></i> MIDI Keyboard
   <small></small>
   </h1>
 </section>
@@ -20,7 +20,7 @@ echo $admin;
 <section class="content">
 
 <div class='row'>
-	<div class='col-md-12'><pre>Use you computer keyboard as a midi keyboard</pre></div>
+	<div class='col-md-12'><pre>Use you computer keyboard as a midi keyboard/controller</pre></div>
 </div>
 
 <div class='row'>
@@ -28,13 +28,22 @@ echo $admin;
 	<div class='col-sm-6'>
 	<?php
 	$htm=[];
-	$htm[]="<select class='form-control'>";
-	$htm[]="<option value=''>Select midi channel</option>";
+	$htm[]="<div class='row'>";
+	$htm[]="<div class='col-xs-6'>";
+	$htm[]="<select class='form-control' id=midiChannel>";
 	for($i=0;$i<16;$i++){
 		$htm[]="<option value=$i>Channel #".($i+1)."</option>";
 	}
 	$htm[]="</select>";
-
+	$htm[]="</div>";
+	$htm[]="<div class='col-xs-6'>";
+	$htm[]="<select class='form-control' id=ocyave>";
+	for($i=0;$i<5;$i++){
+		$htm[]="<option value=$i>Octave #".($i+1)."</option>";
+	}
+	$htm[]="</select>";
+	$htm[]="</div>";
+	$htm[]="</div>";
 	$box=new LTE\Box;
 	$box->title("Keyboard");
 	$box->icon("fa fa-keyboard-o");
@@ -60,7 +69,8 @@ echo $admin;
 </div>
 
 <div class='row'>
-	<div class='col-sm-12'>
+	
+	<div class='col-sm-6'>
 	<?php
 	$box=new LTE\Box;
 	$box->title("Log");
@@ -72,7 +82,35 @@ echo $admin;
 	?>
 	</div>
 
+	<div class='col-sm-6'>
+	<?php
+	// http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+	$htm=[];
+	
+	$htm[]="<div class=row>";
+	
+	$htm[]="<div class=col-sm-6>";
+	$htm[]="<input type=text class='form-control' placeholder='Hit a key !'>";
+	$htm[]="</div>";
+	
+	$htm[]="<div class=col-sm-6>";
+	$htm[]="<input type=text class='form-control' placeholder='Keycode'>";
+	$htm[]="</div>";
+	
+	$htm[]="</div>";
+
+	$box=new LTE\Box;
+	$box->title("Keyboard mapping");
+	$box->icon("fa fa-list");
+	$box->id("boxMapping");
+	//$box->collapsed(true);
+	$box->body($htm);
+	echo $box;
+	?>
+	</div>
+
 </div>
+
 
 <script type="text/javascript" src='js/keyboard.js'></script>
 
