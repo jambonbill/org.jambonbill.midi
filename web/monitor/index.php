@@ -32,29 +32,22 @@ echo $admin;
 	?>
 	</div>
 
-	<div class='col-sm-6'>
-	<?php
-	$box=new LTE\Box;
-	$box->title("Output(s)");
-	$box->icon("fa fa-plug");
-	$box->id("boxOutputs");
-	$box->collapsable(true);
-	$box->body("<select class='form-control' id=midi_outputs size=3></select>");
-	echo $box;
-	?>
-	</div>
 </div>
 
 <div class='row'>
 	<div class='col-sm-12'>
 	<?php
+	$btn=[];
+	$btn[]="<a href=#btn id=btnClear class='btn btn-default pull-right'>Clear</a>";
+	$btn[]="<a href=#btn id=btnFilter class='btn btn-default'><i class='fa fa-user'></i> Filter</a>";
+	$btn[]="<a href=#btn id=btnRecord class='btn btn-default'><i class='fa fa-user'></i> Record</a>";
 	$box=new LTE\Box;
 	$box->title("Incoming midi events");
 	$box->icon("fa fa-list");
 	$box->id("boxIncoming");
 	$box->collapsable(true);
-	$box->body("<select class='form-control' id=midi_inputs size=5></select>");
-	$box->footer("<a href=# class='btn btn-default'>Clear</a>");
+	$box->body("<pre>Waiting...</pre>");
+	$box->footer($btn);
 	echo $box;
 	?>
 	</div>

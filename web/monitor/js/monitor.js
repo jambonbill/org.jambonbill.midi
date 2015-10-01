@@ -12,7 +12,7 @@ window.addEventListener('load', function() {
   if (navigator.requestMIDIAccess)
     navigator.requestMIDIAccess().then( onMIDIInit, onMIDIReject );
   else
-    alert("No MIDI support present in your browser.  You're gonna have a bad time.")
+    console.log("No MIDI support present in your browser")
 
 } );
 
@@ -37,7 +37,7 @@ function onMIDIInit(midi) {
     option.text = input.value.name;
     x.add(option);
   }
-
+  /*
   var outputs=midiAccess.outputs.values();
   for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
     console.log("output",output);
@@ -48,23 +48,52 @@ function onMIDIInit(midi) {
     option.text = output.value.name;
     x.add(option);
   }  
-
+  */
+  
   if (!haveAtLeastOneDevice)
-    alert("No MIDI input devices present.  You're gonna have a bad time.");
+    console.log("No MIDI input devices present.");
 }
 
 function onMIDIReject(err) {
-  alert("The MIDI system failed to start.  You're gonna have a bad time.");
+  console.log("The MIDI system failed to start.");
 }
 
 
 function dispLog()
 {
+    if(logs.length>30)logs.shift();
+    var htm='<table class="table table-condensed table-hover">';
+    htm+='<thead>';
+    htm+='<th>Time</th>';
+    htm+='<th>Msg</th>';
+    htm+='<th width=50>Chn</th>';
+    htm+='<th width=50>B1</th>';
+    htm+='<th width=50>B2</th>';
+    htm+='</thead>';
+    htm+='<tbody>';
     for(var i=0;i<logs.length;i++){
-
+      var d=logs[i].t;
+      htm+='<tr>';
+      htm+='<td>'+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"-"+d.getMilliseconds();
+      htm+='<td>'+logs[i].msg;
+      htm+='<td>'+(logs[i].chn+1);
+      htm+='<td>';
+      if(logs[i].b1)htm+=logs[i].b1;
+      htm+='<td>';
+      if(logs[i].b2)htm+=logs[i].b2;
+      //htm+='<td>';
     }
+    htm+='</tbody>';
+    htm+='</table>';
+    $('#boxIncoming .box-body').html(htm);
 }
 
+
+function clearLogs(){
+  console.log('clearLogs()');
+  logs=[];
+  dispLog();
+}
 
 /*
 http://www.gweep.net/~prefect/eng/reference/protocol/midispec.html
@@ -79,10 +108,12 @@ E = Pitch Wheel
  */
 function MIDIMessageEventHandler(event) {
   
-  logs.push({'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
-
   var msg=event.data[0] & 0xf0;
+  //if(msg==240)return; 
   var midichannel=event.data[0] & 0x0f;
+  logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
+  dispLog();
+  
   // Mask off the lower nibble (MIDI channel, which we don't care about)
   switch (event.data[0] & 0xf0) {
     
@@ -112,6 +143,7 @@ function MIDIMessageEventHandler(event) {
       break;
 
     case 0xf0://continue
+      console.log("0xf0");
       break;
 
     default:
@@ -120,8 +152,23 @@ function MIDIMessageEventHandler(event) {
       //console.log('MIDIMessageEventHandler(event)',event);    
       break;
   }
+  
 }
 
 $(function(){
 	console.log('monitor.js');
+  
+    $('#btnClear').click(function(){
+        console.log('btnClear');
+        clearLogs();
+    });
+
+    $('#btnFilter').click(function(){
+        console.log('btnFilter');
+    });
+
+    $('#btnRecord').click(function(){
+        console.log('btnRecord');
+
+    });
 });
