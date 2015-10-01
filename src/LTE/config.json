@@ -1,7 +1,7 @@
 {
 	"title":"MIDI",
 	"homeurl":"index.php",
-	"favicon":"img/favicon.png",
+	"favicon":"favicon.ico",
 	"menusearch":false,
 	"css":[
 		"bootstrap/css/bootstrap.min.css",
