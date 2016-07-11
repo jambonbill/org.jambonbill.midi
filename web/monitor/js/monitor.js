@@ -19,36 +19,31 @@ window.addEventListener('load', function() {
 
 function onMIDIInit(midi) {
   
-  console.log('onMIDIInit(midi)',midi);
+  //console.log('onMIDIInit(midi)',midi);
   console.log('MIDI ready!');
   midiAccess = midi;
 
   var haveAtLeastOneDevice=false;
   var inputs=midiAccess.inputs.values();
-  
+  var options=[];
   for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
-    console.log("input",input);
+    //console.log("input",input);
     input.value.onmidimessage = MIDIMessageEventHandler;
     haveAtLeastOneDevice = true;
+    options.push(input.value);
     
+  }
+  console.log(options);
+  for(var i in options){
     var x = document.getElementById("midi_inputs");
     var option = document.createElement("option");
-    option.value = input.value.id;
-    option.text = input.value.name;
+    option.value = options[i].id;
+    option.text = options[i].name;
     x.add(option);
   }
-  /*
-  var outputs=midiAccess.outputs.values();
-  for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
-    console.log("output",output);
 
-    var x = document.getElementById("midi_outputs");
-    var option = document.createElement("option");
-    option.value = output.value.id;
-    option.text = output.value.name;
-    x.add(option);
-  }  
-  */
+  $('#midi_inputs').attr('size',options.length);
+
   
   if (!haveAtLeastOneDevice)
     console.log("No MIDI input devices present.");
@@ -59,23 +54,43 @@ function onMIDIReject(err) {
 }
 
 
+var msgtypes={
+  8:'?',
+  9:'Note off',
+  10:'Note on',
+  11:'AfterTouch',
+  12:'Control change',
+  13:'Program change',
+  14:'Pich wheel',
+  15:'Continue'
+}
+
 function dispLog()
 {
-    if(logs.length>30)logs.shift();
-    var htm='<table class="table table-condensed table-hover">';
+    if(logs.length>20)logs.shift();
+    
+    var htm='<table class="table table-hover table-condensed">';
+    
     htm+='<thead>';
     htm+='<th>Time</th>';
+    htm+='<th>Type</th>';
     htm+='<th>Msg</th>';
     htm+='<th width=50>Chn</th>';
     htm+='<th width=50>B1</th>';
     htm+='<th width=50>B2</th>';
     htm+='</thead>';
+    
     htm+='<tbody>';
     for(var i=0;i<logs.length;i++){
       var d=logs[i].t;
       htm+='<tr>';
       htm+='<td>'+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"-"+d.getMilliseconds();
-      htm+='<td>'+logs[i].msg;
+      
+      //var msgtype=table-condensed
+
+      htm+='<td>'+msgtypes[logs[i].type];
+      htm+='<td>0x'+logs[i].msg.toString(16);
+      
       htm+='<td>'+(logs[i].chn+1);
       htm+='<td>';
       if(logs[i].b1)htm+=logs[i].b1;
@@ -85,6 +100,7 @@ function dispLog()
     }
     htm+='</tbody>';
     htm+='</table>';
+    
     $('#boxIncoming .box-body').html(htm);
 }
 
@@ -109,9 +125,14 @@ E = Pitch Wheel
 function MIDIMessageEventHandler(event) {
   
   var msg=event.data[0] & 0xf0;
-  //if(msg==240)return; 
+  
   var midichannel=event.data[0] & 0x0f;
-  logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
+  
+
+  //Filter here
+  if(msg==240)return; 
+
+  logs.push({'t':new Date(),'msg':msg,'type':msg>>4,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
   dispLog();
   
   // Mask off the lower nibble (MIDI channel, which we don't care about)
@@ -125,14 +146,13 @@ function MIDIMessageEventHandler(event) {
         console.log('note-on',event.data[0] & 0x0f,note,velo);
         
         // if velocity == 0, fall thru: it's a note-off
-        return;
-
       }
-      
+      break;
+
     case 0x80://note off
       //noteOff(event.data[1]);
       console.log('note-off',event.data[0] & 0x0f,event.data[1],event.data[2]);
-      return;
+      break;
     
     case 0xb0://modulation
       console.log("modulation");

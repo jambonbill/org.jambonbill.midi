@@ -32,6 +32,18 @@ echo $admin;
 	?>
 	</div>
 
+	<div class='col-sm-6'>
+	<?php
+	$box=new LTE\Box;
+	$box->title("Filter(s)");
+	$box->icon("fa fa-filter");
+	$box->id("boxFilters");
+	$box->collapsable(true);
+	$box->body("<pre>filter</pre>");
+	echo $box;
+	?>
+	</div>
+
 </div>
 
 <div class='row'>
