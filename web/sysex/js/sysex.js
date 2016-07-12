@@ -80,4 +80,14 @@ $(function(){
 	    $("#midi_outputs").val(portId);
 	}
 
+	$('#btnSaveSysex').click(function(){
+		var content=$('#sysex_in').val();
+		if(!content){
+			return;
+		}
+		var uriContent = "data:application/octet-stream," + encodeURIComponent(content);	
+		newWindow = window.open(uriContent, 'new');
+	});
+
 });
+

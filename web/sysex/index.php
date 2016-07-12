@@ -6,12 +6,12 @@ session_start();
 require __DIR__."/../../vendor/autoload.php";
 
 $admin = new LTE\AdminLte2();
-$admin->title("MIDI Sysex");
+$admin->title("Sysex");
 echo $admin;
 
 ?>
 <section class="content-header">
-  <h1><i class='fa fa-terminal'></i> MIDI Sysex
+  <h1><i class='fa fa-terminal'></i> Sysex
   </h1>
 </section>
 
