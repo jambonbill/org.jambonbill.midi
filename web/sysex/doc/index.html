@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!--SYSEX-->
+	<meta charset="utf-8">
+</head>
+
+<body>
+
+
+Import (binary) : <input type="file" id="importBinary">
+
+
+<script src="../js/jquery.1.7.2.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../js/petscii-midi.js"></script>
+<script>
+var patch;
+$(function(){
+
+	$('#importBinary').change(function(evt){
+	
+		var file = evt.target.files[0];
+		var reader = new FileReader();
+		var data = false;
+		
+	
+		reader.onload = (function(file) {
+			return function(e) {
+				//console.log(e);
+				var chars  = new Uint8Array(e.target.result);
+				console.info("length:"+chars.length);
+				patch=chars;
+				
+				decodePatch(chars);
+				
+				/*
+				var frameLength=colNumber()*rowNumber();
+				var pages=Math.floor(chars.length/frameLength);
+				console.log(chars.length+" bytes",pages+" pages");
+				*/
+				console.log('done');
+			}
+		})(file);
+		
+		reader.readAsArrayBuffer(file);
+	});
+
+	function decodePatch(data){
+		//http://svnmios.midibox.org/filedetails.php?repname=svn.mios&path=%2Ftrunk%2Fapps%2Fsynthesizers%2Fmidibox_sid_v2%2Fdoc%2Fmbsidv2_sysex_implementation.txt
+		console.info('decodePatch(data)',data);
+
+		var pname='';
+		for(i=0;i<256;i++){
+			var c=data[i];
+			//pname+=String.fromCharCode(c);
+			console.log(String.fromCharCode(c))
+		}
+		//console.log("Name:"+pname);
+	}
+
+});
+</script>
+
+</body>
+</html>
