@@ -42,10 +42,16 @@
 			"url":"keyboard/"
 	   	},
 
-	   	"play":{
-			"text":"Play",
+	   	"clock":{
+			"text":"Clock",
 			"icon":"fa fa-play",
-			"url":"play/"
+			"url":"midiclock/"
+	   	},
+	   	
+	   	"sysex":{
+			"text":"Sysex",
+			"icon":"fa fa-terminal",
+			"url":"sysex/"
 	   	}
 	}
 }
