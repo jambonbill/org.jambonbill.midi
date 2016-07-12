@@ -53,17 +53,24 @@ function onMIDIReject(err) {
   console.log("The MIDI system failed to start.");
 }
 
-
-var msgtypes={
-  8:'?',
-  9:'Note off',
-  10:'Note on',
-  11:'AfterTouch',
-  12:'Control change',
-  13:'Program change',
-  14:'Pich wheel',
-  15:'Continue'
+function msgType(msg){
+  
+  var msg=msg & 0xf0;
+  
+  var msgtypes={
+    0x10:'0x10 ?',
+    0x20:'0x20 ?',
+    0x30:'0x30 ?',
+    0x40:'0x40 ?',
+    0x80:'Note off',
+    0x90:'Note on',
+    0xb0:'modulation',
+    0xe0:'Pich wheel',
+    0xf0:'Continue'
+  }  
+  return msgtypes[msg];
 }
+
 
 function dispLog()
 {
@@ -88,7 +95,7 @@ function dispLog()
       
       //var msgtype=table-condensed
 
-      htm+='<td>'+msgtypes[logs[i].type];
+      htm+='<td>'+msgType(logs[i].msg);
       htm+='<td>0x'+logs[i].msg.toString(16);
       
       htm+='<td>'+(logs[i].chn+1);
@@ -124,7 +131,8 @@ E = Pitch Wheel
  */
 function MIDIMessageEventHandler(event) {
   
-  var msg=event.data[0] & 0xf0;
+  //var msg=event.data[0] & 0xf0;
+  var msg=event.data[0];
   
   var midichannel=event.data[0] & 0x0f;
   
@@ -132,7 +140,7 @@ function MIDIMessageEventHandler(event) {
   //Filter here
   if(msg==240)return; 
 
-  logs.push({'t':new Date(),'msg':msg,'type':msg>>4,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
+  logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
   dispLog();
   
   // Mask off the lower nibble (MIDI channel, which we don't care about)
@@ -178,8 +186,8 @@ function MIDIMessageEventHandler(event) {
 $(function(){
 	console.log('monitor.js');
   
-    $('#btnClear').click(function(){
-        console.log('btnClear');
+    $('#btnClearLogs').click(function(){
+        //console.log('btnClear');
         clearLogs();
     });
 
