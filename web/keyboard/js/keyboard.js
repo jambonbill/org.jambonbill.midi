@@ -183,13 +183,15 @@ function displayKeyMap()
 
 
 /**
- * Kill all notes
+ * Kill all notes on current channel
  * @return {[type]} [description]
  */
-function midiPanic()
+function midiPanic(midiChannel)
 {
-	console.log('midiPanic()',notes);
-
+	console.info('midiPanic()',notes);
+	for (var i=0;i<128;i++) {
+		noteOff(i,+midiChannel);
+	}
 }
 
 
@@ -279,7 +281,10 @@ $(function(){
 	});
     
     $('#midi_outputs').focus();
-	
+	$('#btnMidiPannic').click(function(){
+		midiPanic(+$('#midiChannel').val());
+	});
+    
     // patch up prefixes
     window.AudioContext=window.AudioContext||window.webkitAudioContext;
 
