@@ -1,6 +1,9 @@
 // jambonbill midi.js 
+// http://www.w3.org/TR/webmidi/#examples-of-web-midi-api-usage-in-javascript
+
 var context=null;   // the Web Audio "context" object
 var midiAccess=null;  // the MIDIAccess object.
+var midiInputs=[];
 var logs=[];
 
 window.addEventListener('load', function() {
@@ -23,34 +26,33 @@ function onMIDIInit(midi) {
   console.log('MIDI ready!');
   midiAccess = midi;
 
-  var haveAtLeastOneDevice=false;
   var inputs=midiAccess.inputs.values();
-  var options=[];
+  midiInputs=[];
   for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
     //console.log("input",input);
     input.value.onmidimessage = MIDIMessageEventHandler;
-    haveAtLeastOneDevice = true;
-    options.push(input.value);
-    
+    midiInputs.push(input.value);
   }
-  console.log(options);
-  for(var i in options){
+  
+  //console.log(midiInputs);
+  
+  for(var i in midiInputs){
     var x = document.getElementById("midi_inputs");
     var option = document.createElement("option");
-    option.value = options[i].id;
-    option.text = options[i].name;
+    option.value = midiInputs[i].id;
+    option.text = midiInputs[i].name;
     x.add(option);
   }
 
-  $('#midi_inputs').attr('size',options.length);
+  $('#midi_inputs').attr('size',midiInputs.length);
 
   
-  if (!haveAtLeastOneDevice)
-    console.log("No MIDI input devices present.");
+  if (midiInputs.length==0)
+    console.error("No MIDI input devices present.");
 }
 
 function onMIDIReject(err) {
-  console.log("The MIDI system failed to start.");
+  console.error("The MIDI system failed to start.");
 }
 
 function msgType(msg){
@@ -64,10 +66,18 @@ function msgType(msg){
     0x40:'0x40 ?',
     0x80:'Note off',
     0x90:'Note on',
-    0xb0:'modulation',
+    0xa0:'AfterTouch',
+    0xb0:'Control change',
+    0xc0:'Program change',
     0xe0:'Pich wheel',
     0xf0:'Continue'
   }  
+  switch(msg){
+    case 0x90:
+        return   msgtypes[msg] + " <i class='text-muted'>C-0</i>";
+    case 0xb0:
+        return   msgtypes[msg] + " <i class='text-muted'>#0</i>";
+  }
   return msgtypes[msg];
 }
 
@@ -79,9 +89,9 @@ function dispLog()
     var htm='<table class="table table-hover table-condensed">';
     
     htm+='<thead>';
-    htm+='<th>Time</th>';
+    htm+='<th width=100>Time</th>';
     htm+='<th>Type</th>';
-    htm+='<th>Msg</th>';
+    htm+='<th width=50>Msg</th>';
     htm+='<th width=50>Chn</th>';
     htm+='<th width=50>B1</th>';
     htm+='<th width=50>B2</th>';
@@ -90,19 +100,22 @@ function dispLog()
     htm+='<tbody>';
     for(var i=0;i<logs.length;i++){
       var d=logs[i].t;
+      var msg=logs[i].e.data[0];
+      var midichannel=msg & 0x0f;
       htm+='<tr>';
       htm+='<td>'+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"-"+d.getMilliseconds();
       
       //var msgtype=table-condensed
 
-      htm+='<td>'+msgType(logs[i].msg);
-      htm+='<td>0x'+logs[i].msg.toString(16);
+      htm+='<td>'+msgType(msg);
+      htm+='<td>0x'+msg.toString(16);
       
-      htm+='<td>'+(logs[i].chn+1);
+      htm+='<td>'+(midichannel+1);
       htm+='<td>';
-      if(logs[i].b1)htm+=logs[i].b1;
+      if(logs[i].e.data[1])htm+=logs[i].e.data[1];
+      
       htm+='<td>';
-      if(logs[i].b2)htm+=logs[i].b2;
+      if(logs[i].e.data[2])htm+=logs[i].e.data[2];
       //htm+='<td>';
     }
     htm+='</tbody>';
@@ -129,21 +142,31 @@ C = Program (patch) change
 D = Channel Pressure 
 E = Pitch Wheel
  */
+var continues=0;//bpm counter
 function MIDIMessageEventHandler(event) {
   
-  //var msg=event.data[0] & 0xf0;
-  var msg=event.data[0];
-  
-  var midichannel=event.data[0] & 0x0f;
-  
+    //var msg=event.data[0] & 0xf0;
+    var msg=event.data[0];
+    var midichannel=event.data[0] & 0x0f;
+    var type=msg & 0xf0;
+    
+    if(type==0xf0){
+        continues++;
+    }
 
-  //Filter here
-  if(msg==240)return; 
+    // Filter here
+    for(i in filters){
+        if(type==filters[i])return;
+    }
 
-  logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
-  dispLog();
-  
+    
+    //logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
+    logs.push({'t':new Date(),'msg':msg,'e':event});
+
+    dispLog();
+
   // Mask off the lower nibble (MIDI channel, which we don't care about)
+  /*
   switch (event.data[0] & 0xf0) {
     
     case 0x90://note on
@@ -151,7 +174,7 @@ function MIDIMessageEventHandler(event) {
       if (event.data[2]!=0) {  // if velocity != 0, this is a note-on message
         var note=event.data[1];
         var velo=event.data[2];
-        console.log('note-on',event.data[0] & 0x0f,note,velo);
+        //console.log('note-on',event.data[0] & 0x0f,note,velo);
         
         // if velocity == 0, fall thru: it's a note-off
       }
@@ -163,15 +186,15 @@ function MIDIMessageEventHandler(event) {
       break;
     
     case 0xb0://modulation
-      console.log("modulation");
+      //console.log("modulation");
       break;
 
     case 0xe0://pitch
-      console.log("pitch");
+      //console.log("pitch");
       break;
 
     case 0xf0://continue
-      console.log("0xf0");
+      //console.log("0xf0");
       break;
 
     default:
@@ -180,23 +203,39 @@ function MIDIMessageEventHandler(event) {
       //console.log('MIDIMessageEventHandler(event)',event);    
       break;
   }
-  
+  */
 }
 
+
+var filters=[];
+
 $(function(){
-	console.log('monitor.js');
   
     $('#btnClearLogs').click(function(){
         //console.log('btnClear');
         clearLogs();
     });
 
-    $('#btnFilter').click(function(){
-        console.log('btnFilter');
+    $('input.filters').click(function(){
+        //console.log('btnFilter');
+        filters=[];
+        $('input.filters').each(function(i,e){
+          if(e.checked)filters.push(+e.value);
+          //console.log(i,e.value,e.checked);
+        });
+        console.log(filters);
     });
 
     $('#btnRecord').click(function(){
         console.log('btnRecord');
 
     });
+
+    // SHIT Midi BPM Counter
+    /*
+    setInterval(function(){
+        console.info("BPM",continues);
+        //continues=0;
+    }, 1000);
+    */
 });

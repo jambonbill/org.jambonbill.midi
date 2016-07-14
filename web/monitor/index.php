@@ -34,9 +34,6 @@ echo $admin;
 	</div>
 </div>
 
-<hr />
-http://www.w3.org/TR/webmidi/#examples-of-web-midi-api-usage-in-javascript
-
 <script type="text/javascript" src='js/monitor.js'></script>
 <?php
 $admin->footer("Midimon");
