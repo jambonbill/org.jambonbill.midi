@@ -23,9 +23,10 @@
 		"layout-boxed":false,
 		"sidebar-collapse":false
 	},
+	
 	"menu":{
 		
-		"english":{
+		"header":{
 	   		"text":"Midi tools",
 	   		"class":"header"
 	   	},
@@ -52,6 +53,15 @@
 			"text":"Sysex",
 			"icon":"fa fa-terminal",
 			"url":"sysex/"
+	   	},
+	   	
+	   	"sep1":{
+	   		"class":"header"
+	   	},
+
+	   	"link1":{
+	   		"text":"jambonbill.org",
+			"url":"http://www.jambonbill.org"
 	   	}
 	}
 }
