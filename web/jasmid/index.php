@@ -51,5 +51,5 @@ echo $admin;
 <script type="text/javascript" src="js/main.js"></script>
 
 <?php
-$admin->footer("Midimon");
+$admin->footer("<a href='https://github.com/gasman/jasmid'>https://github.com/gasman/jasmid</a>");
 $admin->end();

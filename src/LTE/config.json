@@ -49,6 +49,12 @@
 			"url":"midiclock/"
 	   	},
 	   	
+	   	"jasmid":{
+			"text":"Jasmid",
+			"icon":"fa fa-terminal",
+			"url":"jasmid/"
+	   	},
+
 	   	"sysex":{
 			"text":"Sysex",
 			"icon":"fa fa-terminal",

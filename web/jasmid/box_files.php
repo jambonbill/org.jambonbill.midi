@@ -4,7 +4,7 @@ $f=glob("mid/*.mid");
 //echo "<pre>";print_r($f);echo "</pre>";
 
 $htm=[];
-$htm[]="<table class='table table-condensed table-hover'>";
+$htm[]="<table class='table table-condensed table-hover' style='cursor:pointer'>";
 $htm[]="<thead>";
 $htm[]="</thead>";
 $htm[]="<tbody>";
@@ -20,7 +20,7 @@ $box->title("Files");
 $box->icon("fa fa-file-o");
 $box->id("boxFiles");
 $box->collapsable(1);
-//$box->collapsed(1);
+$box->collapsed(1);
 $box->body($htm);
 echo $box;
 ?>

@@ -3,6 +3,25 @@
 // https://www.cs.cmu.edu/~music/cmsip/readings/Standard-MIDI-file-format-updated.pdf
 // http://www.ccarh.org/courses/253/handout/vlv/
 
+var _track=0;//current track
+var filters=[];
+
+$(function(){
+	
+	$('input.filters').click(function(){
+        //console.log('btnFilter');
+        filters=[];
+        $('input.filters').each(function(i,e){
+          if(e.checked)filters.push(+e.value);
+          //console.log(i,e.value,e.checked);
+        });
+        console.log(filters);
+        showTrack();
+    });
+
+});
+
+
 function loadRemote(path, callback) {
 	
 
@@ -36,11 +55,18 @@ function play(file) {
 	loadRemote(file, function(data) {
 		midiFile = MidiFile(data);
 		//console.info(midiFile.reader,midiFile.tracks);
-		//synth = Synth(44100);
-		//replayer = Replayer(midiFile, synth);
-		//audio = AudioPlayer(replayer);
+		
+		
 		showTracks();
+		//replay();
 	})
+}
+
+function replay(){
+	console.log('replay()');
+	synth = Synth(44100);
+	replayer = Replayer(midiFile, synth);
+	audio = AudioPlayer(replayer);
 }
 
 
@@ -57,7 +83,7 @@ function showTracks(){
 		return "?";
 	}
 
-	console.log(midiFile.header);
+	//console.log(midiFile.header);
 
 	var htm="<table class='table table-condensed table-hover' style='cursor:pointer' id=tableTracks>";
 	
@@ -81,12 +107,18 @@ function showTracks(){
 	
 	$('#boxTracks .box-body').html(htm);
 	$('#tableTracks tbody>tr').click(function(e){
-		showTrack(e.currentTarget.dataset.track);
+		_track=e.currentTarget.dataset.track;
+		showTrack();
 	});
 }
 
-function showTrack(i){
+
+function showTrack(){
+	
+	var i=_track;
+	
 	console.log('showTrack(i)',i);
+	
 	var htm="<table class='table table-condensed table-hover' style='cursor:pointer' id=tableTrack>";
 	htm+="<thead>";
 	htm+="<th>deltaTime</th>";
@@ -98,20 +130,43 @@ function showTrack(i){
 	for(var j in midiFile.tracks[i]){	
 		
 		var o=midiFile.tracks[i][j];
+		
+		
+		//filter
+		if(o.type=='sysEx')continue;
+		//if(o.subtype=='noteOff')continue;
+		if(o.subtype=='controller')continue;
+		if(o.subtype=='programChange')continue;
+		if(o.subtype=='pitchBend')continue;
+		
+
 		//console.log(o);
+		
 		htm+='<tr>';
 		htm+="<td>"+o.deltaTime;
 		htm+="<td>"+o.type;
+		if(o.type=='channel')htm+=' '+(o.channel+1);
+
 		htm+="<td>"+o.subtype;
-		if(o.b1){
+		if (o.subtype=='noteOn'||o.subtype=='noteOff') {
+			htm+="<td>"+mn2str(o.b1);//byte 1
+		} else if(o.b1) {
 			htm+="<td>"+o.b1;//byte 1
-		}else if(o.text){
+		} else if(o.text) {
 			htm+="<td>"+o.text;//text
 		}
 	}
 	htm+="</tbody>";
 	htm+="</table>";
 	
+	$('#boxTrack .box-title').html("track #"+_track);
 	$('#boxTrack .box-body').html(htm);
 	$('#tableTrack').tablesorter();
+}
+
+
+function mn2str(n){
+	var oct=Math.floor(n/12);
+	var _notestr=['C-','C#','D-','D#','E-','F-','F#','G-','G#','A-','A#','B-'];
+	return _notestr[n%12]+oct;
 }
