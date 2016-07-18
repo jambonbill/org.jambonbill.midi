@@ -21,6 +21,8 @@ function loadRemote(path, callback) {
 			for (var z = 0; z < mx; z++) {
 				ff[z] = scc(t.charCodeAt(z) & 255);
 			}
+			//console.log(ff);
+			//console.log('ff.length',ff.length);
 			callback(ff.join(""));
 		}
 	}
