@@ -48,14 +48,23 @@ function showTracks(){
 	
 	//console.info('showTracks()');
 
+	function trackName(track){
+		for(var i in track){
+			if(track[i].subtype=='trackName'){
+				return track[i].text;
+			}
+		}
+		return "?";
+	}
+
 	console.log(midiFile.header);
 
 	var htm="<table class='table table-condensed table-hover' style='cursor:pointer' id=tableTracks>";
 	
 	htm+="<thead>";
 	htm+="<th>#</th>";
+	htm+="<th>Track name</th>";
 	htm+="<th>Length</th>";
-	htm+="<th>Name</th>";
 	htm+="</thead>";
 	htm+="<tbody>";
 	
@@ -63,8 +72,8 @@ function showTracks(){
 		var track=midiFile.tracks[i];
 		htm+='<tr data-track="'+i+'">';
 		htm+="<td>"+i;
-		htm+="<td>"+track.length;
-		htm+="<td>"+track[0].subtype;
+		htm+="<td>"+trackName(track);//track[0].subtype;
+		htm+="<td style='text-align:right'>"+track.length;
 	}
 	
 	htm+="</tbody>";
@@ -94,7 +103,11 @@ function showTrack(i){
 		htm+="<td>"+o.deltaTime;
 		htm+="<td>"+o.type;
 		htm+="<td>"+o.subtype;
-		if(o.b1)htm+="<td>"+o.b1;//byte 1
+		if(o.b1){
+			htm+="<td>"+o.b1;//byte 1
+		}else if(o.text){
+			htm+="<td>"+o.text;//text
+		}
 	}
 	htm+="</tbody>";
 	htm+="</table>";
