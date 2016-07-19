@@ -1,8 +1,10 @@
 <?php
 
-$f=glob("mid/*.mid");
-//echo "<pre>";print_r($f);echo "</pre>";
 
+
+//echo "<pre>";print_r($f);echo "</pre>";
+/*
+$f=glob("mid/*.mid");
 $htm=[];
 $htm[]="<table class='table table-condensed table-hover' style='cursor:pointer'>";
 $htm[]="<thead>";
@@ -23,6 +25,7 @@ $box->collapsable(1);
 $box->collapsed(1);
 $box->body($htm);
 echo $box;
+*/
 ?>
 <script>
 $(function(){

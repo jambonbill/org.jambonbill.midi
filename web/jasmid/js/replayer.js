@@ -1,10 +1,14 @@
 function Replayer(midiFile, synth) {
+	
 	var trackStates = [];
 	var beatsPerMinute = 120;
 	var ticksPerBeat = midiFile.header.ticksPerBeat;
-	var channelCount = 16;
+	var channelCount = 16;//16 midi channels, make sense... :D
 	
 	for (var i = 0; i < midiFile.tracks.length; i++) {
+		
+		//if(i<4)continue;
+		
 		trackStates[i] = {
 			'nextEventIndex': 0,
 			'ticksToNextEvent': (
@@ -13,6 +17,17 @@ function Replayer(midiFile, synth) {
 					null
 			)
 		};
+		
+		/*
+		trackStates.push({
+			'nextEventIndex': 0,
+			'ticksToNextEvent': (
+				midiFile.tracks[i].length ?
+					midiFile.tracks[i][0].deltaTime :
+					null
+			)
+		});
+		*/
 	}
 	
 	function Channel() {
@@ -50,6 +65,8 @@ function Replayer(midiFile, synth) {
 		channels[i] = Channel();
 	}
 	
+	console.info(channels);
+
 	var nextEventInfo;
 	var samplesToNextEvent = 0;
 	
@@ -101,6 +118,7 @@ function Replayer(midiFile, synth) {
 	getNextEvent();
 	
 	function generate(samples) {
+		
 		var data = new Array(samples*2);
 		var samplesRemaining = samples;
 		var dataOffset = 0;
@@ -131,7 +149,12 @@ function Replayer(midiFile, synth) {
 	}
 	
 	function handleEvent() {
+		//console.log('handleEvent()');
 		var event = nextEventInfo.event;
+		var channel=event.channel;
+		
+		if(channel==9)return;
+
 		switch (event.type) {
 			case 'meta':
 				switch (event.subtype) {
@@ -139,14 +162,18 @@ function Replayer(midiFile, synth) {
 						beatsPerMinute = 60000000 / event.microsecondsPerBeat
 				}
 				break;
+
 			case 'channel':
 				switch (event.subtype) {
+
 					case 'noteOn':
 						channels[event.channel].noteOn(event.noteNumber, event.velocity);
 						break;
+					
 					case 'noteOff':
 						channels[event.channel].noteOff(event.noteNumber, event.velocity);
 						break;
+					
 					case 'programChange':
 						//console.log('program change to ' + event.programNumber);
 						channels[event.channel].setProgram(event.programNumber);
@@ -157,7 +184,7 @@ function Replayer(midiFile, synth) {
 	}
 	
 	function replay(audio) {
-		console.log('replay');
+		//console.log('replay');
 		audio.write(generate(44100));
 		setTimeout(function() {replay(audio)}, 10);
 	}

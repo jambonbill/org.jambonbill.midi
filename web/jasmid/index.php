@@ -21,7 +21,7 @@ echo $admin;
 	<div class='col-sm-6'>
 	<?php
 	include "box_file.php";
-	include "box_files.php";
+	//include "box_files.php";
 	include "box_tracks.php";
 	?>
 	</div>

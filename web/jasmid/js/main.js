@@ -5,6 +5,8 @@
 
 var _track=0;//current track
 var filters=[];
+var midiFile={};
+var audio={};
 
 $(function(){
 	
@@ -19,6 +21,18 @@ $(function(){
         showTrack();
     });
 
+	$('#btnPlay').click(function(){
+		if(!midiFile){
+			return;
+		}
+		synth = Synth(44100);
+		replayer = Replayer(midiFile, synth);
+		audio = AudioPlayer(replayer);
+	});
+
+	$('#btnStop').click(function(){
+		audio.stop();
+	});
 });
 
 
@@ -90,7 +104,7 @@ function showTracks(){
 	htm+="<thead>";
 	htm+="<th>#</th>";
 	htm+="<th>Track name</th>";
-	htm+="<th>Length</th>";
+	htm+="<th style='text-align:right'>Length</th>";
 	htm+="</thead>";
 	htm+="<tbody>";
 	
@@ -103,10 +117,17 @@ function showTracks(){
 	}
 	
 	htm+="</tbody>";
+	htm+="<tfoot>";
+	htm+="<tr>";
+	htm+="<td>";
+	htm+="<td><b>"+midiFile.tracks.length+" track(s)</b>";
+	htm+="<td>";
+	htm+="</tfoot>";
 	htm+="</table>";
 	
 	$('#boxTracks .box-title').html(midiFile.tracks.length+" tracks <small>"+midiFile.header.ticksPerBeat+" ticks per beat</small>");
 	$('#boxTracks .box-body').html(htm);
+	
 	$('#tableTracks tbody>tr').click(function(e){
 		_track=e.currentTarget.dataset.track;
 		showTrack();
@@ -128,6 +149,7 @@ function showTrack(){
 	htm+="<th>Value</th>";
 	htm+="<th>Delta</th>";
 	htm+="<th>Cumul</th>";
+	htm+="<th>Beat</th>";
 	htm+="</thead>";
 	htm+="<tbody>";
 	
@@ -139,7 +161,7 @@ function showTrack(){
 
 		//filter
 		if(o.type=='sysEx')continue;
-		//if(o.subtype=='noteOff')continue;
+		if(o.subtype=='noteOff')continue;
 		if(o.subtype=='controller')continue;
 		if(o.subtype=='programChange')continue;
 		if(o.subtype=='pitchBend')continue;
@@ -163,6 +185,8 @@ function showTrack(){
 
 		htm+="<td style='text-align:right'>"+o.deltaTime;
 		htm+="<td style='text-align:right'>"+deltaCumul;
+		var beat=Math.floor(deltaCumul/midiFile.header.ticksPerBeat);
+		htm+="<td style='text-align:right'>"+beat;
 	}
 	
 	htm+="</tbody>";
@@ -172,6 +196,7 @@ function showTrack(){
 	htm+="<td>";
 	htm+="<td style='text-align:right'>"+Math.round(deltaCumul/midiFile.header.ticksPerBeat)+"beats";
 	htm+="<td style='text-align:right'>"+deltaCumul;
+	
 	htm+="</tfoot>";
 	htm+="</table>";
 	

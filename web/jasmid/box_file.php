@@ -7,9 +7,22 @@ $box->id("boxFile");
 $box->collapsable(1);
 //$box->collapsed(1);
 $box->body('<input type="file" id="loadFromJSON" accept="audio/midi">');
+$box->footer('<a href=# class="btn btn-default" id=btnBrowse><i class="fa fa-folder-open-o"></i> Browse</a>');
+
 echo $box;
+
+$modal=new LTE\Modal;
+$modal->title("Browse");
+echo $modal;
 ?>
 <script>
+$('#btnBrowse').click(function(){
+	//get files//
+	//build table
+	
+	$('#myModal').modal(true);//pop
+});
+
 $('#loadFromJSON').change(function(evt) {
 
 	//console.log('loadFromJSON.change');
