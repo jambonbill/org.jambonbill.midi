@@ -105,6 +105,7 @@ function showTracks(){
 	htm+="</tbody>";
 	htm+="</table>";
 	
+	$('#boxTracks .box-title').html(midiFile.tracks.length+" tracks <small>"+midiFile.header.ticksPerBeat+" ticks per beat</small>");
 	$('#boxTracks .box-body').html(htm);
 	$('#tableTracks tbody>tr').click(function(e){
 		_track=e.currentTarget.dataset.track;
@@ -116,22 +117,26 @@ function showTracks(){
 function showTrack(){
 	
 	var i=_track;
-	
+	var deltaCumul=0;
 	console.log('showTrack(i)',i);
 	
 	var htm="<table class='table table-condensed table-hover' style='cursor:pointer' id=tableTrack>";
 	htm+="<thead>";
-	htm+="<th>deltaTime</th>";
-	htm+="<th>type</th>";
-	htm+="<th>subtype</th>";
-	htm+="<th>value</th>";
+	
+	htm+="<th>Type</th>";
+	htm+="<th>Subtype</th>";
+	htm+="<th>Value</th>";
+	htm+="<th>Delta</th>";
+	htm+="<th>Cumul</th>";
 	htm+="</thead>";
 	htm+="<tbody>";
+	
 	for(var j in midiFile.tracks[i]){	
 		
 		var o=midiFile.tracks[i][j];
 		
-		
+		deltaCumul+=o.deltaTime;
+
 		//filter
 		if(o.type=='sysEx')continue;
 		//if(o.subtype=='noteOff')continue;
@@ -143,7 +148,7 @@ function showTrack(){
 		//console.log(o);
 		
 		htm+='<tr>';
-		htm+="<td>"+o.deltaTime;
+		
 		htm+="<td>"+o.type;
 		if(o.type=='channel')htm+=' '+(o.channel+1);
 
@@ -155,8 +160,19 @@ function showTrack(){
 		} else if(o.text) {
 			htm+="<td>"+o.text;//text
 		}
+
+		htm+="<td style='text-align:right'>"+o.deltaTime;
+		htm+="<td style='text-align:right'>"+deltaCumul;
 	}
+	
 	htm+="</tbody>";
+	htm+="<tfoot>";
+	htm+="<tr>";
+	htm+="<td>";
+	htm+="<td>";
+	htm+="<td style='text-align:right'>"+Math.round(deltaCumul/midiFile.header.ticksPerBeat)+"beats";
+	htm+="<td style='text-align:right'>"+deltaCumul;
+	htm+="</tfoot>";
 	htm+="</table>";
 	
 	$('#boxTrack .box-title').html("track #"+_track);
