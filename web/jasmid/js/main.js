@@ -20,7 +20,43 @@ $(function(){
         console.log(filters);
         showTrack();
     });
-
+	var _files=[];
+	$('#btnBrowse').click(function(){
+		
+		//get files//
+		$.post('ctrl.php',{'do':'browse'},function(json){
+			//console.log(json);
+			_files=json.files;
+			fileList();
+		}).error(function(e){
+			console.warn(e.responseText);
+		});
+		
+		//build table
+		function fileList(){
+			var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
+			htm+='<thead>';
+			htm+='<th>Filename</th>';
+			htm+='</thead>';
+			htm+='<tbody>';
+			for(var i in _files){
+				htm+='<tr title="'+_files[i]+'">';
+				htm+='<td>'+_files[i];
+			}
+			htm+='</tbody>';
+			htm+='</table>';
+			
+			$('#myModal').modal('show');//pop
+			$('#myModal .modal-body').html(htm);
+			$('#myModal tbody>tr').click(function(e){
+				console.log(e.currentTarget.title);
+				play("mid/"+e.currentTarget.title);
+				$('#myModal').modal('hide');//pop
+			});
+		}
+		
+	});
+	
 	$('#btnPlay').click(function(){
 		if(!midiFile){
 			return;
@@ -88,13 +124,24 @@ function showTracks(){
 	
 	//console.info('showTracks()');
 
-	function trackName(track){
+	function trackInfo(track){
+		
+		var trackName='';
+		var channels={};
+		
 		for(var i in track){
+			if(track[i].subtype=='noteOn'){
+				channels[track[i]]=true;
+			}
 			if(track[i].subtype=='trackName'){
-				return track[i].text;
+				trackName=track[i].text;
+				//return track[i].text;
 			}
 		}
-		return "?";
+		return {
+			'trackName':trackName,
+			'channel':channels
+		};
 	}
 
 	//console.log(midiFile.header);
@@ -104,15 +151,18 @@ function showTracks(){
 	htm+="<thead>";
 	htm+="<th>#</th>";
 	htm+="<th>Track name</th>";
+	htm+="<th>Channel</th>";
 	htm+="<th style='text-align:right'>Length</th>";
 	htm+="</thead>";
 	htm+="<tbody>";
 	
 	for(var i in midiFile.tracks){
 		var track=midiFile.tracks[i];
+		var nfo=trackInfo(track);
 		htm+='<tr data-track="'+i+'">';
 		htm+="<td>"+i;
-		htm+="<td>"+trackName(track);//track[0].subtype;
+		htm+="<td>"+nfo.trackName;
+		htm+="<td>"+nfo.channels;
 		htm+="<td style='text-align:right'>"+track.length;
 	}
 	

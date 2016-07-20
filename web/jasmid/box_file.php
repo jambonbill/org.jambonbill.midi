@@ -16,12 +16,7 @@ $modal->title("Browse");
 echo $modal;
 ?>
 <script>
-$('#btnBrowse').click(function(){
-	//get files//
-	//build table
-	
-	$('#myModal').modal(true);//pop
-});
+
 
 $('#loadFromJSON').change(function(evt) {
 
