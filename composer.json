@@ -9,7 +9,8 @@
     ],
     "autoload": {
         "psr-0": {
-            "LTE": "src/"
+            "LTE": "src/",
+            "MIDI": "src/"
         }
     },
     "require": {
