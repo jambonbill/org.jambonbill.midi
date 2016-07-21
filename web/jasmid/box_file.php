@@ -5,9 +5,10 @@ $box->title("File");
 $box->icon("fa fa-file-o");
 $box->id("boxFile");
 $box->collapsable(1);
-//$box->collapsed(1);
+$box->collapsed(1);
+$box->boxTools("<button class=\"btn btn-box-tool btnclipboard\" title='Browse' id=btnBrowse><i class='fa fa-folder-open-o'></i></button> ");
 $box->body('<input type="file" id="loadFromJSON" accept="audio/midi">');
-$box->footer('<a href=# class="btn btn-default" id=btnBrowse><i class="fa fa-folder-open-o"></i> Browse</a>');
+//$box->footer('<a href=# class="btn btn-default" id=btnBrowse><i class="fa fa-folder-open-o"></i> Browse</a>');
 
 echo $box;
 
