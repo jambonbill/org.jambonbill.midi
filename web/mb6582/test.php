@@ -44,15 +44,19 @@ function patchInfo($filename='')
 	echo "\n";
 	$PATCH=[];
 	//$BYTE=[];
-	echo "patch=";
+	//echo "patch=";
 	for($i=0;$i<strlen($patch);$i+=2){
 		$b1=$patch[$i];
 		$b2=$patch[$i+1];
-		
-		$PATCH[]=$b1+($b2*16);
-		echo strtoupper(bin2hex($b1));
-		echo strtoupper(bin2hex($b2));
-		echo ' ';
+		//$value=bindec($b1)+(bindec($b2)*16);
+		//echo 'lo:'.strtoupper(bin2hex($b1));
+		///echo ' - hi:'.strtoupper(bin2hex($b2));
+		//echo "\n";
+		$low= ord($b1);
+		$high= ord($b2);
+		$value=$low+$high*16;
+		//echo $value;echo ' ';
+		$PATCH[]=$value;
 	}
 	echo "\n";
 	
@@ -60,8 +64,7 @@ function patchInfo($filename='')
 	//$PATCH=implode('',$PATCH);//tostring
 	for($i=0;$i<count($PATCH);$i++){
 		$b=$PATCH[$i];
-		echo strtoupper(bin2hex($b));
-		echo ' ';	
+		echo chr($b);
 	}
 
 	echo "\n";
