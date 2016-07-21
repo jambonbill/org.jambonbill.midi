@@ -5,8 +5,17 @@ session_start();
 
 require __DIR__."/../../vendor/autoload.php";
 
+$SIDV2=new MIDI\SIDV2;
 
-patchInfo('syx/Brass1.syx');
+$NFO=$SID->patchInfo("syx/patch034.syx");
+print_r($NFO);
+exit();
+
+$f=glob("syx/*.syx");
+shuffle($f);
+$NFO=patchInfo($f[0]);
+print_r($NFO);
+//patchInfo("syx/patch034.syx");
 
 /*
 02/a) F0 00 00 7E 4B <device-number> 02 00 <bank> <patch> <1024 bytes of dump data> <checksum> F7
@@ -19,8 +28,10 @@ patchInfo('syx/Brass1.syx');
 
 function patchInfo($filename='')
 {
-	echo __FUNCTION__."($filename)\n";
+	//echo __FUNCTION__."($filename)\n";
 	
+	$INFO=[];//output
+
 	$size=filesize($filename);
 	echo "size=$size\n";
 
@@ -34,17 +45,19 @@ function patchInfo($filename='')
 
 	fclose($f);
 	
-	echo "head=";
+	// F0 00 00 7E 4B
 	for($i=0;$i<strlen($head);$i++){
 		$b=$head[$i];
 		echo strtoupper(bin2hex($b));
 		echo ' ';
 	}
-
-	echo "\n";
+	
+	$INFO['device-number']=ord($head[5]);
+	$INFO['bank']=ord($head[8]);
+	$INFO['patch']=ord($head[9]);
+	//echo "\n";
+	
 	$PATCH=[];
-	//$BYTE=[];
-	//echo "patch=";
 	for($i=0;$i<strlen($patch);$i+=2){
 		$b1=$patch[$i];
 		$b2=$patch[$i+1];
@@ -58,16 +71,58 @@ function patchInfo($filename='')
 		//echo $value;echo ' ';
 		$PATCH[]=$value;
 	}
-	echo "\n";
+	//echo "\n";
 	
-	echo count($PATCH);echo "bytes\n";
-	//$PATCH=implode('',$PATCH);//tostring
+	//show patch as hex
+	/*
 	for($i=0;$i<count($PATCH);$i++){
 		$b=$PATCH[$i];
 		echo chr($b);
 	}
+	*/
+	
+	
 
-	echo "\n";
-	echo "checksum=".bin2hex($checksum);echo "\n";
-	echo "f7=".bin2hex($f7);echo "\n";
+	
+	$name=[];
+	for($i=0;$i<16;$i++){
+		$name[]=chr($PATCH[$i]);
+	}
+	$INFO['name']=trim(implode('',$name));
+
+	
+	$INFO['engine']=ord($PATCH[0x010]) & 0x0f;//0=Lead, 1=Bassline, 2=Drum, 3=Multi
+	
+	$INFO['extSwitch']=$PATCH[0x014];// | [7:0] External Switches on/off
+
+	$KNOBS=[];
+	for($i=0;$i<8;$i++){
+		/*
+		      | Knob #1 (Modulation Wheel)
+		0x018 | [7:0] Parameter Assignment #1
+		0x019 | [7:0] Parameter Assignment #2
+		0x01a | [7:0] Initial Value
+		0x01b | [7:0] Min. Value
+		0x01c | [7:0] Max. Value
+		 */
+		$addr=0x018+($i*5);
+		$P1=$PATCH[$addr];
+		$P2=$PATCH[$addr+1];
+		$INI=$PATCH[$addr+2];
+		$MIN=$PATCH[$addr+3];
+		$MAX=$PATCH[$addr+4];
+		$KNOBS[]=[$P1,$P2,$INI,$MIN,$MAX];
+	}
+	$INFO['knobs']=$KNOBS;
+	//print_r($KNOBS);
+
+	
+	//echo "engine=".$engine;echo "\n";//lead=48, bassline=49, drum=50 multi=51 ()
+	//echo "engine=".ord($engine);echo "\n";//lead=48, bassline=49, drum=50 multi=51 ()
+
+	$INFO["checksum"]=bin2hex($checksum);
+	$INFO["checksum_calc"]=checksum($patch);
+	//echo "f7=".bin2hex($f7);echo "\n";
+	$INFO['f7']=bin2hex($f7);
+	return $INFO;
 }

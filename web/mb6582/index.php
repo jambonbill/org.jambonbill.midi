@@ -28,6 +28,7 @@ echo $admin;
 
 	<div class='col-sm-6'>
 	<?php
+	include "box_controls.php";
 	include "box_patch.php";
 	?>
 	</div>

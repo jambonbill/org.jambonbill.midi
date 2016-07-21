@@ -9,6 +9,7 @@ $(function(){
 		console.error(e.responseText);
 	});
 
+	var engines=['Lead','Bassline','Drum','Multi'];
 	
 	function listFiles(){
 		
@@ -17,17 +18,23 @@ $(function(){
 		var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
 		
 		htm+='<thead>';
+		htm+='<th>Filename</th>';
 		htm+='<th>Name</th>';
-		htm+='<th>Size</th>';
+		//htm+='<th>Num</th>';
+		htm+='<th>Engine</th>';
+		//htm+='<th>Size</th>';
 		htm+='<thead>';
 		htm+='</thead>';
 		htm+='<tbody>';
 		
 		for(var i in _files){
 			var o=_files[i];
-			htm+='<tr title="'+o.name+'">';
-			htm+='<td>'+o.name;
-			htm+='<td style="text-align:right">'+o.size;
+			htm+='<tr title="'+o.basename+'">';
+			htm+='<td>'+o.basename;
+			htm+='<td>'+o.patch.name;
+			//htm+='<td>'+o.patch.patch;//patch number
+			htm+='<td>'+engines[o.patch.engine];
+			//htm+='<td style="text-align:right">'+o.size;
 		}
 		
 		htm+='</tbody>';

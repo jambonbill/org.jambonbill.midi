@@ -8,7 +8,7 @@ Patch Structure --- Address 0x000-0x04f is identical for all Engines
 0x00f |
 ------+--------------------------------------------------------------------------
 0x010 | [1:0] Engine: 0=Lead, 1=Bassline, 2=Drum, 3=Multi
-      | [7:2] reserved
+      | [7:2] reserved (for ?)
 ------+--------------------------------------------------------------------------
 0x011 | Hardware Info Flags, not used yet but reserved for evtl. future functions
       | [1:0] 0=no SID restriction, 1=6581, 2=6582/8580, 3=SwinSID
