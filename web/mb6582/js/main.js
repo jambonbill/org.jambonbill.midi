@@ -1,3 +1,5 @@
+var SID;
+
 $(function(){
 	
 	var _files;
@@ -59,6 +61,9 @@ $(function(){
 			
 			console.log(json);
 			
+			SID=SidV2(json.bin);
+			SID.decode();
+
 		}).error(function(e){
 			console.error(e.responseText);
 		});

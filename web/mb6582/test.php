@@ -7,14 +7,19 @@ require __DIR__."/../../vendor/autoload.php";
 
 $SIDV2=new MIDI\SIDV2;
 
-$NFO=$SID->patchInfo("syx/patch034.syx");
-print_r($NFO);
-exit();
+
+
+
+
+
+
+
 
 $f=glob("syx/*.syx");
 shuffle($f);
-$NFO=patchInfo($f[0]);
+$NFO=$SIDV2->patchInfo($f[0]);
 print_r($NFO);
+exit;
 //patchInfo("syx/patch034.syx");
 
 /*

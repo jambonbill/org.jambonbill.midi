@@ -11,7 +11,7 @@ echo $admin;
 
 ?>
 <section class="content-header">
-  <h1><i class='fa fa-terminal'></i> MB6582 Patches
+  <h1><i class='fa fa-terminal'></i> MBSIDV2 Patches
   </h1>
 </section>
 
@@ -53,6 +53,7 @@ echo $admin;
 
 
 <script type="text/javascript" src='js/main.js'></script>
+<script type="text/javascript" src='js/sidv2.js'></script>
 
 <?php
 $admin->footer("Midimon - Sysex");
