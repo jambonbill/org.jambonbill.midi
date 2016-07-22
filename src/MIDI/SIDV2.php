@@ -14,12 +14,31 @@ class SIDV2
        
         // Create PDO object
     }
+ 
 
-    public function patchChecksum($patch='')
-    {
-        return 33;
+    /**
+     * Two's complement
+     * @param  [type] $bin [description]
+     * @return [type]      [description]
+     */
+    public function twoscomp($bin) {
+        $out = "";
+        $mode = "init";
+        for($x = strlen($bin)-1; $x >= 0; $x--) {
+            if ($mode != "init")
+                $out = ($bin[$x] == "0" ? "1" : "0").$out;
+            else {
+                if($bin[$x] == "1") {
+                    $out = "1".$out;
+                    $mode = "invert";
+                }
+                else
+                    $out = "0".$out;
+            }
+        }
+        return bindec($out);
     }
-    
+
     public function patchInfo($filename='')
     {
         
@@ -56,32 +75,28 @@ class SIDV2
         //echo "\n";
     
         $PATCH=[];
+        $CS=0;
         for($i=0;$i<strlen($patch);$i+=2){
-            $b1=$patch[$i];
-            $b2=$patch[$i+1];
-            //$value=bindec($b1)+(bindec($b2)*16);
-            //echo 'lo:'.strtoupper(bin2hex($b1));
-            ///echo ' - hi:'.strtoupper(bin2hex($b2));
-            //echo "\n";
-            $low= ord($b1);
-            $high= ord($b2);
+            
+            $low= ord($patch[$i]);
+            $high= ord($patch[$i+1]);
             $value=$low+$high*16;
-            //echo $value;echo ' ';
+            
+            $CS+=$low;
+            $CS+=$high;
+            
             $PATCH[]=$value;
         }
     
+        $CS=$CS%256;
+        //$CS=-$CS;//complemn
+        $INFO['cs']=dechex($this->twoscomp(decbin($CS)));
 
-        
-        
         $name=[];
-        for($i=0;$i<16;$i++){
+        for ($i=0;$i<16;$i++) {
             $name[]=chr($PATCH[$i]);
         }
         $INFO['name']=trim(implode('',$name));
-
-    
-
-
         
         $INFO['engine']=ord($PATCH[0x010]) & 0x0f;//0=Lead, 1=Bassline, 2=Drum, 3=Multi
         
@@ -107,8 +122,14 @@ class SIDV2
         }
         $INFO['knobs']=$KNOBS;
     
+
+        // Filters //
+        //$INFO['filters']=$KNOBS;
+
+
+
         $INFO["checksum"]=bin2hex($checksum);
-        $INFO["checksum_calc"]=$this->patchChecksum($patch);
+
         //echo "f7=".bin2hex($f7);echo "\n";
         $INFO['f7']=bin2hex($f7);
         
@@ -116,4 +137,14 @@ class SIDV2
         //return $INFO;
     }
 
+
+    public function patchBinary($filename='')
+    {
+        
+        if(!$filename){
+            return [];
+        }
+
+        return file_get_contents($filename);
+    }
 }
