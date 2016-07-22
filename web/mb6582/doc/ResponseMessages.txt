@@ -1,0 +1,38 @@
+Response Messages
+~~~~~~~~~~~~~~~~~
+
+ Acknowledge:
+    F0 00 00 7E 4B <device> 0F <sids> F7
+
+    Master SID (Device ID 00)
+      <sids>: contains flags for the SID cores which have processed the
+      previous SysEx string successfully.
+
+      Note that the destination SIDs can be selected with ...0C 00 <sids>...
+      If SID cores are not available, or have been disconnected during
+      runtime, the appr. flags in the acknowledge response are automatically
+      cleared to notify about this
+
+   Slave SID (Device ID 01, 02, 03)
+      <sids> is always 00
+
+
+ DisAcknowledge (Error)
+    F0 00 00 7E 4B <device> 0E <error-code> F7
+
+    <error-code>:
+       01 == received less bytes then expected
+       03 == wrong checksum
+       0a == bankstick or patch/drumset/ensemble not available
+       0b == parameter not available
+       0c == invalid command
+       10 == RAM access not supported
+       11 == BankStick too small (only 32k BS connected, patch number >= 64)
+   12 == wrong type
+   13 == selected SID not available
+
+
+ PING:
+  F0 00 00 7E 4B <device number> 0F F7
+  Ping (just sends back the same SysEx string + <sids>)
+  

@@ -1,0 +1,98 @@
+Patch Structure --- Address 0x000-0x04f is identical for all Engines
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Addr | Parameter
+======+==========================================================================
+0x000 | Patch Name (16 ASCII characters)
+ ...  |
+0x00f |
+------+--------------------------------------------------------------------------
+0x010 | [1:0] Engine: 0=Lead, 1=Bassline, 2=Drum, 3=Multi
+      | [7:2] reserved (for ?)
+------+--------------------------------------------------------------------------
+0x011 | Hardware Info Flags, not used yet but reserved for evtl. future functions
+      | [1:0] 0=no SID restriction, 1=6581, 2=6582/8580, 3=SwinSID
+      | [3] stereo
+      | [7:4] caps: 0=470pF, 1=1nF, 2=2.2nF, 3=4.7nF, 4=6.8nF,
+      |             5=10nF, 6=22nF, 7=47nF, 8=100nF
+------+--------------------------------------------------------------------------
+0x012 | OPT1 Flags (global options)
+      | [0] ABW (ADSR Bug Workaround)
+      | [7:1] reserved
+------+--------------------------------------------------------------------------
+0x013 | OPT2 Flags (global options)
+      | [7:0] reserved
+------+--------------------------------------------------------------------------
+0x014 | [7:0] External Switches on/off
+------+--------------------------------------------------------------------------
+0x015 | reserved for future extensions
+0x016 | reserved for future extensions
+0x017 | reserved for future extensions
+======+==========================================================================
+      | Knob #1 (Modulation Wheel)
+0x018 | [7:0] Parameter Assignment #1
+0x019 | [7:0] Parameter Assignment #2
+0x01a | [7:0] Initial Value
+0x01b | [7:0] Min. Value
+0x01c | [7:0] Max. Value
+------+--------------------------------------------------------------------------
+0x01d | 
+ ...  | Knob #2 (CC#17) (same Structure as for Knob #1)
+0x021 | [7:0] Max. Value
+------+--------------------------------------------------------------------------
+0x022 |
+ ...  | Knob #3 (CC#18) (same Structure as for Knob #1)
+0x026 |
+------+--------------------------------------------------------------------------
+0x027 |
+ ...  | Knob #4 (CC#19) (same Structure as for Knob #1)
+0x029 | [7:0] Initial Value
+------+--------------------------------------------------------------------------
+0x02c |
+ ...  | Knob #5 (CC#20) (same Structure as for Knob #1)
+0x030 |
+------+--------------------------------------------------------------------------
+0x031 |
+ ...  | Knob #V (Velocity) (same Structure as for Knob #1)
+0x035 |
+------+--------------------------------------------------------------------------
+0x036 |
+ ...  | Knob #P (Pitch Bender) (same Structure as for Knob #1)
+0x03a |
+------+--------------------------------------------------------------------------
+0x03b |
+ ...  | Knob #A (Aftertouch) (same Structure as for Knob #1)
+0x03f |
+======+==========================================================================
+0x040 | [3:0] reserved
+      | [7:4] Low nibble of 12bit External Parameter CV Channel #1
+0x041 | [7:0] High byte of 12bit External Parameter CV Channel #1
+------+--------------------------------------------------------------------------
+0x042 | [3:0] reserved
+      | [7:4] Low nibble of 12bit External Parameter CV Channel #1
+0x043 | [7:0] High byte of 12bit External Parameter CV Channel #1
+------+--------------------------------------------------------------------------
+0x044 | [3:0] reserved
+      | [7:4] Low nibble of 12bit External Parameter CV Channel #1
+0x045 | [7:0] High byte of 12bit External Parameter CV Channel #1
+------+--------------------------------------------------------------------------
+0x046 | [3:0] reserved
+      | [7:4] Low nibble of 12bit External Parameter CV Channel #1
+0x047 | [7:0] High byte of 12bit External Parameter CV Channel #1
+------+--------------------------------------------------------------------------
+0x048 | [3:0] reserved
+      | [7:4] Low nibble of 12bit External Parameter CV Channel #1
+0x049 | [7:0] High byte of 12bit External Parameter CV Channel #1
+------+--------------------------------------------------------------------------
+0x04a | [3:0] reserved
+      | [7:4] Low nibble of 12bit External Parameter CV Channel #1
+0x04b | [7:0] High byte of 12bit External Parameter CV Channel #1
+------+--------------------------------------------------------------------------
+0x04c | [3:0] reserved
+      | [7:4] Low nibble of 12bit External Parameter CV Channel #1
+0x04d | [7:0] High byte of 12bit External Parameter CV Channel #1
+------+--------------------------------------------------------------------------
+0x04e | [3:0] reserved
+      | [7:4] Low nibble of 12bit External Parameter CV Channel #1
+0x04f | [7:0] High byte of 12bit External Parameter CV Channel #1
+======+==========================================================================

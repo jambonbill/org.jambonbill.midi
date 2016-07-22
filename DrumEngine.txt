@@ -1,0 +1,254 @@
+Patch Structure --- Drum Engine
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Addr | Parameter
+======+==========================================================================
+0x000 |
+  ..  | Global Parameters (see table above)
+0x04f |
+======+==========================================================================
+      | Sequencer
+0x050 | [5:0] Clock Divider (0..63)
+      | [6] 0=MIDI Note playing, 1=Sequencer mode
+      | [7] pattern changes synched to measure
+0x051 | [3:0] 0-7: sequence number, 8=disable pattern
+      | [7:4] reserved
+------+--------------------------------------------------------------------------
+0x052 | [6:0] Volume (0-127, only most significant 4bits are used by SID)
+      | [7] reserved
+      | (not part of sequencer, but address selected due to compatibility
+      | reasons with other engines)
+------+--------------------------------------------------------------------------
+0x053 | [3:0] number of steps (0..15)
+      | [7:4] reserved
+======+==========================================================================
+0x054 |
+ ...  | Filter Parameters (see table above)
+0x05f |
+======+==========================================================================
+      | Drum Instrument #1 Parameters
+0x060 | [3:0] reserved
+      | [7:4] Voice assignment: 0=LR, 1=L-, 2=-R, 3=O1, 4=O2, 5=O3, 6=O4,
+      |       7=O5, 8=O6
+0x061 | [7:0] Drum Model: 0=BD1, 1=BD3, 2=BD3, 3=SD1, 4=SD2, 5=SD3, 6=HH1, 7=HH2,
+      |                   8=TOM1, 9=TOM2, 10=CLAP, 11=FX1, 12=FX2, 13=FX3, 14=FX4,
+      |                   15=FX5, 16=FX6, 17=FX7, 18=FX8, 19=FX9
+0x062 | [7:4] DCA Attack Rate
+      | [3:0] DCA Decay Rate
+0x063 | [7:4] DCA Sustain Level
+      | [3:0] DCA Release Rate
+0x064 | [7:0] Tune (-128..127)
+0x065 | [7:0] Parameter #1 (-128..127): Gatelength
+0x066 | [7:0] Parameter #2 (-128..127): Speed
+0x067 | [7:0] Parameter #3 (-128..127): usage depends on Drum Model
+0x068 | [7:0] Velocity Parameter Assignment (0-255)
+0x069 | reserved for future extensions
+------+--------------------------------------------------------------------------
+0x06a |
+ ...  | Drum Instrument #2 Parameters (see table above)
+0x073 |
+------+--------------------------------------------------------------------------
+0x074 |
+ ...  | Drum Instrument #3 Parameters (see table above)
+0x07d |
+------+--------------------------------------------------------------------------
+0x07e |
+ ...  | Drum Instrument #4 Parameters (see table above)
+0x087 |
+------+--------------------------------------------------------------------------
+0x088 |
+ ...  | Drum Instrument #5 Parameters (see table above)
+0x091 |
+------+--------------------------------------------------------------------------
+0x092 |
+ ...  | Drum Instrument #6 Parameters (see table above)
+0x09b |
+------+--------------------------------------------------------------------------
+0x09c |
+ ...  | Drum Instrument #7 Parameters (see table above)
+0x0a5 |
+------+--------------------------------------------------------------------------
+0x0a6 |
+ ...  | Drum Instrument #8 Parameters (see table above)
+0x0af |
+------+--------------------------------------------------------------------------
+0x0b0 |
+ ...  | Drum Instrument #9 Parameters (see table above)
+0x0b9 |
+------+--------------------------------------------------------------------------
+0x0ba |
+ ...  | Drum Instrument #10 Parameters (see table above)
+0x0c3 |
+------+--------------------------------------------------------------------------
+0x0c4 |
+ ...  | Drum Instrument #11 Parameters (see table above)
+0x0cd |
+------+--------------------------------------------------------------------------
+0x0ce |
+ ...  | Drum Instrument #12 Parameters (see table above)
+0x0d7 |
+------+--------------------------------------------------------------------------
+0x0d8 |
+ ...  | Drum Instrument #13 Parameters (see table above)
+0x0e1 |
+------+--------------------------------------------------------------------------
+0x0e2 |
+ ...  | Drum Instrument #14 Parameters (see table above)
+0x0eb |
+------+--------------------------------------------------------------------------
+0x0ec |
+ ...  | Drum Instrument #15 Parameters (see table above)
+0x0f5 |
+------+--------------------------------------------------------------------------
+0x0f6 |
+ ...  | Drum Instrument #16 Parameters (see table above)
+0x0ff |
+======+==========================================================================
+0x100 |
+ ...  | Sequence Storage - Structure:
+ ...  | 4 bytes for 16 steps:
+ ...  |  - first byte: [0] gate step #1 ... [7] gate step #8
+ ...  |  - second byte: [0] accent step #1 ... [7] accent step #8
+ ...  |  - third byte: [0] gate step #9 ... [7] gate step #16
+ ...  |  - fourth byte: [0] accent step #9 ... [7] accent step #16
+ ...  |
+ ...  | 8 tracks per sequence:
+ ...  |  offset 0x00-0x03: track #1
+ ...  |  offset 0x04-0x07: track #2
+ ...  |  offset 0x08-0x0b: track #3
+ ...  |  offset 0x0c-0x0f: track #4
+ ...  |  offset 0x00-0x03: track #5
+ ...  |  offset 0x04-0x07: track #6
+ ...  |  offset 0x08-0x0b: track #7
+ ...  |  offset 0x0c-0x0f: track #8
+ ...  | 8 sequences:
+ ...  |  0x100..0x11f: sequence #1
+ ...  |  0x120..0x13f: sequence #2
+ ...  |  0x140..0x15f: sequence #3
+ ...  |  0x160..0x17f: sequence #4
+ ...  |  0x180..0x19f: sequence #5
+ ...  |  0x1a0..0x1bf: sequence #6
+ ...  |  0x1c0..0x1df: sequence #7
+ ...  |  0x1e0..0x1ff: sequence #8
+0x1ff | 
+======+==========================================================================
+
+
+Patch Structure --- Multi Engine
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Addr | Parameter
+======+==========================================================================
+0x000 |
+  ..  | Global Parameters (see table above)
+0x04f |
+======+==========================================================================
+0x050 | reserved for future extensions
+0x051 | reserved for future extensions
+------+--------------------------------------------------------------------------
+0x052 | [6:0] Volume (0-127, only most significant 4bits are used by SID)
+      | [7] reserved
+------+--------------------------------------------------------------------------
+0x053 | reserved for future extensions
+======+==========================================================================
+0x054 |
+ ...  | Filter Parameters (see table above)
+0x05f |
+======+==========================================================================
+0x060 | \
+ ...  |  >- Lower Voice Structure of Instrument #1 (see table above)
+0x06f | /
+------+--------------------------------------------------------------------------
+0x070 | [0] 0=Mono, 1=Legato
+      | [1] WTO (Wavetable Only)
+      | [2] SusKey (Fingered Portamento)
+      | [3] 0=take Mono/Legato setting from Bit #0, 1=Poly
+      | [7:4] reserved
+0x071 | [3:0] Voice assignment: 0=LR, 1=L-, 2=-R, 3=O1, 4=O2, 5=O3, 6=O4,
+      |       7=O5, 8=O6
+      | [7:4] reserved
+0x072 | [7:0] Velocity Parameter Assignment (0-255)
+0x073 | [7:0] Pitch Bender Assignment (0-255)
+------+--------------------------------------------------------------------------
+      | LFO1 Parameters
+0x074 | LFO Mode
+      | [0] 0=LFO disabled, 1=LFO enabled
+      | [1] Sync: Synchronisation to MIDI Note
+      | [2] CSn: Synchronisation to global clock generator
+      | [3] Oneshot
+      | [7:4] Waveform: 0=Sine, 1=Triangle, 2=Saw, 3=Pulse, 4=Random,
+      |                 5=Pos.Sine, 6=Pos.Triangle, 7=Pos.Saw, 8=Pos.Pulse
+0x075 | [7:0] LFO Depth Pitch (-128..127)
+0x076 | [7:0] LFO Rate (0..255)
+      |       if CSn flag enabled the available rates are:
+      |        0=LFO disabled, 8=16 bars, 16=14 bars, 24=12 bars, 32=10 bars,
+      |        40=9 bars, 48=8 bars, 56=7 bars, 64=6 bars, 72=5 bars, 80=4 bars,
+      |        88=3.5 bars, 96=3 bars, 104=2.5 bars, 112=2 bars, 120=1.5 bars,
+      |        128=1 bar, 136=1/2., 144=1/1T, 152=1/2, 160=1/4., 168=1/2T,
+      |        176=1/4, 184=1/8., 192=1/4T, 200=1/8, 208=1/16., 216=1/8T,
+      |        224=1/16, 232=1/32., 240=1/16T, 248=1/32
+0x077 | [7:0] LFO Delay (0..255)
+0x078 | [7:0] LFO Phase (0..255)
+0x079 | [7:0] LFO Depth Pulsewidth (-128..127)
+0x07a | [7:0] LFO Depth Filter CutOff (-128..127)
+------+--------------------------------------------------------------------------
+0x07b |
+ ...  | LFO2 Parameters (same structure as for LFO1)
+0x081 |
+------+--------------------------------------------------------------------------
+      | Envelope
+0x082 | [3:0] reserved
+      | [4] Curve assigned to Attack Rate
+      | [5] Curve assigned to Decay Rate
+      | [6] Curve assigned to Sustain Rate
+      | [7] Global Clock Synchronisation
+0x083 | Envelope Depth Pitch (-128..127)
+0x084 | Envelope Depth Pulsewidth (-128..127)
+0x085 | Envelope Depth Filter CutOff (-128..127)
+0x086 | Envelope Attack Rate (0..255)
+0x087 | Envelope Decay Rate (0..255)
+0x088 | Envelope Sustain Level (0..255)
+0x089 | Envelope Release Rate (0..255)
+0x08a | Envelope Curve (-128..127)
+------+--------------------------------------------------------------------------
+      | Wavetable Sequencer
+0x08b | [5:0] Clock Divider (0..63)
+      | [6] reserved
+      | [7] reserved
+0x08c | [7:0] parameter assignment (0..255)
+0x08d | [6:0] start position in wavetable
+      | [7] (only for Multi Engine): "W+16" flag - waveform can be changed from
+      |     offset +16 of the wavetable, in combination with another parameter
+      |     (such as #249), it's possible to control pitch and waveform from
+      |     a single WT track
+0x08e | [6:0] end position in wavetable
+      | [7] reserved
+0x08f | [6:0] loop position in wavetable
+      | [7] Oneshot
+======+==========================================================================
+0x090 |
+ ...  | Voice Structure of Instrument #2 (same structure as for Instrument #1)
+0x0bf | 
+======+==========================================================================
+0x0c0 |
+ ...  | Voice Structure of Instrument #3 (same structure as for Instrument #1)
+0x0ef | 
+======+==========================================================================
+0x0f0 |
+ ...  | Voice Structure of Instrument #4 (same structure as for Instrument #1)
+0x11f | 
+======+==========================================================================
+0x120 |
+ ...  | Voice Structure of Instrument #5 (same structure as for Instrument #1)
+0x14f | 
+======+==========================================================================
+0x150 |
+ ...  | Voice Structure of Instrument #6 (same structure as for Instrument #1)
+0x17f | 
+======+==========================================================================
+0x180 |
+ ...  | Wavetable Value Storage
+ ...  | Values 0x00..0x7f: relative change -64..63
+ ...  | Values 0x80..0xff: absolute value 0..127
+0x1ff |
+======+==========================================================================

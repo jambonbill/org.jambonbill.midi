@@ -1,0 +1,154 @@
+Patch Structure --- Bassline Engine
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Addr | Parameter
+======+==========================================================================
+0x000 |
+  ..  | Global Parameters (see table above)
+0x04f |
+======+==========================================================================
+0x050 | reserved for future extensions
+------+--------------------------------------------------------------------------
+0x051 | [7:0] Oscillators Detune (0-255)
+------+--------------------------------------------------------------------------
+0x052 | [6:0] Volume (0-127, only most significant 4bits are used by SID)
+      | [7] reserved
+------+--------------------------------------------------------------------------
+0x053 | reserved for future extensions
+======+==========================================================================
+0x054 |
+ ...  | Filter Parameters (see table above)
+0x05f |
+======+==========================================================================
+0x060 | \
+ ...  |  >- Lower Voice Structure of Left Channel Bassline (see table above)
+0x06f | /
+------+--------------------------------------------------------------------------
+0x070 | [0] 0=Mono, 1=Legato
+      | [1] 0=MIDI Note playing, 1=Sequencer mode
+      | [2] SysKey (Fingered Portamento)
+      | [3] Oscillator Phase Synchronisation
+      | [7:4] reserved
+0x071 | reserved for future extensions
+0x072 | reserved for future extensions
+0x073 | reserved for future extensions
+------+--------------------------------------------------------------------------
+      | LFO1 Parameters
+0x074 | LFO Mode
+      | [0] 0=LFO disabled, 1=LFO enabled
+      | [1] Sync: Synchronisation to MIDI Note
+      | [2] CSn: Synchronisation to global clock generator
+      | [3] Oneshot
+      | [7:4] Waveform: 0=Sine, 1=Triangle, 2=Saw, 3=Pulse, 4=Random,
+      |                 5=Pos.Sine, 6=Pos.Triangle, 7=Pos.Saw, 8=Pos.Pulse
+0x075 | [7:0] LFO Depth Pitch (-128..127)
+0x076 | [7:0] LFO Rate (0..255)
+      |       if CSn flag enabled the available rates are:
+      |        0=LFO disabled, 8=16 bars, 16=14 bars, 24=12 bars, 32=10 bars,
+      |        40=9 bars, 48=8 bars, 56=7 bars, 64=6 bars, 72=5 bars, 80=4 bars,
+      |        88=3.5 bars, 96=3 bars, 104=2.5 bars, 112=2 bars, 120=1.5 bars,
+      |        128=1 bar, 136=1/2., 144=1/1T, 152=1/2, 160=1/4., 168=1/2T,
+      |        176=1/4, 184=1/8., 192=1/4T, 200=1/8, 208=1/16., 216=1/8T,
+      |        224=1/16, 232=1/32., 240=1/16T, 248=1/32
+0x077 | [7:0] LFO Delay (0..255)
+0x078 | [7:0] LFO Phase (0..255)
+0x079 | [7:0] LFO Depth Pulsewidth (-128..127)
+0x07a | [7:0] LFO Depth Filter CutOff (-128..127)
+------+--------------------------------------------------------------------------
+0x07b |
+ ...  | LFO2 Parameters (same structure as for LFO1)
+0x081 |
+------+--------------------------------------------------------------------------
+      | Envelope
+0x082 | [3:0] reserved
+      | [4] Curve assigned to Attack Rate
+      | [5] Curve assigned to Decay Rate
+      | [6] Curve assigned to Sustain Rate
+      | [7] Global Clock Synchronisation
+0x083 | Envelope Depth Pitch (-128..127)
+0x084 | Envelope Depth Pulsewidth (-128..127)
+0x085 | Envelope Depth Filter CutOff (-128..127)
+0x086 | Envelope Attack Rate (0..255)
+0x087 | Envelope Decay Rate (0..255)
+0x088 | Envelope Sustain Level (0..255)
+0x089 | Envelope Release Rate (0..255)
+0x08a | Envelope Curve (-128..127)
+------+--------------------------------------------------------------------------
+      | Sequencer
+0x08b | [5:0] Clock Divider (0..63)
+      | [6] reserved
+      | [7] pattern changes synched to measure
+0x08c | [3:0] 0-7: sequence number, 8=disable pattern
+      | [7:4] reserved
+0x08d | [3:0] number of steps (0..15)
+      | [7:4] reserved
+0x08e | parameter assignment (0-255)
+0x08f | reserved
+------+--------------------------------------------------------------------------
+0x090 | Envelope Decay Rate used on accented notes (0-255)
+------+--------------------------------------------------------------------------
+0x091 |
+ ...  | reserved for future extensions
+0x09f |
+------+--------------------------------------------------------------------------
+0x0a0 | OSC2 
+      | [0] Triangle Waveform
+      | [1] Saw Waveform
+      | [2] Pulse Waveform
+      | [3] Noise Waveform
+      | [4] Disable Oscillator
+      | [5] Sync
+      | [6] Ringmodulation
+      | [7] reserved
+0x0a1 | [7:0] Pulsewidth Low byte
+0x0a2 | [3:0] Pulsewidth High nibble
+0x0a3 | [2:0] Octave Transpose: 0=off, 1..3=+1..+3 octaves, 4..7: -4..-1 octaves
+      | [7:3] reserved
+0x0a4 | [6:0] static note (0=off, track with master oscillator OSC1)
+      | [7] reserved
+------+--------------------------------------------------------------------------
+0x0a5 |
+ ...  | reserved for future extensions
+0x0a7 |
+------+--------------------------------------------------------------------------
+0x0a8 | OSC3
+      | [0] Triangle Waveform
+      | [1] Saw Waveform
+      | [2] Pulse Waveform
+      | [3] Noise Waveform
+      | [4] Disable Oscillator
+      | [5] Sync
+      | [6] Ringmodulation
+      | [7] reserved
+0x0a9 | [7:0] Pulsewidth Low byte
+0x0aa | [3:0] Pulsewidth High nibble
+0x0ab | [2:0] Octave Transpose: 0=off, 1..3=+1..+3 octaves, 4..7: -4..-1 octaves
+      | [7:3] reserved
+0x0ac | [6:0] static note (0=off, track with master oscillator OSC1)
+      | [7] reserved
+------+--------------------------------------------------------------------------
+0x0ad |
+ ...  | reserved for future extensions
+0x0af |
+======+==========================================================================
+0x0b0 |
+ ...  | Right Channel Bassline (same voice structure as for Left Bassline)
+0x0ff | 
+======+==========================================================================
+0x100 |
+ ...  | Sequence Storage - Structure:
+ ...  |   2 bytes for each step (selected with address bit #7)
+ ...  |   lower byte: [3:0] note, [5:4] octave, [6] glide, [7] gate
+ ...  |   upper byte: [6:0] parameter value, [7] accent
+ ...  | 16 Steps per sequence (offset 0x00..0x0f)
+ ...  | 8 sequences:
+ ...  |  0x100..0x10f/0x180..0x18f: sequence #1
+ ...  |  0x110..0x11f/0x190..0x19f: sequence #2
+ ...  |  0x120..0x12f/0x1a0..0x1af: sequence #3
+ ...  |  0x130..0x13f/0x1b0..0x1bf: sequence #4
+ ...  |  0x140..0x14f/0x1c0..0x1cf: sequence #5
+ ...  |  0x150..0x15f/0x1d0..0x1df: sequence #6
+ ...  |  0x160..0x16f/0x1e0..0x1ef: sequence #7
+ ...  |  0x170..0x17f/0x1f0..0x1ff: sequence #8
+0x1ff | 
+======+==========================================================================

@@ -1,0 +1,293 @@
+Patch Structure --- Lead Engine
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Addr | Parameter
+======+==========================================================================
+0x000 |
+  ..  | Global Parameters (see table above)
+0x04f |
+======+==========================================================================
+0x050 | [0] 0=Mono, 1=Legato
+      | [1] WTO (Wavetable Only)
+      | [2] SusKey (Fingered Portamento)
+      | [7:3] reserved
+------+--------------------------------------------------------------------------
+0x051 | [7:0] Oscillators Detune (0-255)
+------+--------------------------------------------------------------------------
+0x052 | [6:0] Volume (0-127, only most significant 4bits are used by SID)
+      | [7] reserved
+------+--------------------------------------------------------------------------
+0x053 | Oscillators Phase Offset (0-255)
+======+==========================================================================
+0x054 |
+ ...  | Filter Parameters (see table above)
+0x05f |
+======+==========================================================================
+0x060 |
+ ...  | Voice #1 (OSC1, Left Channel) Parameters (see table above)
+0x06f |
+------+--------------------------------------------------------------------------
+0x070 |
+ ...  | Voice #2 (OSC2, Left Channel) Parameters (see table above)
+0x07f |
+------+--------------------------------------------------------------------------
+0x080 |
+ ...  | Voice #3 (OSC3, Left Channel) Parameters (see table above)
+0x08f |
+------+--------------------------------------------------------------------------
+0x090 |
+ ...  | Voice #4 (OSC1, Right Channel) Parameters (see table above)
+0x09f |
+------+--------------------------------------------------------------------------
+0x0a0 |
+ ...  | Voice #5 (OSC2, Right Channel) Parameters (see table above)
+0x0af |
+------+--------------------------------------------------------------------------
+0x0b0 |
+ ...  | Voice #6 (OSC3, Right Channel) Parameters (see table above)
+0x0bf |
+======+==========================================================================
+      | LFO1
+0x0c0 | LFO Mode
+      | [0] 0=LFO disabled, 1=LFO enabled
+      | [1] Not used by Lead engine (MIDI Note Sync via trigger matrix)
+      | [2] CSn: Synchronisation to global clock generator
+      | [3] Oneshot
+      | [7:4] Waveform: 0=Sine, 1=Triangle, 2=Saw, 3=Pulse, 4=Random,
+      |                 5=Pos.Sine, 6=Pos.Triangle, 7=Pos.Saw, 8=Pos.Pulse
+0x0c1 | [7:0] LFO Depth (-128..127)
+0x0c2 | [7:0] LFO Rate (0..255)
+      |       if CSn flag enabled the available rates are:
+      |        0=LFO disabled, 8=16 bars, 16=14 bars, 24=12 bars, 32=10 bars,
+      |        40=9 bars, 48=8 bars, 56=7 bars, 64=6 bars, 72=5 bars, 80=4 bars,
+      |        88=3.5 bars, 96=3 bars, 104=2.5 bars, 112=2 bars, 120=1.5 bars,
+      |        128=1 bar, 136=1/2., 144=1/1T, 152=1/2, 160=1/4., 168=1/2T,
+      |        176=1/4, 184=1/8., 192=1/4T, 200=1/8, 208=1/16., 216=1/8T,
+      |        224=1/16, 232=1/32., 240=1/16T, 248=1/32
+0x0c3 | [7:0] LFO Delay (0..255)
+0x0c4 | [7:0] LFO Phase (0..255)
+------+--------------------------------------------------------------------------
+0x0c5 | 
+ ...  | LFO2 (same structure as for LFO1)
+0x0c9 | 
+------+--------------------------------------------------------------------------
+0x0ca | 
+ ...  | LFO3 (same structure as for LFO1)
+0x0ce | 
+------+--------------------------------------------------------------------------
+0x0cf | 
+ ...  | LFO4 (same structure as for LFO1)
+0x0d3 | 
+------+--------------------------------------------------------------------------
+0x0d4 | 
+ ...  | LFO5 (same structure as for LFO1)
+0x0d8 | 
+------+--------------------------------------------------------------------------
+0x0d9 | 
+ ...  | LFO6 (same structure as for LFO1)
+0x0dd | 
+======+==========================================================================
+0x0de | reserved for future extensions
+0x0df | reserved for future extensions
+======+==========================================================================
+      | ENV1
+0x0e0 | Envelope Mode
+      | [2:0] Loop Begin: 0=off, 1=Att1, 2=Att2, 3=Dec1, 4=Dec2, 5=Sus, 6=Rel1, 7=Rel2
+      | [3] reserved
+      | [6:4] Loop End: 0=off, 1=Att1, 2=Att2, 3=Dec1, 4=Dec2, 5=Sus, 6=Rel1, 7=Rel2
+      | [7] Global Clock Synchronisation
+0x0e1 | Envelope Depth (-128..127)
+0x0e2 | Envelope Delay (0..255)
+0x0e3 | Envelope Attack1 Rate (0..255)
+0x0e4 | Envelope Attack Level (0..255)
+0x0e5 | Envelope Attack2 Rate (0..255)
+0x0e6 | Envelope Decay1 Rate (0..255)
+0x0e7 | Envelope Decay Level (0..255)
+0x0e8 | Envelope Decay2 Rate (0..255)
+0x0e9 | Envelope Sustain Level (0..255)
+0x0ea | Envelope Release1 Rate (0..255)
+0x0eb | Envelope Release Level (0..255)
+0x0ec | Envelope Release2 Rate (0..255)
+0x0ed | Envelope Attack Curve (-128..127)
+0x0ee | Envelope Decay Curve (-128..127)
+0x0ef | Envelope Release Curve (-128..127)
+------+--------------------------------------------------------------------------
+0x0f0 | 
+ ...  | ENV2 (same structure as for ENV1)
+0x0ff | 
+======+==========================================================================
+      | MP1 (Modulation Path)
+0x100 | Source #1: 0=off, 1=ENV1, 2=ENV2, 3=LFO1, 4=LFO2, 5=LFO3, 6=LFO4, 7=LFO5,
+      | 8=LFO6, 9=MP1, 10=MP2, 11=MP3, 12=MP4, 13=MP5, 14=MP6, 15=MP7, 16=MP8, 
+      | 17=ModWheel, 18=Key, 19=Knob#1, 20=Knob#2, 21=Knob#3, 22=Knob#4, 23=Knob#5
+      | 24=Knob#V, 25=Knob#P, 26=Knob#A, 27=WT1, 28=WT2, 29=WT3, 30=WT4
+      | 31..127: reserved
+      | 128-255: constant value 0..127
+0x101 | Source #2 (same source numbers like above)
+0x102 | Operator
+      | [3:0] 0=off, 1=Source1, 2=Source2, 3=1+2, 4=1-2, 5=1*2, 6=XOR, 
+      |       7=OR, 8=AND, 9=MIN, 10=MAX, 11=1<2, 12=1>2, 13=1=2, 14=S&H, 15=reserved
+      | [5:4] reserved
+      | [6] invert target 1/L
+      | [7] invert target 2/R
+0x103 | Depth (-128..127)
+0x104 | Direct Assignment to Target of Left Channel:
+      | [0] OSC1 Pitch
+      | [1] OSC2 Pitch
+      | [2] OSC3 Pitch
+      | [3] OSC1 Pulsewidth
+      | [4] OSC2 Pulsewidth
+      | [5] OSC3 Pulsewidth
+      | [6] Filter CutOff
+      | [7] Volume
+0x105 | Direct Assignment to Target of Right Channel (same coding as above)
+0x106 | Target #1: 0=off, 1=Pitch OSC1, 2=Pitch OSC2, 3=Pitch OSC3, 4=Pitch OSC4, 
+      | 5=Pitch OSC5, 6=Pitch OSC6, 7=PW OSC1, 8=PW OSC2, 9=PW OSC3, 10=PW OSC4, 
+      | 11=PW OSC5, 12=PW OSC6, 13=CutOff L, 14=CutOff R, 15=Volume L, 16=Volume R
+      | 17=LFO1 Depth, 18=LFO2 Depth, 19=LFO3 Depth, 20=LFO4 Depth, 21=LFO5 Depth, 
+      | 22=LFO6 Depth, 23=LFO1 Rate, 24=LFO2 Rate, 25=LFO3 Rate, 26=LFO4 Rate, 
+      | 27=LFO5 Rate, 28=LFO6 Rate, 29=Ext1, 30=Ext2, 31=Ext3, 32=Ext4, 33=Ext5,
+      | 34=Ext6, 35=Ext7, 36=Ext8, 37=WT1 Pos, 38=WT2 Pos, 39=WT3 Pos, 40=WT4 Pos
+0x107 | Target #2 (same target numbers like above)
+------+--------------------------------------------------------------------------
+0x108 | 
+ ...  | MP2 (same structure as for MP1)
+0x10f | 
+------+--------------------------------------------------------------------------
+0x110 | 
+ ...  | MP3 (same structure as for MP1)
+0x117 | 
+------+--------------------------------------------------------------------------
+0x118 | 
+ ...  | MP4 (same structure as for MP1)
+0x11f | 
+------+--------------------------------------------------------------------------
+0x120 | 
+ ...  | MP5 (same structure as for MP1)
+0x127 | 
+------+--------------------------------------------------------------------------
+0x128 | 
+ ...  | MP6 (same structure as for MP1)
+0x12f | 
+------+--------------------------------------------------------------------------
+0x130 | 
+ ...  | MP7 (same structure as for MP1)
+0x137 | 
+------+--------------------------------------------------------------------------
+0x138 | 
+ ...  | MP8 (same structure as for MP1)
+0x13f | 
+======+==========================================================================
+      | Trigger Matrix Node: Note On
+0x140 | [0] OSC1 Left Channel
+      | [1] OSC2 Left Channel
+      | [2] OSC3 Left Channel
+      | [3] OSC1 Right Channel
+      | [4] OSC2 Right Channel
+      | [5] OSC3 Right Channel
+      | [6] ENV1 Attack
+      | [7] ENV2 Attack
+0x141 | [0] ENV1 Release
+      | [1] ENV2 Release
+      | [2] LFO1 Reset
+      | [3] LFO2 Reset
+      | [4] LFO3 Reset
+      | [5] LFO4 Reset
+      | [6] LFO5 Reset
+      | [7] LFO6 Reset
+0x142 | [0] WT1 Reset
+      | [1] WT2 Reset
+      | [2] WT3 Reset
+      | [3] WT4 Reset
+      | [4] WT1 Step
+      | [5] WT2 Step
+      | [6] WT3 Step
+      | [7] WT4 Step
+------+--------------------------------------------------------------------------
+0x143 |
+ ...  | Trigger Matrix Node: Note Off (same structure as for Note On)
+0x145 | 
+------+--------------------------------------------------------------------------
+0x146 |
+ ...  | Trigger Matrix Node: ENV1 Sustain Phase (same structure as for Note On)
+0x148 | 
+------+--------------------------------------------------------------------------
+0x149 |
+ ...  | Trigger Matrix Node: ENV2 Sustain Phase (same structure as for Note On)
+0x14b | 
+------+--------------------------------------------------------------------------
+0x14c |
+ ...  | Trigger Matrix Node: LFO1 Period (same structure as for Note On)
+0x14e | 
+------+--------------------------------------------------------------------------
+0x14f |
+ ...  | Trigger Matrix Node: LFO2 Period (same structure as for Note On)
+0x151 | 
+------+--------------------------------------------------------------------------
+0x152 |
+ ...  | Trigger Matrix Node: LFO3 Period (same structure as for Note On)
+0x154 | 
+------+--------------------------------------------------------------------------
+0x155 |
+ ...  | Trigger Matrix Node: LFO4 Period (same structure as for Note On)
+0x157 | 
+------+--------------------------------------------------------------------------
+0x158 |
+ ...  | Trigger Matrix Node: LFO5 Period (same structure as for Note On)
+0x15a | 
+------+--------------------------------------------------------------------------
+0x15b |
+ ...  | Trigger Matrix Node: LFO6 Period (same structure as for Note On)
+0x15d | 
+------+--------------------------------------------------------------------------
+0x15e |
+ ...  | Trigger Matrix Node: Global Clock (same structure as for Note On)
+0x160 | 
+------+--------------------------------------------------------------------------
+0x161 |
+ ...  | Trigger Matrix Node: Global Clock / 6 (same structure as for Note On)
+0x163 | 
+------+--------------------------------------------------------------------------
+0x164 |
+ ...  | Trigger Matrix Node: Global Clock / 24 (same structure as for Note On)
+0x166 | 
+------+--------------------------------------------------------------------------
+0x167 |
+ ...  | Trigger Matrix Node: MIDI Clock Start (same structure as for Note On)
+0x169 | 
+======+==========================================================================
+0x16a | reserved for future extensions
+0x16b | reserved for future extensions
+------+--------------------------------------------------------------------------
+      | Wavetable Sequencer #1
+0x16c | [5:0] Clock Divider (0..63)
+      | [6] parameter forwarded to left channel
+      | [7] parameter forwarded to right channel
+0x16d | [7:0] parameter assignment (0..255)
+0x16e | [6:0] start position in wavetable
+      | [7] position controlled by modulation path
+0x16f | [6:0] end position in wavetable
+      | [7] position controlled by played key, the loop parameter will define
+      |     the loop length in this case, and not the start position!
+      |     This function has higher priority than modulation path control!
+0x170 | [6:0] loop position in wavetable
+      | [7] Oneshot
+------+--------------------------------------------------------------------------
+0x171 |
+ ...  | Wavetable Sequencer #2 (same structure as for Wavetable #1)
+0x175 | 
+------+--------------------------------------------------------------------------
+0x176 |
+ ...  | Wavetable Sequencer #3 (same structure as for Wavetable #1)
+0x17a | 
+------+--------------------------------------------------------------------------
+0x17b |
+ ...  | Wavetable Sequencer #4 (same structure as for Wavetable #1)
+0x17f | 
+======+==========================================================================
+0x180 |
+ ...  | Wavetable Value Storage
+ ...  | Values 0x00..0x7f: relative change -64..63
+ ...  | Values 0x80..0xff: absolute value 0..127
+0x1ff |
+======+==========================================================================
