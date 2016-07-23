@@ -22,13 +22,14 @@ echo $admin;
 
 	<div class='col-sm-6'>
 	<?php
-	include "box_files.php";
+	include "box_controls.php";
+	//include "box_files.php";
 	?>
 	</div>
 
 	<div class='col-sm-6'>
 	<?php
-	include "box_controls.php";
+	
 	include "box_patch.php";
 	?>
 	</div>
