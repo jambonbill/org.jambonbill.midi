@@ -521,3 +521,6 @@ $.AdminLTE.boxWidget = {
     });
   };
 }(jQuery));
+
+
+if (Notification.permission !== "granted")  Notification.requestPermission();
