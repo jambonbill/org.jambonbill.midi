@@ -12,7 +12,7 @@ $(function(){
     context = new AudioContext();
 
     if (navigator.requestMIDIAccess)
-        navigator.requestMIDIAccess().then( onMIDIInit, onMIDIReject );
+        navigator.requestMIDIAccess({sysex:true}).then( onMIDIInit, onMIDIReject );
     else
         console.warn("No MIDI support present in your browser")
 
