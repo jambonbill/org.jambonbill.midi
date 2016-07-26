@@ -1,35 +1,42 @@
-function SidV2(base64data) {
+function SidV2() {
 
-	var _b64=base64data;
+	var _b64='';
 	var _bin=[];
 	var _patch=[];	
+	
 	function twoscomplement(bin){
 
 	};
 
 
-	var decode=function(){
-		console.info('decode(bin)');
-		
+	var decode64=function(base64data){
+		console.info('decode64(base64data)');
+		_b64=base64data;
 		var datastr=atob(_b64);
+		console.info('datastr.length='+datastr.length);
 		_bin=[];
 		for(var i=0;i<datastr.length;i++){
 			_bin.push(datastr.charCodeAt(i));
-			/*
-			ch.push(datastr.charCodeAt(i));
-			co.push(datastr.charCodeAt(i+1));
-			if(ch.length==json.cols*json.rows){
-				//charDat.push(ch);
-				//colrDat.push(co);
-				json.charData.push(ch);
-				json.colorData.push(co);
-				ch=[];
-				co=[];
-			}
-			*/
 		}
+		
+		decode();
+		
+		return _bin;
+	}
 
-		console.info(_bin.length);
+	
+	var load=function(bin){
+		console.log('load',bin);
+		_bin=bin;
+		decode();
+	}
+
+	
+	var decode=function(){
+		
+		console.info('decode()',_bin.length);
+		
+
 		_patch= new Uint8Array(512);
 		for(var i=0;i<512;i++){
 			var low=_bin[i+10];
@@ -38,13 +45,27 @@ function SidV2(base64data) {
 			_patch[i]=b;
 		}
 		console.info(_patch.length,_patch);
+		patchName();
 	}	
 	
-	return{
-		'twoscomplement':twoscomplement,
-		'decode':decode
+	var patchName=function(){
+		
+		
+		var name='';
+		for(var i=0;i<16;i++){
+			name+=String.fromCharCode(_patch[i]);
+		}
+		console.info('patchName()',name);
+		return name;
 	}
 
+	return{
+		'load':load,
+		'twoscomplement':twoscomplement,
+		'decode64':decode64,
+		'decode':decode,
+		'patchName':patchName
+	}
 }
 
 console.info('sidv2.js');
