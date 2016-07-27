@@ -4,7 +4,7 @@ $(function(){
 	
 
 	var context=null;   // the Web Audio "context" object
-	var midiAccess=null;  // the MIDIAccess object.
+	var _midiAccess=null;  // the MIDIAccess object.
 	var _portId;
 	var _inputs;
 	var _outputs;
@@ -22,17 +22,17 @@ $(function(){
 	function onMIDIInit(midi) {
 		
 		//console.log('onMIDIInit(midi)',midi);
-		midiAccess = midi;
+		_midiAccess = midi;
 
 
-		var inputs=midiAccess.inputs.values();
+		var inputs=_midiAccess.inputs.values();
 	  	
 	  	for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
 	    	input.value.onmidimessage = MIDIMessageEventHandler;
 	    	//_inputs.push(input.value);
 	  	}
 
-		var outputs=midiAccess.outputs.values();
+		var outputs=_midiAccess.outputs.values();
 		
 		_outputs=[];
 		for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
@@ -59,7 +59,7 @@ $(function(){
 	    
 	    if ($.cookie('midi_portId')) {
 	        _portId=$.cookie('midi_portId'); 
-	        setPortId(_portId);
+	        $.midiPortId(_portId);
 	    }else{
 	        $('#boxLog .box-body').html('Midi ready. Select midi output');    
 	        //$('#midi_outputs').focus();
@@ -118,12 +118,24 @@ $(function(){
     }
 
 
+    $.midiAccess=function(){
+    	return _midiAccess;
+    }
+
 	$.midiInputs=function(){
 		return _inputs;
 	}
 
 	$.midiOutputs=function(){
 		return _outputs;
+	}
+
+	$.midiOutput=function(){
+		if (!_portId) {
+			console.warn('!_portId');
+			return;
+		}
+		return _midiAccess.outputs.get(_portId);
 	}
 
 
@@ -133,18 +145,18 @@ $(function(){
 	}
 
 
-	function setPortId(id){
+	$.midiPortId=function(id){
 		
-		console.info('setPortId()',id);
+		console.info('$.midiPortId()',id);
 	    
 	    //here we should make sure the portId is available
 	    
-	    _portId=id;
+	    if (id) {
+	    	_portId=id;
+	    }
 	    
 	    $.cookie('midi_portId', _portId);
-	    //$('#boxLog .box-body').html("Output : "+_portId);
-	    //$('#midiChannel,#octave,#prgs').attr('disabled',false);
-	    //$("#midi_outputs").val(_portId);
+	    return _portId;
 	}
 
 
@@ -224,7 +236,7 @@ $(function(){
 	});
 	
 	$('#midi_outputs').change(function(){
-		setPortId($('#midi_outputs').val());
+		$.midiPortId($('#midi_outputs').val());
 	});
 
 	$('#btnPing').click(function(){//F0 00 00 7E 4B <device number> 0F F7
@@ -237,7 +249,7 @@ $(function(){
 		}
 		
 		var device_number=0x00;
-		var output = midiAccess.outputs.get(_portId);
+		var output = _midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x0F,0xF7] );
 	});
 
@@ -250,7 +262,7 @@ $(function(){
 			return;
 		}
 		var device_number=0x00;
-		var output = midiAccess.outputs.get(_portId);
+		var output = _midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x0C,0x09,0xF7] );
 	});
 
@@ -261,7 +273,7 @@ $(function(){
 			return;
 		}
 		var device_number=0x00;
-		var output = midiAccess.outputs.get(_portId);
+		var output = _midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x0C,0x08,0xF7] );
 	});
 
@@ -280,7 +292,7 @@ $(function(){
 		var device_number=0x00;
 		var patch=0x00;
 		var bank=0x00;
-		var output = midiAccess.outputs.get(_portId);
+		var output = _midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x01,0x00,bank,patch,0xF7] );
 	});
 
@@ -299,7 +311,7 @@ $(function(){
 		}
 		
 		var device_number=0x00;
-		var output = midiAccess.outputs.get(_portId);
+		var output = _midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x01,0x08,0x00,0x00,0xF7] );
 
 	});
