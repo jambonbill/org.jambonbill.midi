@@ -179,7 +179,7 @@ $(function(){
 		
 		for(var i=0;i<_notes.length;i++){
 			if(_notes[i]==noteNumber){
-				console.warn("Already playing !");
+				//console.warn("Already playing !");
 				return;//dont play it twice
 			}
 		}
