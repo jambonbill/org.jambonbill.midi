@@ -190,6 +190,9 @@ function SidV2() {
 		return _patch;
 	}
 	
+	this.patchBin=function(){
+		return _bin;
+	}
 	
 	var patchName=function()
 	{
