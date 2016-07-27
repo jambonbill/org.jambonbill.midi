@@ -1,0 +1,64 @@
+ Addr | Parameter
+======+==========================================================================
+      | Voice #1 Parameters
+
+0x060 | [1:0] Portamento Mode: 0=portamento, 1=constant time glide, 2=glissando
+      | [2] GAE (Gate Always Enabled)
+      | [7:3] reserved
+
+0x061 | [0] Triangle Waveform
+      | [1] Saw Waveform
+      | [2] Pulse Waveform
+      | [3] Noise Waveform
+      | [4] Disable Oscillator
+      | [5] Sync
+      | [6] Ringmodulation
+      | [7] reserved
+
+0x062 | [7:4] DCA Attack Rate
+      | [3:0] DCA Decay Rate
+0x063 | [7:4] DCA Sustain Level
+      | [3:0] DCA Release Rate
+
+0x064 | [7:0] Pulsewidth Low byte
+0x065 | [3:0] Pulsewidth High nibble
+      | [7:4] reserved
+
+0x066 | [7:0] Accent (0-255) (not relevant for Lead/Multi, only used by Bassline Engine)
+      | [7:0] SwinSID Phase (only used by Lead, only relevant if SwinSID option enabled)
+
+0x067 | [7:0] DCA Envelope Delay (0-255)
+
+0x068 | [6:0] Transpose (-64..63)
+      | [7] reserved
+
+0x069 | [7:0] Finetune (-128..127)
+
+0x06a | [6:0] Pitchrange (0..127)
+      | [7] reserved
+
+0x06b | [7:0] Portamento rate (0..255)
+
+0x06c | Arp Mode
+      | [0] 0=Arp disabled, 1=Arp enabled
+      | [3:1] Direction: 0=up, 1=down, 2=Up&Down, 3=Down&Up, 4=Up&Down 2, 5=Down&Up 2, 6=random
+      | [4] Sorted
+      | [5] Hold
+      | [6] Sync with keys
+      | [7] CAC (Constant Arp Cycle)
+
+0x06d | Arp Speed Divider
+      | [5:0] Clock Divider (0..63) (derived from global clock)
+      | [6] Easy Chord
+      | [7] Oneshot
+
+0x06e | Arp Gatelength and Range
+      | [4:0] Gatelength (0..31)
+      | [7:5] Octave range (0..7 = 1..8 octaves)
+
+0x06f | SwinSID Mode
+      | [3:0] Waveform of second oscillator
+      | [4] enable second oscillator
+      | [5] x2 Pitch
+      | [6] reverse Waveform
+      | [7] reserved

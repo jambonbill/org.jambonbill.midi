@@ -1,0 +1,23 @@
+======+==========================================================================
+      | Filter of Left SID Channel
+0x054 | [0] OSC1 routed through filter
+      | [1] OSC2 routed through filter
+      | [2] OSC3 routed through filter
+      | [3] External Input routed through filter
+      | [4] LP (Low Pass)
+      | [5] BP (Band Pass)
+      | [6] HP (High Pass)
+      | [7] Oscillator 3 off
+0x055 | [7:0] Low byte of 12bit CutOff Frequency
+0x056 | [3:0] High nibble of 12bit CutOff Frequency
+      | [6:4] reserved
+      | [7] 1=FIP enabled (Filter Interpolation)
+0x057 | [7:0] Resonance (0-255), SID uses only the 4 most significant bits
+0x058 | [7:0] Key Tracking (0-255)
+0x059 | [7:0] reserved
+------+--------------------------------------------------------------------------
+      | Filter of Right SID Channel
+0x05a |
+ ...  | same structure as for Left SID Channel
+0x05f | 
+======+==========================================================================
