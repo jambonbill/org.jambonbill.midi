@@ -1,7 +1,9 @@
 var sampleRate = 44100; /* hard-coded in Flash player */
 
 function AudioPlayer(generator, opts) {
+	
 	if (!opts) opts = {};
+	
 	var latency = opts.latency || 1;
 	var checkInterval = latency * 100 /* in ms */
 	
@@ -78,6 +80,7 @@ function AudioPlayer(generator, opts) {
 		}
 
 	} else {
+		
 		// Fall back to creating flash player
 		var c = document.createElement('div');
 		c.innerHTML = '<embed type="application/x-shockwave-flash" id="da-swf" src="da.swf" width="8" height="8" allowScriptAccess="always" style="position: fixed; left:-10px;" />';

@@ -35,10 +35,15 @@ function Replayer(midiFile, synth) {
 		var generatorsByNote = {};
 		var currentProgram = PianoProgram;
 		
+		var notes=[];//hold notes being played
+		
 		function noteOn(note, velocity) {
 			
 			//console.log('noteOn('+note+', velocity)');
-			$('#voice_'+num).html(noteStr(note));
+			
+			
+			notes.push(note);
+			
 			if (generatorsByNote[note] && !generatorsByNote[note].released) {
 				/* playing same note before releasing the last one. BOO */
 				generatorsByNote[note].noteOff(); /* TODO: check whether we ought to be passing a velocity in */
@@ -46,12 +51,29 @@ function Replayer(midiFile, synth) {
 			generator = currentProgram.createNote(note, velocity);
 			synth.addGenerator(generator);
 			generatorsByNote[note] = generator;
+
+			var htm='';
+			
+			for(var i in notes){
+				htm+=noteStr(notes[i])+" ";
+			}
+			
+			$('#voice_'+num).html(htm);
 		}
+		
 		function noteOff(note, velocity) {
 			$('#voice_'+num).html('');
+			
 			if (generatorsByNote[note] && !generatorsByNote[note].released) {
 				generatorsByNote[note].noteOff(velocity);
 			}
+			
+			//remove the note from notes
+			var nn=[];
+			for(var i in notes){
+				if(note!=notes[i])nn.push(notes[i])
+			}
+			notes=nn;
 		}
 		
 		function setProgram(programNumber) {
