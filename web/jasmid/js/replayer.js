@@ -30,12 +30,15 @@ function Replayer(midiFile, synth) {
 		*/
 	}
 	
-	function Channel() {
+	function Channel(num) {
 		
 		var generatorsByNote = {};
 		var currentProgram = PianoProgram;
 		
 		function noteOn(note, velocity) {
+			
+			//console.log('noteOn('+note+', velocity)');
+			$('#voice_'+num).html(noteStr(note));
 			if (generatorsByNote[note] && !generatorsByNote[note].released) {
 				/* playing same note before releasing the last one. BOO */
 				generatorsByNote[note].noteOff(); /* TODO: check whether we ought to be passing a velocity in */
@@ -45,14 +48,25 @@ function Replayer(midiFile, synth) {
 			generatorsByNote[note] = generator;
 		}
 		function noteOff(note, velocity) {
+			$('#voice_'+num).html('');
 			if (generatorsByNote[note] && !generatorsByNote[note].released) {
 				generatorsByNote[note].noteOff(velocity);
 			}
 		}
+		
 		function setProgram(programNumber) {
+			console.log('setProgram('+programNumber+')');
 			currentProgram = PROGRAMS[programNumber] || PianoProgram;
 		}
 		
+		function noteStr(note){
+			var notes=['C-','C#','D-','D#','E-','F-','F#','G-','G#','A-','A#','B-'];
+			var n=note%12;
+			var o=Math.floor(note/12);
+			return notes[n]+o;
+		}
+
+
 		return {
 			'noteOn': noteOn,
 			'noteOff': noteOff,
@@ -62,7 +76,7 @@ function Replayer(midiFile, synth) {
 	
 	var channels = [];
 	for (var i = 0; i < channelCount; i++) {
-		channels[i] = Channel();
+		channels[i] = Channel(i);
 	}
 	
 	console.info(channels);
