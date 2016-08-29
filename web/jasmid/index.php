@@ -30,6 +30,7 @@ echo $admin;
 	<?php 
 	include "box_filter.php";
 	include "box_track.php";
+	include "box_preview.php";
 	?>
 	</div>
 
