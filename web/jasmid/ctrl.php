@@ -12,7 +12,11 @@ switch($_POST['do']){
 		
 		$f=glob("mid/*.mid");
 		foreach($f as $file){
-			$dat['files'][]=basename($file);
+			
+			$f=[];
+			$f['name']=basename($file);
+			$f['size']=filesize($file);
+			$dat['files'][]=$f;
 		}
 		exit(json_encode($dat));
 	
