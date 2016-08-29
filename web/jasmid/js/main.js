@@ -37,11 +37,14 @@ $(function(){
 			var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
 			htm+='<thead>';
 			htm+='<th>Filename</th>';
+			htm+='<th>Size</th>';
 			htm+='</thead>';
 			htm+='<tbody>';
 			for(var i in _files){
-				htm+='<tr title="'+_files[i]+'">';
-				htm+='<td>'+_files[i];
+				htm+='<tr title="'+_files[i].name+'">';
+				htm+='<td>'+_files[i].name;
+				var ko=Math.round(_files[i].size/1024);
+				htm+='<td style="text-align:right">'+ko+'k';
 			}
 			htm+='</tbody>';
 			htm+='</table>';
@@ -162,7 +165,8 @@ function showTracks(){
 		htm+='<tr data-track="'+i+'">';
 		htm+="<td>"+i;
 		htm+="<td>"+nfo.trackName;
-		htm+="<td>"+nfo.channels;
+		htm+="<td>";
+		if(nfo.channels)htm+=nfo.channels;
 		htm+="<td style='text-align:right'>"+track.length;
 	}
 	
