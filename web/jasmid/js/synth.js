@@ -8,6 +8,7 @@ function SineGenerator(freq) {
 		for (; count; count--) {
 			var phase = t / period;
 			var result = Math.sin(phase * 2 * Math.PI);
+			result = Math.round(result);//sort of squared
 			buf[offset++] += result;
 			buf[offset++] += result;
 			t++;
@@ -45,6 +46,7 @@ function ADSRGenerator(child, attackAmplitude, sustainAmplitude, attackTimeS, de
 	var t = 0;
 	
 	self.noteOff = function() {
+		//console.log('self.noteOff');
 		if (self.released) return;
 		releaseTime = t;
 		self.released = true;
