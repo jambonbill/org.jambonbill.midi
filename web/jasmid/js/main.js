@@ -78,8 +78,10 @@ $(function(){
 function loadRemote(path, callback) {
 	
 
-	//console.info('loadRemote()',path);
+	console.info('loadRemote()',path);
 	
+	if(audio.stop)audio.stop();
+
 	var fetch = new XMLHttpRequest();
 	fetch.open('GET', path);
 	fetch.overrideMimeType("text/plain; charset=x-user-defined");
@@ -106,6 +108,7 @@ function play(file) {
 	console.info('play()',file);
 
 	loadRemote(file, function(data) {
+		
 		midiFile = MidiFile(data);
 		//console.info(midiFile.reader,midiFile.tracks);
 		
@@ -116,6 +119,7 @@ function play(file) {
 }
 
 function replay(){
+
 	console.log('replay()');
 	synth = Synth(44100);
 	replayer = Replayer(midiFile, synth);
