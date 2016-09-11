@@ -39,7 +39,7 @@ echo $admin;
 <div class='row'>
 	<div class='col-sm-12'>
 	<?php 
-	//include "box_logs.php";
+	include "box_canvas.php";
 	?>
 	</div>
 </div>
@@ -50,6 +50,7 @@ echo $admin;
 <script type="text/javascript" src="js/synth.js"></script>
 <script type="text/javascript" src="js/audio.js"></script>
 <script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/canvas.js"></script>
 
 <?php
 $admin->footer("<a href='https://github.com/gasman/jasmid'>https://github.com/gasman/jasmid</a>");
