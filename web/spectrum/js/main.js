@@ -12,6 +12,7 @@ var source = null;
 var gui = null;
 
 var controller = {
+	label: 'label',
 	ref_level: 1e-4,
 	db_min: -70,
 	db_range: 70,
@@ -19,6 +20,7 @@ var controller = {
 	freq_range_cents: 3*1200, // 3 octaves
 	block_size: 1024,
 	blocks_per_fft: 8,
+	db_treshold: -30
 };
 
 var sample_buffer = null;
@@ -44,6 +46,7 @@ function NumSubStr(num) {
 	}
 	return res;
 }
+
 
 function Render() {
 	
@@ -91,15 +94,21 @@ function Render() {
 	var freq_min = c0_freq * Math.pow(freq_cent, controller.freq_min_cents);
 	var freq_max = c0_freq * Math.pow(freq_cent, controller.freq_min_cents + controller.freq_range_cents);
 
-	var text_width = 80;
-	var text_height = 12;
+	var text_width = 40;
+	var text_height = 11;
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+		
 	ctx.beginPath();
 	ctx.lineWidth = '2';
+	
 
+	ctx.fillStyle = "#000000";
 	var freq_step = Math.pow(freq_cent, 10);
+	
+	//console.log('freq_step',freq_step);
+	var steps=0;
+	var clip=0;//count values over db treshold
 	
 	for (var freq = freq_min, i = 0; freq < Math.min(freq_max, freq_nyquist); freq *= freq_step, ++i) {
 		var bin = Math.floor(freq / freq_res)
@@ -109,6 +118,11 @@ function Render() {
 		
 		x = (i * 10 / controller.freq_range_cents) * (canvas.width - 2 * text_width) + text_width;
 		db = 20 * Math.log(fftMagSq / controller.ref_level) / log10;
+
+		if(db>controller.db_treshold){
+			clip++;
+		}
+
 		if (db < controller.db_min) db = controller.db_min;
 		
 		y = (1 - (db - controller.db_min) / controller.db_range) * (canvas.height - 2 * text_height);
@@ -118,43 +132,53 @@ function Render() {
 		} else {
 			ctx.lineTo(x, y);
 		}
-
-		//produce midi events here !
+		steps++;
+		//produce midi events here ?
 
 	}
 
+	if(clip)console.info('clip',clip);
+	
 	ctx.stroke();
+	//return;
 
 	// render x axis labels
+	if(true){
+		ctx.font = text_height.toString() + "px Arial";
+		ctx.textBaseline = 'top';
+		ctx.textAlign = 'center'
+		var i = 1;
+		for (var cents_rel = 0; cents_rel < controller.freq_range_cents + 10; cents_rel += 100) {
+			var cents = controller.freq_min_cents + cents_rel;
+			var octave = Math.round(cents / 1200);
+			var note = Math.round(cents % 1200 / 100) % 12;
+			var note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+			var x = cents_rel / controller.freq_range_cents * (canvas.width - 2 * text_width) + text_width;
+			var y = canvas.height - text_height;
+			var label = note_names[note] + NumSubStr(octave);
+			ctx.fillText(label, x, y);
+		}
 
-	ctx.font = text_height.toString() + "px Arial";
-	ctx.textBaseline = 'top';
-	ctx.textAlign = 'center'
-	var i = 1;
-	for (var cents_rel = 0; cents_rel < controller.freq_range_cents + 10; cents_rel += 100) {
-		var cents = controller.freq_min_cents + cents_rel;
-		var octave = Math.round(cents / 1200);
-		var note = Math.round(cents % 1200 / 100) % 12;
-		var note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-		var x = cents_rel / controller.freq_range_cents * (canvas.width - 2 * text_width) + text_width;
-		var y = canvas.height - text_height;
-		var label = note_names[note] + NumSubStr(octave);
-		ctx.fillText(label, x, y);
+		// render y axis labels
+		
+		ctx.textBaseline = 'middle';
+		ctx.textAlign = 'right'
+		var base_y = canvas.height - 2*text_height;
+		var db_step = Math.ceil(controller.db_range/20);
+		var db_max = controller.db_min + controller.db_range;
+		var x = text_width;
+		for (var db=controller.db_min; db <= db_max; db += db_step) {
+			db_int = Math.round(db);
+			var y = base_y * (1 - (db_int-controller.db_min)/controller.db_range);
+			ctx.fillText(db_int.toString() + ' dB', x, y);
+		}
+
+		ctx.fillStyle = "#cc0000";
+		var y = base_y * (1 - (controller.db_treshold-controller.db_min)/controller.db_range);
+		ctx.fillRect(x,y,canvas.width,1);
 	}
 
-	// render y axis labels
 
-	ctx.textBaseline = 'middle';
-	ctx.textAlign = 'right'
-	var base_y = canvas.height - 2*text_height;
-	var db_step = Math.ceil(controller.db_range/20);
-	var db_max = controller.db_min + controller.db_range;
-	var x = text_width - 15;
-	for (var db=controller.db_min; db <= db_max; db += db_step) {
-		db_int = Math.round(db);
-		var y = base_y * (1 - (db_int-controller.db_min)/controller.db_range);
-		ctx.fillText(db_int.toString() + ' dB', x, y);
-	}
 }
 
 function UpdateController() {
@@ -183,14 +207,21 @@ function UpdateController() {
 
 function StartProcessing(stream)
 {
-	console.info('StartProcessing(stream)');
+	console.info('StartProcessing(stream)',stream);
 	
 	message.innerHTML = 'StartProcessing(stream)';
 
-	var gui = new dat.GUI();
+	var gui = new dat.GUI();//{ autoPlace: false }
+	//var gui = new dat.GUI({ autoPlace: false });
+	//var customContainer = document.getElementById('boxSettings');
+	//customContainer.appendChild(gui.domElement);
+	
+	gui.add(controller, 'label', 'label');
+	gui.add(controller, 'ref_level', {'1e-0': 1e-0, '1e-1': 1e-1, '1e-2': 1e-2, '1e-3': 1e-3, '1e-4': 1e-4, '1e-5': 1e-5, '1e-6': 1e-6, '1e-7': 1e-7, '1e-8': 1e-8});
 	gui.add(controller, 'ref_level', {'1e-0': 1e-0, '1e-1': 1e-1, '1e-2': 1e-2, '1e-3': 1e-3, '1e-4': 1e-4, '1e-5': 1e-5, '1e-6': 1e-6, '1e-7': 1e-7, '1e-8': 1e-8});
 	gui.add(controller, 'db_min', -100, 30);
 	gui.add(controller, 'db_range', 1, 100);
+	gui.add(controller, 'db_treshold', -100, 30);
 	gui.add(controller, 'freq_min_cents', 0, 10000).step(1);
 	gui.add(controller, 'freq_range_cents', 0, 10000).step(1);
 	gui.add(controller, 'block_size', [128, 256, 512, 1024, 2048, 4096]).onChange(function(value) {
@@ -210,8 +241,8 @@ function Init() {
 	message = document.querySelector('#message');
 	canvas = document.querySelector('#canvas');
 	
-	canvas.width = '800';
-	canvas.height = '400';
+	canvas.width = '600';
+	canvas.height = '200';
 	
 	ctx = canvas.getContext('2d');
 
