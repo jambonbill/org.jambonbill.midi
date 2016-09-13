@@ -273,15 +273,35 @@ class AdminLte2
         
         $menu=$this->config->menu;
         
-        if(!isset($menu)||!is_object($menu)){
+        if(!isset($menu)){
             //throw new \Exception("Error : $this->config->menu must be a object", 1);
             return '';
+        }
+
+        if(!is_object($this->config->menu)){
+
+            if ($this->config->menu&&is_file(__DIR__.'/'.$this->config->menu)) {
+                
+                $content=file_get_contents(__DIR__.'/'.$this->config->menu);
+                $this->config->menu=json_decode($content);
+                
+                $err=json_last_error();
+                
+                if($err){
+                    die("error $err".json_last_error_msg()."<br>$content");
+                    //throw new \Exception("JSON Error $err", 1);
+                }
+
+            } else {
+                die($this->config->menu . " not found");
+                return '';
+            }
         }
 
         $HTML=[];
         $HTML[]='<ul class="sidebar-menu">';
         
-        foreach(@$menu as $name=>$o){
+        foreach(@$this->config->menu as $name=>$o){
             
             $title='';
             $class='';
