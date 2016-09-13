@@ -92,7 +92,7 @@ function Render() {
 	var freq_max = c0_freq * Math.pow(freq_cent, controller.freq_min_cents + controller.freq_range_cents);
 
 	var text_width = 80;
-	var text_height = 15;
+	var text_height = 12;
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -100,14 +100,17 @@ function Render() {
 	ctx.lineWidth = '2';
 
 	var freq_step = Math.pow(freq_cent, 10);
+	
 	for (var freq = freq_min, i = 0; freq < Math.min(freq_max, freq_nyquist); freq *= freq_step, ++i) {
 		var bin = Math.floor(freq / freq_res)
 		re = samples[bin << 1];
 		im = samples[bin << 1 | 1];
 		fftMagSq = Math.pow(re / num_samples, 2) + Math.pow(im / num_samples, 2);
+		
 		x = (i * 10 / controller.freq_range_cents) * (canvas.width - 2 * text_width) + text_width;
 		db = 20 * Math.log(fftMagSq / controller.ref_level) / log10;
 		if (db < controller.db_min) db = controller.db_min;
+		
 		y = (1 - (db - controller.db_min) / controller.db_range) * (canvas.height - 2 * text_height);
 
 		if (freq == freq_min) {
@@ -115,6 +118,9 @@ function Render() {
 		} else {
 			ctx.lineTo(x, y);
 		}
+
+		//produce midi events here !
+
 	}
 
 	ctx.stroke();
@@ -204,8 +210,8 @@ function Init() {
 	message = document.querySelector('#message');
 	canvas = document.querySelector('#canvas');
 	
-	canvas.width = '1000';
-	canvas.height = '600';
+	canvas.width = '800';
+	canvas.height = '400';
 	
 	ctx = canvas.getContext('2d');
 
