@@ -43,11 +43,6 @@
 			"url":"keyboard/"
 	   	},
 
-	   	"clock":{
-			"text":"Clock",
-			"icon":"fa fa-play",
-			"url":"midiclock/"
-	   	},
 	   	
 	   	"jasmid":{
 			"text":"Jasmid",
