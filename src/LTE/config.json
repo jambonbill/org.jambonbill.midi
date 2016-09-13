@@ -24,51 +24,7 @@
 		"sidebar-collapse":false
 	},
 	
-	"menu":{
-		
-		"header":{
-	   		"text":"Midi tools",
-	   		"class":"header"
-	   	},
-	   	
-	   	"monitor":{
-			"text":"Monitor",
-			"icon":"fa fa-search",
-			"url":"monitor/"
-	   	},
+	"menu":"menu.json"
 
-	   	"keyboard":{
-			"text":"Keyboard",
-			"icon":"fa fa-keyboard-o",
-			"url":"keyboard/"
-	   	},
-
-	   	
-	   	"jasmid":{
-			"text":"Jasmid",
-			"icon":"fa fa-terminal",
-			"url":"jasmid/"
-	   	},
-
-	   	"sysex":{
-			"text":"Sysex",
-			"icon":"fa fa-terminal",
-			"url":"sysex/"
-	   	},
-	   	
-	   	"mbsidv2":{
-			"text":"MbSidV2",
-			"icon":"fa fa-terminal",
-			"url":"mbsidv2/"
-	   	},
-
-	   	"sep1":{
-	   		"class":"header"
-	   	},
-
-	   	"link1":{
-	   		"text":"jambonbill.org",
-			"url":"http://www.jambonbill.org"
-	   	}
-	}
+	
 }
