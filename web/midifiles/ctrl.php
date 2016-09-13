@@ -10,12 +10,14 @@ switch($_POST['do']){
 	
 	case 'browse':
 		
-		$f=glob("mid/*.mid");
+		$f=glob("../../midifiles/*.mid");
+		
 		foreach($f as $file){
 			
 			$f=[];
 			$f['name']=basename($file);
 			$f['size']=filesize($file);
+			// get midifile info //
 			$dat['files'][]=$f;
 		}
 		exit(json_encode($dat));

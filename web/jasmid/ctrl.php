@@ -10,7 +10,7 @@ switch($_POST['do']){
 	
 	case 'browse':
 		
-		$f=glob("mid/*.mid");
+		$f=glob("../../midifiles/*.mid");
 		foreach($f as $file){
 			
 			$f=[];
