@@ -1,6 +1,6 @@
 <?php
 
-$htm='<canvas id="screen" style="background-color:#f0f0f0">';
+$htm='<canvas id="screen">';
 
 $btns=[];
 $btns[]="<div class='col-md-6'>";

@@ -11,13 +11,23 @@ ctx.mozImageSmoothingEnabled = false;
 
 
 function updateTracks(){// update the tracks selector
+	
 	console.info('updateTracks()');
+	
 	$('#trackSelect').find('option').remove();
-	for(var i in midiFile.tracks){
-		var x = document.getElementById("trackSelect");
+	var x = document.getElementById("trackSelect");
+
+	for(var i in _midiTracks){
+		
+		var nfo=_midiTracks[i];
+		
+		if(nfo.notes<1)continue;
+		
+		console.info(i,nfo);
+		
 		var option = document.createElement("option");
 		option.value = i;
-		option.text = "Track #"+i;
+		option.text = "#" + i + " - " + nfo.trackName;
 		x.add(option);
 	}
 
@@ -33,9 +43,10 @@ function resizeCanvas(){
 	canvasElement.height=200;
 }
 
+
+
 function drawMidiTrack(trackNumber)
 {
-	
 	console.info('drawMidiTrack('+trackNumber+')');
 	
 	if(!midiFile||!midiFile.tracks){
@@ -45,20 +56,41 @@ function drawMidiTrack(trackNumber)
 	
 	resizeCanvas();
 
-	//count tracks
-	var track=midiFile.tracks[trackNumber];
+	var track=midiFile.tracks[trackNumber];// count tracks
 	
-	console.log('track.length',track.length);
+	//console.log('track.length',track.length);
 	
+	var cell_height=12;
+	var beat_width=40;
 	
+	var tifo=_midiTracks[trackNumber];
+
+	if (tifo.note_diff>1) {
+		
+		canvasElement.height=tifo.note_diff*cell_height;	// resize height
+	}
 	
-	console.info(trackInfo(track));
 
 	// draw something //
-	ctx.fillStyle = '#999999';
-    ctx.fillRect(0, 0, 1024, 200);// paint all, at cpu cost!
+	//ctx.fillStyle = '#eee';
+    //ctx.fillRect(0, 0, 1024, 200);// paint all, at cpu cost!
     
-    ctx.fillStyle = '#333333';
+    
+    
+    //draw lines
+    ctx.fillStyle = '#cccccc';
+    ctx.lineWidth=0.5;
+    for(var i=0;i<tifo.note_diff;i++){
+		
+		//ctx.fillStyle = txtcol;
+		ctx.fillText('#'+i, 0, i*cell_height+0.5);
+
+		ctx.beginPath();
+		ctx.moveTo(0,i*cell_height+0.5);
+		ctx.lineTo(800,i*cell_height+0.5);
+		ctx.stroke();
+    }
+
     /*
     for(var i in tracks){
       //var v=audioArray[i];

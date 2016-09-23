@@ -7,6 +7,7 @@ var _files=[];
 var _track=0;//current track
 var filters=[];
 var midiFile={};
+var _midiTracks=[];//digested track info (todo)
 var audio={};
 
 $(function(){
@@ -123,6 +124,11 @@ function play(file) {
 		midiFile = MidiFile(data);
 		//console.info(midiFile.reader,midiFile.tracks);
 		
+		//pre digest track info
+		_midiTracks=[];
+		for(var i in midiFile.tracks){
+			_midiTracks.push(trackInfo(midiFile.tracks[i]));
+		}
 		
 		showTracks();
 		//replay();
@@ -142,20 +148,27 @@ function replay(){
 function trackInfo(track){
 	
 	var trackName='';
+	var ticksPerBeat=midiFile.header.ticksPerBeat;
 	var channels=[];
 	var noteNumber=0;
-	var note_low=-1;
+	var note_low=256;
 	var note_high=-1;
+	var beats=0;
+	var deltaCumul=0;
 	
 	for(var i in track){
-		
-		if(track[i].subtype=='noteOn'){
+		var o=track[i];
+		deltaCumul+=o.deltaTime;
+		if(o.subtype=='noteOn'){
+			//console.info(o);return;
+			if(o.noteNumber<note_low)note_low=o.noteNumber;
+			if(o.noteNumber>note_high)note_high=o.noteNumber;//console.info(o);return;
 			noteNumber++;
-			var chn=track[i].channel;
+			var chn=o.channel;
 			if(channels.indexOf(chn) === -1)channels.push(chn);
 		}
 		
-		if(track[i].subtype=='trackName')trackName=track[i].text;
+		if(o.subtype=='trackName')trackName=o.text;
 	}
 	
 	return {
@@ -163,7 +176,11 @@ function trackInfo(track){
 		'notes':noteNumber,
 		'note_low':note_low,
 		'note_high':note_high,
-		'midichn':channels
+		'note_diff':note_high-note_low,
+		'midichn':channels,
+		'beats':Math.floor(deltaCumul/ticksPerBeat),
+		'ticksPerBeat':ticksPerBeat,
+		'deltaCumul':deltaCumul
 	};
 }
 
@@ -171,34 +188,7 @@ function trackInfo(track){
 function showTracks(){
 	
 	//console.info('showTracks()');
-	/*
-	function trackInfo(track){
-		
-		var trackName='';
-		var channels=[];
-		
-		for(var i in track){
-			
-			if(track[i].subtype=='noteOn'){
-				var chn=track[i].channel;
-				//console.info('noteon',track[i]);return;
-				if(channels.indexOf(chn) === -1){
-			        channels.push(chn);
-			    }
-			}
-			
-			if(track[i].subtype=='trackName'){
-				trackName=track[i].text;
-				//return track[i].text;
-			}
-		}
-		//console.log(channels);
-		return {
-			'trackName':trackName,
-			'midichn':channels
-		};
-	}
-	*/
+
 	//console.log(midiFile.header);
 
 	var htm="<table class='table table-condensed table-hover' style='cursor:pointer' id=tableTracks>";
@@ -211,16 +201,16 @@ function showTracks(){
 	htm+="</thead>";
 	htm+="<tbody>";
 	
-	for(var i in midiFile.tracks){
-		var track=midiFile.tracks[i];
-		var nfo=trackInfo(track);
+	for(var i in _midiTracks){
+		
+		var nfo=_midiTracks[i];
 		if(nfo.midichn.length==0)continue;//skip tracks without notes
 		htm+='<tr data-track="'+i+'">';
 		htm+="<td>"+i;
 		htm+="<td>"+nfo.trackName;
 		htm+="<td style='text-align:center'>";
 		for(var n in nfo.midichn)htm+=+nfo.midichn[n]+1;
-		htm+="<td style='text-align:right'>"+track.length;
+		htm+="<td style='text-align:right'>"+'0';
 	}
 	
 	htm+="</tbody>";
