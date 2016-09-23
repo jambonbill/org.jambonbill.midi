@@ -18,8 +18,9 @@ $htm.="</table>";
 
 $box=new LTE\Box;
 $box->title("Preview");
-$box->icon("fa fa-list");
+//$box->icon("fa fa-list");
 $box->id("boxPreview");
 $box->collapsable(1);
+$box->collapsed(true);
 $box->body($htm);
 echo $box;

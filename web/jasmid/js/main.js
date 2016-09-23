@@ -3,6 +3,7 @@
 // https://www.cs.cmu.edu/~music/cmsip/readings/Standard-MIDI-file-format-updated.pdf
 // http://www.ccarh.org/courses/253/handout/vlv/
 
+var _files=[];
 var _track=0;//current track
 var filters=[];
 var midiFile={};
@@ -11,54 +12,22 @@ var audio={};
 $(function(){
 	
 	$('input.filters').click(function(){
+        
         //console.log('btnFilter');
+        
         filters=[];
         $('input.filters').each(function(i,e){
           if(e.checked)filters.push(+e.value);
           //console.log(i,e.value,e.checked);
         });
+        
         console.log(filters);
         showTrack();
     });
 	
-	var _files=[];
+	
 	$('#btnBrowse').click(function(){
-		
-		//get files//
-		$.post('ctrl.php',{'do':'browse'},function(json){
-			//console.log(json);
-			_files=json.files;
-			fileList();
-		}).error(function(e){
-			console.warn(e.responseText);
-		});
-		
-		//build table
-		function fileList(){
-			var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
-			htm+='<thead>';
-			htm+='<th>Filename</th>';
-			htm+='<th>Size</th>';
-			htm+='</thead>';
-			htm+='<tbody>';
-			for(var i in _files){
-				htm+='<tr title="'+_files[i].name+'">';
-				htm+='<td>'+_files[i].name;
-				var ko=Math.round(_files[i].size/1024);
-				htm+='<td style="text-align:right">'+ko+'k';
-			}
-			htm+='</tbody>';
-			htm+='</table>';
-			
-			$('#myModal').modal('show');//pop
-			$('#myModal .modal-body').html(htm);
-			$('#myModal tbody>tr').click(function(e){
-				console.log(e.currentTarget.title);
-				play("mid.php?mid="+e.currentTarget.title);
-				$('#myModal').modal('hide');//pop
-			});
-		}
-		
+		get_files();
 	});
 	
 	$('#btnPlay').click(function(){
@@ -73,7 +42,48 @@ $(function(){
 	$('#btnStop').click(function(){
 		audio.stop();
 	});
+
+	get_files();
 });
+
+
+function get_files(){
+
+	//get files//
+	$.post('ctrl.php',{'do':'browse'},function(json){
+		//console.log(json);
+		_files=json.files;
+		fileList();
+	}).error(function(e){
+		console.warn(e.responseText);
+	});
+	
+	// build table //
+	function fileList(){
+		var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
+		htm+='<thead>';
+		htm+='<th>Filename</th>';
+		htm+='<th>Size</th>';
+		htm+='</thead>';
+		htm+='<tbody>';
+		for(var i in _files){
+			htm+='<tr title="'+_files[i].name+'">';
+			htm+='<td>'+_files[i].name;
+			var ko=Math.round(_files[i].size/1024);
+			htm+='<td style="text-align:right">'+ko+'k';
+		}
+		htm+='</tbody>';
+		htm+='</table>';
+		
+		$('#myModal').modal('show');//pop
+		$('#myModal .modal-body').html(htm);
+		$('#myModal tbody>tr').click(function(e){
+			console.log(e.currentTarget.title);
+			play("mid.php?mid="+e.currentTarget.title);
+			$('#myModal').modal('hide');//pop
+		});
+	}
+}
 
 
 function loadRemote(path, callback) {
@@ -128,30 +138,67 @@ function replay(){
 }
 
 
+// count notes, get stats
+function trackInfo(track){
+	
+	var trackName='';
+	var channels=[];
+	var noteNumber=0;
+	var note_low=-1;
+	var note_high=-1;
+	
+	for(var i in track){
+		
+		if(track[i].subtype=='noteOn'){
+			noteNumber++;
+			var chn=track[i].channel;
+			if(channels.indexOf(chn) === -1)channels.push(chn);
+		}
+		
+		if(track[i].subtype=='trackName')trackName=track[i].text;
+	}
+	
+	return {
+		'trackName':trackName,
+		'notes':noteNumber,
+		'note_low':note_low,
+		'note_high':note_high,
+		'midichn':channels
+	};
+}
+
+
 function showTracks(){
 	
 	//console.info('showTracks()');
-
+	/*
 	function trackInfo(track){
 		
 		var trackName='';
-		var channels={};
+		var channels=[];
 		
 		for(var i in track){
+			
 			if(track[i].subtype=='noteOn'){
-				channels[track[i]]=true;
+				var chn=track[i].channel;
+				//console.info('noteon',track[i]);return;
+				if(channels.indexOf(chn) === -1){
+			        channels.push(chn);
+			    }
 			}
+			
 			if(track[i].subtype=='trackName'){
 				trackName=track[i].text;
 				//return track[i].text;
 			}
 		}
+		//console.log(channels);
 		return {
 			'trackName':trackName,
-			'channel':channels
+			'midichn':channels
 		};
 	}
-
+	*/
 	//console.log(midiFile.header);
 
 	var htm="<table class='table table-condensed table-hover' style='cursor:pointer' id=tableTracks>";
@@ -159,7 +206,7 @@ function showTracks(){
 	htm+="<thead>";
 	htm+="<th>#</th>";
 	htm+="<th>Track name</th>";
-	htm+="<th>Channel</th>";
+	htm+="<th>Chn</th>";
 	htm+="<th style='text-align:right'>Length</th>";
 	htm+="</thead>";
 	htm+="<tbody>";
@@ -167,11 +214,12 @@ function showTracks(){
 	for(var i in midiFile.tracks){
 		var track=midiFile.tracks[i];
 		var nfo=trackInfo(track);
+		if(nfo.midichn.length==0)continue;//skip tracks without notes
 		htm+='<tr data-track="'+i+'">';
 		htm+="<td>"+i;
 		htm+="<td>"+nfo.trackName;
-		htm+="<td>";
-		if(nfo.channels)htm+=nfo.channels;
+		htm+="<td style='text-align:center'>";
+		for(var n in nfo.midichn)htm+=+nfo.midichn[n]+1;
 		htm+="<td style='text-align:right'>"+track.length;
 	}
 	
@@ -191,6 +239,8 @@ function showTracks(){
 		_track=e.currentTarget.dataset.track;
 		showTrack();
 	});
+
+	updateTracks();//canvas
 }
 
 
@@ -198,6 +248,7 @@ function showTrack(){
 	
 	var i=_track;
 	var deltaCumul=0;
+	var trackName='';
 	console.log('showTrack(i)',i);
 	
 	var htm="<table class='table table-condensed table-hover' style='cursor:pointer' id=tableTrack>";
@@ -224,7 +275,7 @@ function showTrack(){
 		if(o.subtype=='controller')continue;
 		if(o.subtype=='programChange')continue;
 		if(o.subtype=='pitchBend')continue;
-		
+		if(o.subtype=='trackName')trackName=o.text;
 
 		//console.log(o);
 		
@@ -259,7 +310,7 @@ function showTrack(){
 	htm+="</tfoot>";
 	htm+="</table>";
 	
-	$('#boxTrack .box-title').html("track #"+_track);
+	$('#boxTrack .box-title').html(trackName + " <small>track #"+_track+"</small>");
 	$('#boxTrack .box-body').html(htm);
 	$('#tableTrack').tablesorter();
 }

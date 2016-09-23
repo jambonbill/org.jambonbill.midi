@@ -11,10 +11,6 @@ $box->body('<input type="file" id="loadFromJSON" accept="audio/midi">');
 //$box->footer('<a href=# class="btn btn-default" id=btnBrowse><i class="fa fa-folder-open-o"></i> Browse</a>');
 
 echo $box;
-
-$modal=new LTE\Modal;
-$modal->title("Browse");
-echo $modal;
 ?>
 <script>
 

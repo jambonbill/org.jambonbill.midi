@@ -10,19 +10,49 @@ ctx.imageSmoothingEnabled = false;
 ctx.mozImageSmoothingEnabled = false;
 
 
+function updateTracks(){// update the tracks selector
+	console.info('updateTracks()');
+	$('#trackSelect').find('option').remove();
+	for(var i in midiFile.tracks){
+		var x = document.getElementById("trackSelect");
+		var option = document.createElement("option");
+		option.value = i;
+		option.text = "Track #"+i;
+		x.add(option);
+	}
+
+	$('#trackSelect').change(function(){
+		drawMidiTrack($('#trackSelect').val());
+	});
+	drawMidiTrack(0);
+}
+
+function resizeCanvas(){
+	var w=$('#boxCanvas .box-body').width();
+	canvasElement.width=w;
+	canvasElement.height=200;
+}
+
 function drawMidiTrack(trackNumber)
 {
 	
-	console.info('drawMidiTrack(trackNumber)',trackNumber);
+	console.info('drawMidiTrack('+trackNumber+')');
 	
-	if(!midiFile||!midiFile.tracks)return;
+	if(!midiFile||!midiFile.tracks){
+		console.warn('nothing to draw');
+		return;
+	}
 	
+	resizeCanvas();
+
 	//count tracks
 	var track=midiFile.tracks[trackNumber];
+	
 	console.log('track.length',track.length);
 	
-	//count notes, get stats
-
+	
+	
+	console.info(trackInfo(track));
 
 	// draw something //
 	ctx.fillStyle = '#999999';
