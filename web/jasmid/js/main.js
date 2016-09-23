@@ -20,6 +20,7 @@ $(function(){
         console.log(filters);
         showTrack();
     });
+	
 	var _files=[];
 	$('#btnBrowse').click(function(){
 		
@@ -53,7 +54,7 @@ $(function(){
 			$('#myModal .modal-body').html(htm);
 			$('#myModal tbody>tr').click(function(e){
 				console.log(e.currentTarget.title);
-				play("mid/"+e.currentTarget.title);
+				play("mid.php?mid="+e.currentTarget.title);
 				$('#myModal').modal('hide');//pop
 			});
 		}
