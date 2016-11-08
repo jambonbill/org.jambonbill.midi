@@ -67,14 +67,18 @@ Class Modal
     }
     
     public function body($str = ''){
-        if ($str) {
+        if (is_array($str)) {
+          $this->body=implode('',$str);
+        } else if ($str) {
           $this->body=$str;
         }
         return $this->body;
     }
     
     public function footer($str = ''){
-        if ($str) {
+        if (is_array($str)) {
+          $this->footer=implode('',$str);
+        } else if ($str) {
           $this->footer=$str;
         }
         return $this->footer;
