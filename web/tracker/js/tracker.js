@@ -3,12 +3,12 @@ var tracker = (function() {
 	"use strict";//do this !
 	
 	var version=1;
-	var track_number=6;
+	var track_number=12;
 
-    var _tracks=[];//hold track info
-	var _song=[];//hold song info
-	var _chains=[];
-	var _phrases=[];
+    var tracks=[];//hold track info
+	var song=[];//hold song info
+	var chains=[];
+	var phrases=[];
 	
 
 
@@ -139,6 +139,7 @@ var tracker = (function() {
 		//console.info('init ok');
 	}
 
+	
 	var t=0;
 	var tick=function(){
 		
@@ -164,7 +165,7 @@ var tracker = (function() {
 				note=note+transpose;//tranpose note
 
 				//console.log(tracks[i].pos2,note);
-				midiNote(tracks[i].chn,note,100);
+				//midiNote(tracks[i].chn,note,100);
 				
 				// Update counters
 				tracks[i].pos2++;
@@ -217,7 +218,8 @@ var tracker = (function() {
 		tracks:tracks,
 		song:songrow,
 		chain:chain,
-		phrase:phrase
+		phrase:phrase,
+		tick:tick
 	}
 	
 

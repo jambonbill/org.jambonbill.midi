@@ -37,9 +37,16 @@
    	},
    	
    	"mbsidv2":{
-		"text":"MbSidV2",
-		"icon":"fa fa-terminal",
-		"url":"mbsidv2/"
-   	}
+  		"text":"MbSidV2",
+  		"icon":"fa fa-terminal",
+  		"url":"mbsidv2/"
+   	},
+
+    "mbsidv2":{
+      "text":"Tracker",
+      "icon":"fa fa-terminal",
+      "url":"tracker/"
+    }
+
 
 }

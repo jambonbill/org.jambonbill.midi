@@ -20,18 +20,25 @@ echo $admin;
 	
 	<div class='row'>
 
-		<div class='col-sm-12'>
+		<div class='col-sm-6'>
 			<?php
 			include "box_tools.php";
 			?>
 		</div>
-
-		<div class='col-sm-5'>
+		<div class='col-sm-6'>
+			<?php
+			include "box_io.php";
+			?>
+		</div>
+	</div>
+	
+	<div class='row'>
+		<div class='col-sm-6'>
 			<?php
 			include "box_song.php";
 			?>
 		</div>
-		<div class='col-sm-3'>
+		<div class='col-sm-2'>
 			<?php
 			include "box_chain.php";
 			?>
@@ -44,6 +51,8 @@ echo $admin;
 		</div>
 		
 	</div>
+
+<a href=# class="btn btn-default">tick</a>
 
 
 </section>

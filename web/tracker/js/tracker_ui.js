@@ -49,11 +49,10 @@ function printSong(){
 	
 	htm+="<thead>";
 	htm+="<th width=30>#</th>";
+	for(j=0;j<tracker.tracks().length;j++){
+		htm+='<th>'+(j+1)+'</th>';
+	}
 	
-	htm+="<th>A</th>";
-	htm+="<th>B</th>";
-	htm+="<th>C</th>";
-	htm+="<th>D</th>";
 	
 	htm+="</thead>";
 	htm+="<tbody>";
@@ -65,7 +64,13 @@ function printSong(){
 		htm+='<td><i class="text-muted">'+i.toString(16).toUpperCase();
 		for(j=0;j<tracker.tracks().length;j++){
 			htm+='<td data-chain='+r[j]+'>';
-			htm+=hexv(r[j]);	
+			if(r[j]==255){
+				htm+='<i class="text-muted">--';
+			}else{
+				htm+=hexv(r[j]);
+				//console.warn(r[j]);
+			}
+			
 		}
 	}
 	
