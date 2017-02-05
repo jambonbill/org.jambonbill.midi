@@ -19,6 +19,10 @@ echo $admin;
 
 <section class="content">
 
+<?php
+include "midi_channels.php";
+?>
+
 <div class='row'>
 
 	<div class='col-sm-6'>
