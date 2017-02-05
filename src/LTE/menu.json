@@ -42,7 +42,7 @@
   		"url":"mbsidv2/"
    	},
 
-    "mbsidv2":{
+    "tracker":{
       "text":"Tracker",
       "icon":"fa fa-terminal",
       "url":"tracker/"
