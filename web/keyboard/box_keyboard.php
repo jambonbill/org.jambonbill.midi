@@ -1,6 +1,8 @@
 <?php
 $htm=[];
+
 $htm[]="<div class='row'>";
+/*
 $htm[]="<div class='col-xs-6'>";
 $htm[]="<select class='form-control' id=midiChannel disabled=disabled>";
 for($i=0;$i<16;$i++){
@@ -8,6 +10,7 @@ for($i=0;$i<16;$i++){
 }
 $htm[]="</select>";
 $htm[]="</div>";
+*/
 $htm[]="<div class='col-xs-6'>";
 $htm[]="<select class='form-control' id=octave disabled=disabled>";
 for($i=0;$i<8;$i++){

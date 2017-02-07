@@ -37,7 +37,7 @@ $(function(){
 	
 	var context=null;   // the Web Audio "context" object
 	var midiAccess=null;  // the MIDIAccess object.
-	
+	var _midiChannel=0;
 	var _portId='';
 	var _octave=3;
 	var _prg=0;//current prg
@@ -145,7 +145,7 @@ $(function(){
 	    $.cookie('midi_portId', _portId);
 	    
 	    $('#boxLog .box-body').html("Output : "+_portId);
-	    $('#midiChannel,#octave,#prgs').attr('disabled',false);
+	    $('#octave,#prgs').attr('disabled',false);
 	    $("#midi_outputs").val(_portId);
 	}
 
@@ -273,7 +273,7 @@ $(function(){
 			var nid=n%12;
 			var oct=Math.floor(n/12);
 
-			noteOn(n+(+_octave*12),+$('#midiChannel').val());
+			noteOn(n+(+_octave*12),_midiChannel);
 
 			htm="<i class='fa fa-music'></i> "+_notestr[nid]+octave;
             $('#boxLog .box-body').html(htm); 
@@ -306,28 +306,28 @@ $(function(){
 	});
 
 	$("body").keyup(function(e) {
-		//console.log( ".keyup()",e.keyCode );
-		var midiChannel=+$('#midiChannel').val();
+		
+		
 		var n=keyCodeToMidiNote(e.keyCode);
-		noteOff(n+(_octave*12),midiChannel);
+		noteOff(n+(_octave*12),_midiChannel);
 	});
     
 	
 	$('#btnTest').click(function(){
-		var midiChannel=+$('#midiChannel').val();
-		noteOn(60,midiChannel);
+		
+		noteOn(60,_midiChannel);
 		setTimeout(function(){
-			noteOff(60,midiChannel);
+			noteOff(60,_midiChannel);
 		},500);
 	});
 	
 	$('#btnMidiPannic').click(function(){
-		midiPanic(+$('#midiChannel').val());
+		midiPanic(_midiChannel);
 	});
     
 	$('#prgs').change(function(){
 		console.info("$('#prgs').change");
-		prgChange(+$('#prgs').val(),+$('#midiChannel').val());
+		prgChange(+$('#prgs').val(),_midiChannel);
 	});
     
 
