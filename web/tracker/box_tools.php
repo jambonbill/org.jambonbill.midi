@@ -20,4 +20,8 @@ $box->title("tracker");
 $box->id("boxToolss");
 $box->collapsed(1);
 $box->body("<pre>ok</pre>");
+$btns=[];
+$btns[]='<a href=# class="btn btn-default">Open</a>';
+$btns[]=' <a href=# class="btn btn-default">Save</a>';
+$box->footer($btns);
 echo $box;

@@ -9,6 +9,16 @@ $(function(){
 	refresh(0);
 	//printPhrase(0);
 	randomize();
+
+	$('#btnOutput').click(function(){
+		popupOutput();
+	});
+	
+	function popupOutput(){
+		console.info('popupOutput()');
+		$('#myModal').modal('show');
+	}
+
 });
 
 
@@ -43,12 +53,12 @@ function printSong(){
 	var d=tracker.tracks();
 	if(!d)return;
 	
-	console.info('printSong()',d);
+	//console.info('printSong()',d);
 	
 	var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
 	
 	htm+="<thead>";
-	htm+="<th width=30>#</th>";
+	htm+="<th width=20>#</th>";
 	for(j=0;j<tracker.tracks().length;j++){
 		htm+='<th>'+(j+1)+'</th>';
 	}
@@ -64,21 +74,41 @@ function printSong(){
 		htm+='<td><i class="text-muted">'+i.toString(16).toUpperCase();
 		for(j=0;j<tracker.tracks().length;j++){
 			htm+='<td data-chain='+r[j]+'>';
+			
 			if(r[j]==255){
 				htm+='<i class="text-muted">--';
 			}else{
 				htm+=hexv(r[j]);
 				//console.warn(r[j]);
 			}
-			
+			//htm+='<input type=text class="form-control" value=0>';
 		}
 	}
 	
 	//htm.push("SONG - "+nav.songxy[0]+'x'+nav.songxy[1]+"<br />");
 	$('div#boxSong .box-body').html(htm);
-	$("#boxSong tbody>tr>td").click(function(e){
-		console.log("song td.click",e.currentTarget.dataset.chain);
+	$("#boxSong thead>th").click(function(e){
+		console.log("Mute?");
 	});
+	
+	//var row=0;
+	$("#boxSong tbody>tr").click(function(e){
+		
+		//e.currentTarget.addClass("selected");
+		//console.log("song tr.click",e.currentTarget.dataset.i);
+		$("#boxSong tbody>tr").removeClass("rowselected");
+		$(this).addClass("rowselected");
+		//row=e.currentTarget.dataset.i;
+	});
+	
+	
+	$("#boxSong tbody>tr>td").click(function(e){
+		var row=e.target.parentElement.dataset.i;
+		//console.log("row="+e.target.parentElement.dataset.i);
+		//console.log(e,e.currentTarget);
+		//$(this).addClass("rowselected");
+	});
+	
 }
 
 
@@ -116,9 +146,12 @@ function printChain(n){
 
 	$('#boxChain .box-title').html("CHAIN 0x"+hexv(n));
 	$('#boxChain .box-body').html(htm);
-	$('#boxChain tbody>tr>td').click(function(e){
-		console.log("chain td.click",e.currentTarget.dataset.phrase);
+	
+	$('#boxChain tbody>tr').click(function(e){
+		console.log("chain td.click",e.currentTarget.dataset.i);
+		$(this).addClass("rowselected");
 		printPhrase(e.currentTarget.dataset.phrase);
+
 	});
 	return true;
 }
@@ -126,16 +159,18 @@ function printChain(n){
 
 function printPhrase(n){
 	
-	console.info('printPhrase(n)',n);
-	
 	var d=tracker.phrase(n);
-	
+	if(!d){
+		return;
+	}
+
 	if (n<0) {//glitch in the matrix
 		console.warn('printPhrase(n)',n);
 		return;
 	}
 	
-	
+	//console.info('printPhrase(n)',n);
+
 	var htm='<table class="table table-hover table-condensed" style="display:cursor">';
 	htm+='<thead>';
 	htm+='<th>#</th>';
@@ -211,8 +246,9 @@ function randomize(){
 }
 
 var lastn;
+
 function refresh(n){
-	console.info('refresh(n)',n);
+	//console.info('refresh(n)',n);
 	if(n==undefined)n=lastn;
 	printSong();
 	printChain(n);

@@ -55,7 +55,7 @@ $(function(){
 
 	function onMIDIInit(midi) {
 		
-		console.info('onMIDIInit(midi)',midi);
+		//console.info('onMIDIInit(midi)',midi);
 		midiAccess = midi;
 
 		var outputs=midiAccess.outputs.values();
@@ -64,16 +64,20 @@ $(function(){
 		for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
 			options.push(output.value);
 		}  
-		console.log(options);
-		/*
+		//console.log(options);
+		
+
 		for(var i in options){
 			var x = document.getElementById("midi_outputs");
+			/*
 			var option = document.createElement("option");
 			option.value = options[i].id;
 			option.text = options[i].name;
 			x.add(option);
+			*/
+			//console.info("Output #"+i,options[i].name);
 		}
-
+		/*
 		if (options.length==0) {
 			console.error("No MIDI output devices present");
 			$('#midi_outputs').attr('disabled','disabled');

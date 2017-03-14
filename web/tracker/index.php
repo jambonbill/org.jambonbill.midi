@@ -52,6 +52,27 @@ echo $admin;
 		
 	</div>
 
+<!-- HELP -->
+<pre>
+tracker.init()
+tracker.tracks(),
+tracker.song(),
+tracker.chain(),
+tracker.phrase(),
+tracker.tick()
+</pre>
+
+<pre>
+Song structure: 
+
+Chain structure:
+
+Pattern structure:
+Array>16 steps;
+Each step is Array[8] [noteNumber,cc1,cc2]
+
+</pre>
+
 <a href=# class="btn btn-default">tick</a>
 
 
@@ -60,9 +81,15 @@ echo $admin;
 
 <script type="text/javascript" src='js/midi.js'></script>
 <script type="text/javascript" src='js/tracker.js'></script>
-
 <script type="text/javascript" src='js/tracker_ui.js'></script>
-
+<style>
+.rowselected{
+	color:black;
+	font-weight: bold;
+	font-style: italic;
+	background:#ccc;
+}
+</style>
 <?php
 //$admin->footer("Midi - Sequencer");
 $admin->end();

@@ -34,6 +34,7 @@ var tracker = (function() {
 	
 	var newTrack=function(){//init track
 		return {
+			'name':'New track',
 			'chn':0,//midi channel
 			'vel':0,//velocity
 			'cc1':0,
@@ -106,7 +107,7 @@ var tracker = (function() {
 	
 	function init(){
 		
-		console.info('tracker init()',track_number);
+		console.info('tracker init()',track_number+" tracks");
 		
 		//init tracks
 		tracks=new Array(track_number);
@@ -127,7 +128,7 @@ var tracker = (function() {
 		}
 		
 		//init phrases;
-		console.log('init phrases()');
+		//console.log('init phrases()');
 		phrases=new Array(255);
 		for(var i=0;i<phrases.length;i++){
 			phrases[i]=newPhrase();
