@@ -18,11 +18,7 @@ for($i=0;$i<8;$i++){
 }
 $htm[]="</select>";
 $htm[]="</div>";
-$htm[]="</div>";
 
-$htm[]="<br />";
-
-$htm[]="<div class='row'>";
 $htm[]="<div class='col-xs-6'>";
 $htm[]="<select class='form-control' id=prgs disabled=disabled>";
 for($i=0;$i<128;$i++){

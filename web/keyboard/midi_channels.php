@@ -5,26 +5,25 @@
       <ul class="pagination">
         <li>
           <a href="#" aria-label="Previous">
-            Midi channel
+            Midi channel:
           </a>
         </li>
-        <li class='active'><a href="#" data-channel=0>1</a></li>
-        <li><a href="#" data-channel=1>2</a></li>
-        <li><a href="#" data-channel=2>3</a></li>
-        <li><a href="#" data-channel=3>4</a></li>
-        <li><a href="#" data-channel=4>5</a></li>
-        <li><a href="#" data-channel=5>6</a></li>
-        <li><a href="#" data-channel=6>7</a></li>
-        <li><a href="#" data-channel=7>8</a></li>
-        <li><a href="#" data-channel=8>9</a></li>
-        <li><a href="#" data-channel=9>10</a></li>
-        <li><a href="#" data-channel=10>11</a></li>
-        <li><a href="#" data-channel=11>12</a></li>
-        <li><a href="#" data-channel=12>13</a></li>
-        <li><a href="#" data-channel=13>14</a></li>
-        <li><a href="#" data-channel=14>15</a></li>
-        <li><a href="#" data-channel=15>16</a></li>
-        
+        <li class='active' data-channel=0><a href=#>1</a></li>
+        <li data-channel=1><a href=#>2</a></li>
+        <li data-channel=2><a href=#>3</a></li>
+        <li data-channel=3><a href=#>4</a></li>
+        <li data-channel=4><a href=#>5</a></li>
+        <li data-channel=5><a href=#>6</a></li>
+        <li data-channel=6><a href=#>7</a></li>
+        <li data-channel=7><a href=#>8</a></li>
+        <li data-channel=8><a href=#>9</a></li>
+        <li data-channel=9><a href=#>10</a></li>
+        <li data-channel=10><a href=#>11</a></li>
+        <li data-channel=11><a href=#>12</a></li>
+        <li data-channel=12><a href=#>13</a></li>
+        <li data-channel=13><a href=#>14</a></li>
+        <li data-channel=14><a href=#>15</a></li>
+        <li data-channel=15><a href=#>16</a></li>
       </ul>
     </nav>
 </div>

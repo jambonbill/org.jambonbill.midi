@@ -1,7 +1,6 @@
 // jambonbill midi.js  - keyboard
 // http://www.w3.org/TR/webmidi/#examples-of-web-midi-api-usage-in-javascript
 
-
 function displayKeyMap()
 {
     console.log('displayKeyMap()');
@@ -27,18 +26,13 @@ function displayKeyMap()
 }
 
 
-
-
-
-
-
-
 $(function(){
 	
 	var context=null;   // the Web Audio "context" object
 	var midiAccess=null;  // the MIDIAccess object.
 	var _midiChannel=0;
 	var _portId='';
+	
 	var _octave=3;
 	var _prg=0;//current prg
 	var _notes=[];// note buffer (being played)
@@ -83,7 +77,7 @@ $(function(){
 	function keyCodeToMidiNote(keyCode)
 	{
 		var n=kmap[keyCode];
-		if (n) return n;	
+		if (n) return +n;	
 	}
 
 
@@ -98,7 +92,7 @@ $(function(){
 		for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
 			options.push(output.value);
 		}  
-
+		console.info(options);
 		for(var i in options){
 			var x = document.getElementById("midi_outputs");
 			var option = document.createElement("option");
@@ -144,6 +138,16 @@ $(function(){
 	    
 	    $.cookie('midi_portId', _portId);
 	    
+	    var outputs=midiAccess.outputs.values();
+		
+		var options=[];
+		for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
+			//options.push(output.value);
+			if(output.value.id==_portId){
+				$('#boxOutputs .box-title').html("Output: "+output.value.name);
+			}
+		}  
+	    
 	    $('#boxLog .box-body').html("Output : "+_portId);
 	    $('#octave,#prgs').attr('disabled',false);
 	    $("#midi_outputs").val(_portId);
@@ -163,6 +167,12 @@ $(function(){
 		_prg=n;
 	}
 
+	function midiNoteToString(n){
+	    var note=n%12;
+	    var notes=['C-','C#','D-','D#','E-','F-','F#','G-','G#','A-','A#','B-'];
+	    var oct=Math.floor(n/12);
+	    return notes[note]+oct;
+	}
 
 	function noteOn(noteNumber,midiChannel)
 	{
@@ -184,7 +194,7 @@ $(function(){
 			}
 		}
 		
-		console.log('noteOn()',noteNumber,midiChannel);
+		console.log('noteOn() '+midiNoteToString(noteNumber), noteNumber, _midiChannel);
 		
 		var noteOnMessage = [0x90+midiChannel, noteNumber, 0x7f];    // note on, middle C, full velocity
 		var output = midiAccess.outputs.get(_portId);
@@ -201,7 +211,7 @@ $(function(){
 			return;
 		}
 		
-		console.log('noteOff()',noteNumber,midiChannel);
+		//console.log('noteOff()',noteNumber,midiChannel);
 		
 		//var midiChan=+$('#midiChannel').val();
 		var output = midiAccess.outputs.get(_portId);
@@ -272,10 +282,10 @@ $(function(){
 			//console.log("n="+n);
 			var nid=n%12;
 			var oct=Math.floor(n/12);
+			var midinote=n+(+_octave*12);
+			noteOn(midinote,_midiChannel);
 
-			noteOn(n+(+_octave*12),_midiChannel);
-
-			htm="<i class='fa fa-music'></i> "+_notestr[nid]+octave;
+			htm=midiNoteToString(midinote) + " midinote("+midinote+") on channel "+_midiChannel;
             $('#boxLog .box-body').html(htm); 
 		
 		} else {
@@ -312,6 +322,21 @@ $(function(){
 		noteOff(n+(_octave*12),_midiChannel);
 	});
     
+
+	// Midi channel selector //
+    $('ul>li').click(function(e){
+    	$('ul>li').removeClass("active");
+    	$(this).addClass("active");
+    	selectMidiChannel(e.currentTarget.dataset.channel);
+    });
+	
+    
+    function selectMidiChannel(n){
+    	_midiChannel=+n;
+    	console.info('selectMidiChannel(n)',n);
+    	
+    }
+
 	
 	$('#btnTest').click(function(){
 		
@@ -321,7 +346,7 @@ $(function(){
 		},500);
 	});
 	
-	$('#btnMidiPannic').click(function(){
+	$('#btnMidiPanic').click(function(){
 		midiPanic(_midiChannel);
 	});
     
@@ -341,5 +366,6 @@ $(function(){
     else
         console.warn("No MIDI support present in your browser")
 
+    console.log("init ok, midiChannel=",_midiChannel);
 
 });
