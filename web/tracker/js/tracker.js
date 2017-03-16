@@ -1,7 +1,7 @@
 var tracker = (function() {
-	
+
 	"use strict";//do this !
-	
+
 	var version=1;
 	var track_number=12;
 
@@ -9,7 +9,7 @@ var tracker = (function() {
 	var song=[];//hold song info
 	var chains=[];
 	var phrases=[];
-	
+
 
 
 	/**
@@ -26,12 +26,12 @@ var tracker = (function() {
 	var track=function(n){
 		return tracks[n];
 	}
-	
+
 	var tracks=function(){
 		return tracks;
 	}
-	
-	
+
+
 	var newTrack=function(){//init track
 		return {
 			'name':'New track',
@@ -44,17 +44,17 @@ var tracker = (function() {
 			'pos2':0//phrase
 		};
 	}
-	
+
 
 	var songrow=function(n){return song[n];}
-	
+
 	var newSongRow=function(){
 		var r=new Uint8Array(track_number);
 		for(var i=0;i<r.length;i++)r[i]=255;
 		//r=[255,255,255,255,255,255,255,255];
 		return r;
 	}
-	
+
 
 	/**
 	 * return chain n
@@ -64,7 +64,7 @@ var tracker = (function() {
 	var chain=function(n){
 		return chains[n];
 	}
-	
+
 
 	var emptyChain=function(){
 		var c=new Array(16);
@@ -75,7 +75,7 @@ var tracker = (function() {
 		return c;
 	}
 
-	
+
 	/**
 	 * Return phrase n
 	 * @param  {[type]} n [description]
@@ -84,8 +84,8 @@ var tracker = (function() {
 	var phrase=function(n){
 		return phrases[n];
 	}
-	
-	
+
+
 	var newPhrase=function(){
 		var p=new Array(16);
 		for(var i=0;i<p.length;i++){
@@ -94,7 +94,7 @@ var tracker = (function() {
 		return p;
 	}
 
-	
+
 	var newStep=function()
 	{
 		var step=new Uint8Array(8);
@@ -103,12 +103,12 @@ var tracker = (function() {
 		step=[note,velo,255,255,255,255,255,255];
 		return step;//[note,velo,fx,fx,cc1,cc1,cc2,cc2];
 	}
-	
-	
+
+
 	function init(){
-		
+
 		console.info('tracker init()',track_number+" tracks");
-		
+
 		//init tracks
 		tracks=new Array(track_number);
 		for(var i=0;i<tracks.length;i++){
@@ -119,60 +119,60 @@ var tracker = (function() {
 		song=new Array(64);
 		for(var i=0;i<song.length;i++){
 			song[i]=newSongRow();
-		}		
-		
+		}
+
 		//init chains
 		chains=new Array(255);
 		for(var i=0;i<chains.length;i++){
 			chains[i]=emptyChain();
 		}
-		
+
 		//init phrases;
 		//console.log('init phrases()');
 		phrases=new Array(255);
 		for(var i=0;i<phrases.length;i++){
 			phrases[i]=newPhrase();
 		}
-		
+
 		console.info('song.length',song.length);
 		console.info('chains.length',chains.length);
 		console.info('phrases.length',phrases.length);
 		//console.info('init ok');
 	}
 
-	
+
 	var t=0;
 	var tick=function(){
-		
+
 		if(t%3==0){
-			
+
 			for(var i=0;i<1;i++){
 				// Play notes
-				
+
 				var songpos=tracks[i].pos0;
 				var chainpos=tracks[i].pos1;
 				var phrasepos=tracks[i].pos2;
-				
+
 
 
 				var chn=chain(song[songpos][i]);
 				//console.log(songpos,chainpos,phrasepos,chn);
 				var phrasenumber=chn[chainpos][0];
 				var transpose=chn[chainpos][1];
-				
+
 				//if(transpose==255)transpose=0;
-				
+
 				var note=phrase(phrasenumber)[tracks[i].pos2][0];
 				note=note+transpose;//tranpose note
 
 				//console.log(tracks[i].pos2,note);
 				//midiNote(tracks[i].chn,note,100);
-				
+
 				// Update counters
 				tracks[i].pos2++;
-				
+
 				if (tracks[i].pos2>15) {
-					
+
 					// increment chain counter
 					if (chain(song[songpos][i])[tracks[i].pos1+1][0]==255||chainpos==15) {
 						tracks[i].pos1=0;
@@ -181,7 +181,7 @@ var tracker = (function() {
 						tracks[i].pos1++;
 						console.log("Jump to chain "+tracks[i].pos1, "Value="+chain(song[songpos][i])[tracks[i].pos1]);
 					}
-					
+
 					tracks[i].pos2=0;
 				}
 			}
@@ -199,7 +199,7 @@ var tracker = (function() {
 		}
 	}
 
-	
+
 
 
 
@@ -212,16 +212,17 @@ var tracker = (function() {
 			'phrases':phrases
 		};
 	}
-	
-	
+
+
 	return {
 		init: init,
 		tracks:tracks,
 		song:songrow,
 		chain:chain,
+		makeJSON:makeJSON,
 		phrase:phrase,
 		tick:tick
 	}
-	
+
 
 })();
