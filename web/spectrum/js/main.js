@@ -48,7 +48,19 @@ function NumSubStr(num) {
 }
 
 
+var lastCalledTime=Date.now();;
+var fps;
 function Render() {
+	/*
+	if(!lastCalledTime) {
+    	lastCalledTime = Date.now();
+    	fps = 0;
+		return;
+  	}
+	*/
+	delta = (Date.now() - lastCalledTime)/1000;
+	lastCalledTime = Date.now();
+	fps = 1/delta;
 	
 	window.requestAnimationFrame(Render);
 	
@@ -181,6 +193,7 @@ function Render() {
 
 }
 
+
 function UpdateController() {
 	
 	console.info('UpdateController()');
@@ -205,6 +218,7 @@ function UpdateController() {
 	processor.connect(audio_context.destination);
 }
 
+
 function StartProcessing(stream)
 {
 	console.info('StartProcessing(stream)',stream);
@@ -212,25 +226,28 @@ function StartProcessing(stream)
 	message.innerHTML = 'StartProcessing(stream)';
 
 	var gui = new dat.GUI();//{ autoPlace: false }
+	//gui.domElement.id = 'gui';
 	//var gui = new dat.GUI({ autoPlace: false });
 	//var customContainer = document.getElementById('boxSettings');
 	//customContainer.appendChild(gui.domElement);
 	
-	gui.add(controller, 'label', 'label');
-	gui.add(controller, 'ref_level', {'1e-0': 1e-0, '1e-1': 1e-1, '1e-2': 1e-2, '1e-3': 1e-3, '1e-4': 1e-4, '1e-5': 1e-5, '1e-6': 1e-6, '1e-7': 1e-7, '1e-8': 1e-8});
+	//gui.add(controller, 'label', 'label');
+	//gui.add(controller, 'ref_level', {'1e-0': 1e-0, '1e-1': 1e-1, '1e-2': 1e-2, '1e-3': 1e-3, '1e-4': 1e-4, '1e-5': 1e-5, '1e-6': 1e-6, '1e-7': 1e-7, '1e-8': 1e-8});
 	gui.add(controller, 'ref_level', {'1e-0': 1e-0, '1e-1': 1e-1, '1e-2': 1e-2, '1e-3': 1e-3, '1e-4': 1e-4, '1e-5': 1e-5, '1e-6': 1e-6, '1e-7': 1e-7, '1e-8': 1e-8});
 	gui.add(controller, 'db_min', -100, 30);
 	gui.add(controller, 'db_range', 1, 100);
 	gui.add(controller, 'db_treshold', -100, 30);
 	gui.add(controller, 'freq_min_cents', 0, 10000).step(1);
 	gui.add(controller, 'freq_range_cents', 0, 10000).step(1);
-	gui.add(controller, 'block_size', [128, 256, 512, 1024, 2048, 4096]).onChange(function(value) {
+	gui.add(controller, 'block_size', [256, 512, 1024]).onChange(function(value) {//128, xx, 2048, 4096
 		UpdateController();
 	});
 	gui.add(controller, 'blocks_per_fft', [1, 2, 4, 8, 16, 32, 64]).onChange(function(value) {
 		UpdateController();
 	});
-
+	
+	//var customContainer = $('div.moveGUI').append($(gui.domElement));
+	
 	source = audio_context.createMediaStreamSource(stream);
 	UpdateController();
 	Render();

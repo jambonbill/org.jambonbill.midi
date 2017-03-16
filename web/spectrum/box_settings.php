@@ -3,23 +3,45 @@
 
 $htm=[];
 
+$htm[] = '<div class="row">';
+
 // MIDI Output
+
+$htm[] = '<div class="col-sm-4">';
 $htm[] = '<div class="form-group">';
 $htm[] = '<label for="title">Midi out</label>';
-$htm[] = '<input type="text" class="form-control" id="midi_out">';
+$htm[] = '<select class="form-control" id="midi_outputs">';
+$htm[] = '</select>';
+$htm[] = '</div>';
 $htm[] = '</div>';
 
 // MIDI Chn
+$htm[] = '<div class="col-sm-4">';
 $htm[] = '<div class="form-group">';
 $htm[] = '<label for="title">Midi Chn</label>';
-$htm[] = '<input type="text" class="form-control" id="midi_chan">';
+$htm[] = '<select class="form-control" id="midi_chan">';
+for($i=0;$i<16;$i++){
+	$htm[] = '<option value=$i>'.($i+1).'</option>';
+}
+$htm[] = '</select>';
+$htm[] = '</div>';
 $htm[] = '</div>';
 
 // CC
+$htm[] = '<div class="col-sm-4">';
 $htm[] = '<div class="form-group">';
-$htm[] = '<label for="cc_num">CC</label>';
-$htm[] = '<input type="text" class="form-control" id="cc_num">';
+$htm[] = '<label for="cc_num">CC#</label>';
+$htm[] = '<select class="form-control" id="cc_num">';
+for($i=0;$i<127;$i++){
+	$htm[] = '<option value=$i>'.($i+1).'</option>';
+}
+$htm[] = '</select>';
 $htm[] = '</div>';
+
+$htm[] = '</div>';
+$htm[] = '</div>';
+
+
 
 
 $box=new LTE\Box;
