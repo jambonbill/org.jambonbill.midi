@@ -114,9 +114,24 @@ function getTracks(){//new
 	return $this->tracks;
 }
 
-function getTrackNames(){//new
-	//todo
-	return [];
+function getTrackNames(){
+	$trackNames=[];
+	foreach($this->tracks as $k=>$track){
+		$trackname='track #'.($k+1);
+
+		foreach ($track as $msgStr){
+			
+			$msg = explode(' ',$msgStr);
+			if ($msg[1]=='Meta'&&$msg[2]=='TrkName') {
+				//print_r($msgStr);//ex : 0 Meta TrkName "A Message to Rudy by THE SPECIALS"
+				//$dat['meta'][]=$msg[2].': '.substr($msgStr,strpos($msgStr,'"'));
+				$trackname=trim(explode('TrkName',$msgStr)[1]);
+			}
+			
+		}
+		$trackNames[]=$trackname;
+	}
+	return $trackNames;
 }
 
 //---------------------------------------------------------------
