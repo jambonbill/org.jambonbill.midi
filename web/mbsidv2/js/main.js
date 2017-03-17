@@ -1,7 +1,7 @@
 var SID;
 
 $(function(){
-	
+
 
 	var context=null;   // the Web Audio "context" object
 	var _midiAccess=null;  // the MIDIAccess object.
@@ -20,25 +20,28 @@ $(function(){
 
 
 	function onMIDIInit(midi) {
-		
+
 		//console.log('onMIDIInit(midi)',midi);
 		_midiAccess = midi;
 
 
 		var inputs=_midiAccess.inputs.values();
-	  	
+
 	  	for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
 	    	input.value.onmidimessage = MIDIMessageEventHandler;
 	    	//_inputs.push(input.value);
 	  	}
 
 		var outputs=_midiAccess.outputs.values();
-		
+
 		_outputs=[];
 		for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
 			_outputs.push(output.value);
-		}  
-		
+		}
+
+		console.log(_outputs);
+
+		/*
 		for(var i in _outputs){
 			var x = document.getElementById("midi_outputs");
 			var option = document.createElement("option");
@@ -46,7 +49,7 @@ $(function(){
 			option.text = _outputs[i].name;
 			x.add(option);
 		}
-		
+		*/
 
 		if (_outputs.length==0) {
 			console.error("No MIDI output devices present");
@@ -55,31 +58,31 @@ $(function(){
 		}else{
 			console.info(_outputs.length+" midi output(s) detected",_outputs);
 		}
-		
-	    
+
+
 	    if ($.cookie('midi_portId')) {
-	        _portId=$.cookie('midi_portId'); 
+	        _portId=$.cookie('midi_portId');
 	        $.midiPortId(_portId);
 	    }else{
-	        $('#boxLog .box-body').html('Midi ready. Select midi output');    
+	        $('#boxLog .box-body').html('Midi ready. Select midi output');
 	        //$('#midi_outputs').focus();
 	    }
 	}
 
 
 	function MIDIMessageEventHandler(event) {
-  
+
     	//var msg=event.data[0] & 0xf0;
     	var msg=event.data[0];
     	var midichannel=event.data[0] & 0x0f;
     	var type=msg & 0xf0;
-    	
+
     	var sdump=event.data;
-		
+
 		console.log('sdump.length='+sdump.length);
-    	
+
     	if (sdump.length==1036) {
-    		
+
     		SID.load(sdump);
     		return;
     	}
@@ -105,7 +108,7 @@ $(function(){
 
     function readSyx(sdump)
     {
-    	// f0 00 00 7e 4b 00 0f f7
+    	// Header: f0 00 00 7e 4b 00 0f f7
     	if(sdump[0]!=0xf0)return;
     	if(sdump[1]!=0x00)return;
     	if(sdump[2]!=0x00)return;
@@ -146,87 +149,99 @@ $(function(){
 
 
 	$.midiPortId=function(id){
-		
+
 		console.info('$.midiPortId()',id);
-	    
+
 	    //here we should make sure the portId is available
-	    
+
 	    if (id) {
 	    	_portId=id;
 	    }
-	    
+
 	    $.cookie('midi_portId', _portId);
 	    return _portId;
 	}
 
 
-
-	var _files;
-	$.post('ctrl.php',{'do':'browse'},function(json){
-		console.log(json);
-		_files=json.files;
-		//listFiles();
-	}).error(function(e){
-		console.error(e.responseText);
-	});
-
 	var engines=['Lead','Bassline','Drum','Multi'];
-	
+	var _files;
 
-	//patch selector
-	function patchSelector(callBack){
-		
-		console.info('patchSelector()');
-		
+	function getPatches()
+	{
+		$("#boxPatches .overlay").show();
+		$.post('ctrl.php',{'do':'browse'},function(json){
+			$("#boxPatches .overlay").hide();
+			//console.log(json);
+			_files=json.files;
+			displayPatches();
+		}).error(function(e){
+			console.error(e.responseText);
+		});
+	}
+
+	getPatches();
+
+	function displayPatches(){
+
+		//console.info('displayPatches()',_files);
+
 		var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
 		htm+='<thead>';
 		htm+='<th>Filename</th>';
 		htm+='<th>Name</th>';
 		htm+='<th>Engine</th>';
+		htm+='<th>Bank</th>';
+		htm+='<th>Checksum</th>';
 		htm+='<thead>';
 		htm+='</thead>';
 		htm+='<tbody>';
-		
-		for(var i in _files){
+
+		for (var i in _files) {
 			var o=_files[i];
-			htm+='<tr title="'+o.basename+'">';
+			htm+='<tr title="'+o.basename+'" data-filename="'+o.basename+'">';
 			htm+='<td>'+o.basename;
 			htm+='<td>'+o.patch.name;
 			htm+='<td>'+engines[o.patch.engine];
+			htm+='<td>'+o.patch.bank;
+			htm+='<td>'+o.patch.checksum;
 		}
-		
+
 		htm+='</tbody>';
 		htm+='</table>';
-		
-		$("#myModal .modal-title").html(_files.length+" file(s)");
-		$("#myModal .modal-body").html(htm);
-		$("#myModal table").tablesorter();
-		$("#myModal tbody>tr").click(function(e){
-			callBack(e);
-			//console.log(e.currentTarget.title);
-			//preview(e.currentTarget.title);
+		htm+='<i class="text-muted">'+_files.length+' patches</i>';
+
+		$("#boxPatches .box-title").html("n patches");
+		$("#boxPatches .box-body").html(htm);
+		$("table").tablesorter();
+
+		$("#boxPatches tbody>tr").click(function(e){
+			console.log(e,e.currentTarget.dataset.filename);
+
+			$("#myModal").modal('show');
+
+			$.post('ctrl.php',{'do':'preview','file':filename},function(json){
+				console.log(json);
+				SID.decode64(json.bin);
+			}).error(function(e){
+				console.error(e.responseText);
+			});
 		});
 	}
 
 
+	/*
 	function preview(filename){
-		
 		console.info('preview()',filename);
 		if(!filename)return;
 
-		$.post('ctrl.php',{'do':'preview','file':filename},function(json){
-			
-			console.log(json);
-			
-			SID.decode64(json.bin);
-
-		}).error(function(e){
-			console.error(e.responseText);
-		});
 	}
-	
+	*/
+
+
 	$('#btnOpen').click(function(){
+
 		$('#myModal').modal('show');
+
 		patchSelector(function(e){
 			$('#myModal').modal('hide');
 			var filename=e.currentTarget.title;
@@ -234,26 +249,26 @@ $(function(){
 			preview(filename);
 		});
 	});
-	
+
 	$('#midi_outputs').change(function(){
 		$.midiPortId($('#midi_outputs').val());
 	});
 
 	$('#btnPing').click(function(){//F0 00 00 7E 4B <device number> 0F F7
-		
+
 		console.log('click ping');
-		
+
 		if (!_portId) {
 			console.warn('!portid');
 			return;
 		}
-		
+
 		var device_number=0x00;
 		var output = _midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x0F,0xF7] );
 	});
 
-	
+
 
 	$('#btnPlay').click(function(){//F0 00 00 7E 4B <device-number> 0C 09 [<ins>] F7
 		console.log('click btnPlay');
@@ -277,18 +292,18 @@ $(function(){
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x0C,0x08,0xF7] );
 	});
 
-	// 01/a) 
+	// 01/a)
 	// Request a dump of <patch> in <bank>
 	// F0 00 00 7E 4B <device-number> 01 00 <bank> <patch> F7
 	$('#btnReq1').click(function(){
-		
+
 		console.log('btnReq1');
-		
+
 		if(!_portId){
 			console.warn('!portid');
 			return;
 		}
-		
+
 		var device_number=0x00;
 		var patch=0x00;
 		var bank=0x00;
@@ -296,25 +311,25 @@ $(function(){
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x01,0x00,bank,patch,0xF7] );
 	});
 
-	
+
 
 	// 01/b)
     // Request the current patch edit buffer (direct read from RAM)
 	// F0 00 00 7E 4B <device-number> 01 08 00 00 F7
 	$('#btnReq2').click(function(){
-		
+
 		console.log('btnReq2');
-		
+
 		if(!_portId){
 			console.warn('!portid');
 			return;
 		}
-		
+
 		var device_number=0x00;
 		var output = _midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x01,0x08,0x00,0x00,0xF7] );
 
 	});
-	
+
 	SID=SidV2();
 });
