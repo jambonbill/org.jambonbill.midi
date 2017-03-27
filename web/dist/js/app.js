@@ -526,3 +526,11 @@ $.AdminLTE.boxWidget = {
 if (Notification.permission !== "granted"){
     Notification.requestPermission();
 }
+
+function notification(a,b){
+  console.warn(a,b);
+  var notification = new Notification(a, {
+      icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+      body: b,
+  });
+}
