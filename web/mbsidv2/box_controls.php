@@ -27,11 +27,13 @@ $box->collapsable(true);
 //$box->body($htm);
 
 $btns=[];
-$btns[]="<a href=# class='btn btn-default' id=btnPing>ping</a> ";
+$btns[]="<a href=# class='btn btn-default' id=btnPing><i class='fa fa-exchange'></i> Ping</a> ";
 $btns[]="<a href=# class='btn btn-default' id=btnPlay><i class='fa fa-play'></i></a> ";
 $btns[]="<a href=# class='btn btn-default' id=btnStop><i class='fa fa-stop'></i></a> ";
 $btns[]="<a href=# class='btn btn-default' id=btnReq1>patch dump req</a> ";
 $btns[]="<a href=# class='btn btn-default' id=btnReq2>cur. patch req</a> ";
+$btns[]="<a href=# class='btn btn-default' id=btnReq3>bank request</a> ";
+$btns[]="<a href=# class='btn btn-default' id=btnDirectWrite>direct write</a> ";
 $box->footer($btns);
 
 echo $box;

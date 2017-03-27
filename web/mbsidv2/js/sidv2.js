@@ -41,9 +41,10 @@ function SidV2() {
 	}
 
 	
-	var decode=function(){
+
+	var decode=function(){// decode binary patch //
 		
-		//console.info('decode()',_bin.length + " bytes");
+		console.info('decode()',_bin.length + " bytes");
 		
 		_head=new Uint8Array(10);
 
@@ -155,6 +156,7 @@ function SidV2() {
        	// 4 x Wavetable Sequencer #1 // TODO
 
         switch(patchData['engine']){
+        	
         	default:
         		decodeLead();
         		break;

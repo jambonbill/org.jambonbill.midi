@@ -15,11 +15,6 @@ $btns[]="<a href=#btn class='btn btn-default pull-right' id=btnSend><i class='fa
 
 $box->loading(1);
 echo $box;
-
-
-$modal=new LTE\Modal;
-$modal->title("Patch");
-echo $modal;
 ?>
 <script>
 $(function(){
