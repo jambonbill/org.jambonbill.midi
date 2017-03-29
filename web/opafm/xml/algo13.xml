@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE OPA-Program>
+<OPA-Program version="1.0">
+    <name>Algo13 </name>
+    <algorithm>13</algorithm>
+    <volume>224</volume>
+    <panning>128</panning>
+    <flags>1</flags>
+    <Operator id="0">
+        <volume>199</volume>
+        <coarse>32</coarse>
+        <fine>0</fine>
+        <envAttack>242</envAttack>
+        <envDecay>238</envDecay>
+        <envSusLevel>232</envSusLevel>
+        <envIniLevel>252</envIniLevel>
+        <envRelease>255</envRelease>
+        <LFOSpeed>255</LFOSpeed>
+        <LFOAmount>245</LFOAmount>
+        <feedback>0</feedback>
+        <flags>0</flags>
+    </Operator>
+    <Operator id="1">
+        <volume>49</volume>
+        <coarse>32</coarse>
+        <fine>0</fine>
+        <envAttack>16</envAttack>
+        <envDecay>32</envDecay>
+        <envSusLevel>224</envSusLevel>
+        <envIniLevel>0</envIniLevel>
+        <envRelease>64</envRelease>
+        <LFOSpeed>32</LFOSpeed>
+        <LFOAmount>0</LFOAmount>
+        <feedback>0</feedback>
+        <flags>18</flags>
+    </Operator>
+    <Operator id="2">
+        <volume>109</volume>
+        <coarse>32</coarse>
+        <fine>0</fine>
+        <envAttack>16</envAttack>
+        <envDecay>32</envDecay>
+        <envSusLevel>224</envSusLevel>
+        <envIniLevel>0</envIniLevel>
+        <envRelease>64</envRelease>
+        <LFOSpeed>32</LFOSpeed>
+        <LFOAmount>0</LFOAmount>
+        <feedback>0</feedback>
+        <flags>8</flags>
+    </Operator>
+    <Operator id="3">
+        <volume>146</volume>
+        <coarse>145</coarse>
+        <fine>0</fine>
+        <envAttack>145</envAttack>
+        <envDecay>144</envDecay>
+        <envSusLevel>207</envSusLevel>
+        <envIniLevel>244</envIniLevel>
+        <envRelease>202</envRelease>
+        <LFOSpeed>222</LFOSpeed>
+        <LFOAmount>215</LFOAmount>
+        <feedback>81</feedback>
+        <flags>8</flags>
+    </Operator>
+</OPA-Program>
