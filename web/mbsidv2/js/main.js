@@ -109,7 +109,7 @@ $(function(){
 
 		 */
     	//var msg=event.data[0] & 0xf0;
-    	
+
     	var msg=event.data[0];
     	var midichannel=event.data[0] & 0x0f;
     	var type=msg & 0xf0;
@@ -131,16 +131,16 @@ $(function(){
     		if(hx.length==1)hx='0'+hx;
     		hstr+=hx.toUpperCase();
     	}
-    	
+
 		// Errors: F0 00 00 7E 4B <device> 0E <error-code> F7 //
 
     	switch(hstr){
-    		
+
     		case 'F000007E4B000FF7':
     			notification("Ping received!",hstr);
     			break;
-    		
-    		
+
+
     		default:
     			console.warn('unknow sdump',hstr);
     			notification("Incoming sysex",hstr);
@@ -155,8 +155,8 @@ $(function(){
     	//notification("Incoming sysex",hstr.toUpperCase());
     }
 
-    
-    function readSyx(sdump)
+
+    function readSyxHeader(sdump)
     {
     	// Header: f0 00 00 7e 4b 00 0f f7
     	if(sdump[0]!=0xf0)return;
@@ -268,9 +268,9 @@ $(function(){
 		$("#boxPatches tbody>tr").click(function(e){
 			var filename=e.currentTarget.dataset.filename;
 			console.log(e,filename);
-			
+
 			$("#myModal").modal('show');
-			
+
 			$.post('ctrl.php',{'do':'preview','file':filename},function(json){
 				console.log(json);
 				SID.decode64(json.bin);
@@ -306,7 +306,7 @@ $(function(){
 		$.midiPortId($('#midi_outputs').val());
 	});
 
-	
+
 	$('#btnPing').click(function(){//F0 00 00 7E 4B <device number> 0F F7
 
 		if (!_portId) {
@@ -323,26 +323,26 @@ $(function(){
 
 	/*
 	F0 00 00 7E 4B <device-number> 0C 09 [<ins>] F7
-    Plays the current patch (C-3 with max velocity is played, can be used 
+    Plays the current patch (C-3 with max velocity is played, can be used
     to test the patch independent of the MIDI channel)
 	*/
 	$('#btnPlay').click(function(){//F0 00 00 7E 4B <device-number> 0C 09 [<ins>] F7
-		
+
 		if(!_portId){
 			console.warn('!portid');
 			return;
 		}
 		console.log('click btnPlay');
-		
+
 		var device_number=0x00;
 		var output = _midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x0C,0x09,0x00,0xF7] );
 	});
 
-	
+
 	$('#btnStop').click(function(){//0C/b) F0 00 00 7E 4B <device-number> 0C 08 F7
-		
-		
+
+
 		if(!_portId){
 			console.warn('!portid');
 			return;
@@ -350,7 +350,7 @@ $(function(){
 		allNotesOff();
 	});
 
-	
+
 	function allNotesOff(){
 		// 0C/b) F0 00 00 7E 4B <device-number> 0C 08 F7
 		console.log('allNotesOff()');
@@ -364,7 +364,7 @@ $(function(){
 	// F0 00 00 7E 4B <device-number> 01 00 <bank> <patch> F7
 	$('#btnReq1').click(function(){
 
-		
+
 		if(!_portId){
 			console.warn('!portid');
 			return;
@@ -390,15 +390,15 @@ $(function(){
 			console.warn('!portid');
 			return;
 		}
-		
+
 		console.log('Request the current patch edit buffer (direct read from RAM)');
-		
+
 		var device_number=0x00;
 		var output = _midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x01,0x08,0x00,0x00,0xF7] );
 
 	});
-	
+
 	/*
 	  03/a) F0 00 00 7E 4B <device-number> 03 00 <bank> F7
         Request a dump of the whole patch <bank> (128 patches)
@@ -418,33 +418,35 @@ $(function(){
 		directWrite(0x02, 0x21);
 		directWrite(0x03, 0x21);
 	});
-	
+
 	function directWrite(address, value){// 06/a
-		
+
 		// Direct Write of parameter into patch buffer
-		
+
 		console.info('directWrite(address, value)',address, value);
-		
+
 		/*
 		  06/a) F0 00 00 7E 4B <device-number> 06 <WOPT> <AH> <AL> <value_l> <value_h> F7
         Direct Write of parameter into patch buffer (<AH> = 0..3, <AL> = 0..7F)
         Patch address: (<AH> << 7) | <AL>
         <WOPT>: options to speed up communication with editor, behaviour depends on engine
         */
-       	
+
        	var device_number=0x00;
-	
+
 		var WOPT=0x00;// Direct Write Options
-		var AH=0x00;//<AH> = 0..3, 
-		var AL=address;	//<AL> = 0..7F)
-		var value_h=0x00;
-		var value_l=value; 
-		
+		var AH=0x00;//<AH> = 0..3,
+		var AL=address & 0x7F;	//<AL> = 0..7F)
+		var value_h=value >> 7;
+		var value_l=value & 0x7F;
+
 		var output = _midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x06,WOPT, AH, AL, value_l, value_h, 0xF7] );
 
 	}
-	
+
+	// Lets try to send a patch !
+	//function sendSyx(){}
 
 	SID=SidV2();
 });
