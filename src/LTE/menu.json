@@ -1,10 +1,10 @@
 {
-	
+
 	"header":{
    		"text":"Midi tools",
    		"class":"header"
    	},
-   	
+
    	"monitor":{
 		"text":"Monitor",
 		"icon":"fa fa-search",
@@ -17,7 +17,7 @@
 		"url":"keyboard/"
    	},
 
-   	
+
    	"jasmid":{
 		"text":"Jasmid",
 		"icon":"fa fa-music",
@@ -35,12 +35,18 @@
 		"icon":"fa fa-terminal",
 		"url":"sysex/"
    	},
-   	
+
    	"mbsidv2":{
   		"text":"MbSidV2",
   		"icon":"fa fa-terminal",
   		"url":"mbsidv2/"
    	},
+
+    "opafm":{
+      "text":"OPA FM editor",
+      "icon":"fa fa-terminal",
+      "url":"opafm/"
+    },
 
     "tracker":{
       "text":"Tracker",
