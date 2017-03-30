@@ -97,9 +97,9 @@ $htm.='</div>';//endrow
 
 
 $box=new LTE\Box;
-$box->title("Operator n");
+$box->title("Operator ".$OP);
 //$box->icon("fa fa-filter");
-$box->id("boxOperator0");
+$box->id("boxOperator$OP");
 //$box->boxTools("<button class=\"btn btn-box-tool\" title='Clear'><i class='fa fa-times'></i></button> ");
 //$box->collapsable(1);
 //$box->collapsed(1);

@@ -1,5 +1,5 @@
 <?php
-// MIDI 
+// MIDI
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 
@@ -19,21 +19,21 @@ echo $admin;
 
 <div class='row'>
 	<div class='col-sm-12'>
-	<?php 
+	<?php
 	include "box_algorithm.php";
 	?>
 	</div>
 </div>
 
 <div class='row'>
-	
-	<?php 
-	for($i=0;$i<4;$i++) {
+
+	<?php
+	for($OP=1;$OP<=4;$OP++) {
 		echo '<div class="col-sm-5">';
 		include "box_operator.php";
 		echo '</div>';
 	}
-	
+
 	?>
 	</div>
 </div>
