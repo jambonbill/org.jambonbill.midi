@@ -1,10 +1,20 @@
-// jambonbill midi.js 
+// jambonbill opafm.js
 // http://www.w3.org/TR/webmidi/#examples-of-web-midi-api-usage-in-javascript
 
 $(function(){
 	$('input').change(function(e){
-		console.info('change',e);
+		var val=e.currentTarget.value;
+		console.info('change',"value="+val);
 	});
 
-	console.log("tada!");
+	$('#btnOpen').click(function(){
+		console.info('btnOpen');
+	});
+
+	$('#btnSave').click(function(){
+		console.info('btnSave');
+	});
+
+
+	console.info("opafm.js");
 });

@@ -81,17 +81,20 @@ $htm.='<label>LFOAmount</label>';
 $htm.='<input type=range value=0 max=255>';
 $htm.='</div></div>';
 
-$htm.='<div class=col-sm-4>';
-$htm.='<div class="form-group">';
-$htm.='<label>Feedback</label>';
-$htm.='<input type=range value=0 max=255>';
-$htm.='</div></div>';
+if ($OP==4) {
+    $htm.='<div class=col-sm-4>';
+    $htm.='<div class="form-group">';
+    $htm.='<label>Feedback</label>';
+    $htm.='<input type=range value=0 max=255>';
+    $htm.='</div></div>';
 
-$htm.='<div class=col-sm-4>';
-$htm.='<div class="form-group">';
-$htm.='<label>Flags</label>';
-$htm.='<input type=range value=0 max=255>';
-$htm.='</div></div>';
+    $htm.='<div class=col-sm-4>';
+    $htm.='<div class="form-group">';
+    $htm.='<label>Flags</label>';
+    $htm.='<input type=range value=0 max=255>';
+    $htm.='</div></div>';
+}
+
 
 $htm.='</div>';//endrow
 
