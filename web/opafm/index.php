@@ -21,7 +21,7 @@ echo $admin;
 <div class='row'>
 	<div class='col-sm-12'>
 	<?php
-	include "box_algorithm.php";
+	include "box_patch.php";
 	?>
 	</div>
 </div>

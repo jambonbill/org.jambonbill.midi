@@ -20,78 +20,79 @@
 $htm='';
 $htm.='<div class=row>';
 
-$htm.='<div class=col-sm-4>';
+$htm.='<div class=col-sm-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Volume</label>';
-$htm.='<input type=range value=0 max=255>';
+$htm.='<input type=range value=0 max=255 name=volume>';
 $htm.='</div></div>';
 
 
-$htm.='<div class=col-sm-4>';
+$htm.='<div class=col-sm-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Coarse</label>';
-$htm.='<input type=range value=0 max=255>';
+$htm.='<input type=range value=0 max=255 name=coarse>';
 $htm.='</div></div>';
 
-$htm.='<div class=col-sm-4>';
+$htm.='<div class=col-sm-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Fine</label>';
-$htm.='<input type=range value=0 max=255>';
+$htm.='<input type=range value=0 max=255 name=fine>';
 $htm.='</div></div>';
 
-$htm.='<div class=col-sm-4>';
-$htm.='<div class="form-group">';
-$htm.='<label>Attack</label>';
-$htm.='<input type=range value=0 max=255>';
-$htm.='</div></div>';
-
-$htm.='<div class=col-sm-4>';
-$htm.='<div class="form-group">';
-$htm.='<label>Decay</label>';
-$htm.='<input type=range value=0 max=255>';
-$htm.='</div></div>';
-
-$htm.='<div class=col-sm-4>';
-$htm.='<div class="form-group">';
-$htm.='<label>SusLevel</label>';
-$htm.='<input type=range value=0 max=255>';
-$htm.='</div></div>';
-
-$htm.='<div class=col-sm-4>';
+$htm.='<div class=col-sm-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>IniLevel</label>';
-$htm.='<input type=range value=0 max=255>';
+$htm.='<input type=range value=0 max=255 name=envIniLevel>';
 $htm.='</div></div>';
 
-$htm.='<div class=col-sm-4>';
+
+$htm.='<div class=col-sm-3>';
+$htm.='<div class="form-group">';
+$htm.='<label>Attack</label>';
+$htm.='<input type=range value=0 max=255 name=envAttack>';
+$htm.='</div></div>';
+
+$htm.='<div class=col-sm-3>';
+$htm.='<div class="form-group">';
+$htm.='<label>Decay</label>';
+$htm.='<input type=range value=0 max=255 name=envDecay>';
+$htm.='</div></div>';
+
+$htm.='<div class=col-sm-3>';
+$htm.='<div class="form-group">';
+$htm.='<label>Sustain</label>';
+$htm.='<input type=range value=0 max=255 name=envSusLevel>';
+$htm.='</div></div>';
+
+$htm.='<div class=col-sm-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Release</label>';
-$htm.='<input type=range value=0 max=255>';
+$htm.='<input type=range value=0 max=255 name=envRelease>';
 $htm.='</div></div>';
 
 $htm.='<div class=col-sm-4>';
 $htm.='<div class="form-group">';
 $htm.='<label>LFOSpeed</label>';
-$htm.='<input type=range value=0 max=255>';
+$htm.='<input type=range value=0 max=255 name=LFOSpeed>';
 $htm.='</div></div>';
 
 $htm.='<div class=col-sm-4>';
 $htm.='<div class="form-group">';
 $htm.='<label>LFOAmount</label>';
-$htm.='<input type=range value=0 max=255>';
+$htm.='<input type=range value=0 max=255 name=LFOAmount>';
 $htm.='</div></div>';
 
 if ($OP==4) {
     $htm.='<div class=col-sm-4>';
     $htm.='<div class="form-group">';
     $htm.='<label>Feedback</label>';
-    $htm.='<input type=range value=0 max=255>';
+    $htm.='<input type=range value=0 max=255 name=feedback>';
     $htm.='</div></div>';
 
     $htm.='<div class=col-sm-4>';
     $htm.='<div class="form-group">';
     $htm.='<label>Flags</label>';
-    $htm.='<input type=range value=0 max=255>';
+    $htm.='<input type=range value=0 max=255 name=flags>';
     $htm.='</div></div>';
 }
 

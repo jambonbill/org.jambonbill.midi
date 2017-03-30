@@ -34,7 +34,7 @@ $htm.='<div class="col-sm-12">';
 $htm.='<label>Algorithm</label><br />';
 $htm.='<div class="btn-group" role="group">';
 foreach($progs as $k=>$prog){
-	$htm.='<button type="button" class="btn btn-default" title="Algorithm '.($k+1).'" data-id='.($k+1).'>';
+	$htm.='<button type="button" class="btn btn-default algorithm" title="Algorithm '.($k+1).'" data-id='.($k+1).'>';
 	$htm.="<img src=$prog width=40 height=40>";
 	$htm.='</button>';
 }
@@ -48,7 +48,8 @@ $box->body($htm);
 
 $btns=[];
 $btns[]='<a href=#btn class="btn btn-default" id=btnOpen><i class="fa fa-folder-open-o"></i> Open xml patch</a> ';
-$btns[]='<a href=#btn class="btn btn-default" id=btnSave><i class="fa fa-save"></i> Save as xml</a>';
+$btns[]='<a href=#btn class="btn btn-default" id=btnSave><i class="fa fa-save"></i> Save as xml</a> ';
+$btns[]='<a href=#btn class="btn btn-default" id=btnTest><i class="fa fa-play"></i> Test (middle C)</a>';
 
 $box->footer($btns);
 $box->collapsable(true);
