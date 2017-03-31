@@ -19,11 +19,12 @@ $(function(){
 
 		htm+='<thead>';
 		htm+='<th>Filename</th>';
-		htm+='<th style="text-align:right">Bpm</th>';
-		htm+='<th style="text-align:right" title="Timebase">Tbase</th>';
-		htm+='<th style="text-align:right" title="PPQNPerMIDIClock = TimeBase/24 ">PPQN</th>';
-		htm+='<th style="text-align:right">Tracks</th>';
-		htm+='<th style="text-align:right">Size</th>';
+		htm+='<th>Title</th>';
+		htm+='<th style="text-align:right" width=30>Bpm</th>';
+		htm+='<th style="text-align:right" width=30 title="Timebase">Tbase</th>';
+		htm+='<th style="text-align:right" width=30 title="PPQNPerMIDIClock = TimeBase/24 ">PPQN</th>';
+		htm+='<th style="text-align:right" width=30>Tracks</th>';
+		htm+='<th style="text-align:right" width=30>Size</th>';
 		htm+='</thead>';
 
 		htm+='<tbody>';
@@ -31,6 +32,7 @@ $(function(){
 		for(var i in files){
 			var o=files[i];
 			htm+='<tr title="'+o.name+'">';
+			htm+='<td>'+o.name;
 			htm+='<td>'+o.name;
 
 			htm+='<td style="text-align:right">';//bpm
@@ -69,6 +71,20 @@ $(function(){
 
 	$('#btnUpload').click(function(){
 		$('#modalUpload').modal('show');
+	});
+
+	var lasturl='url';
+	$('#btnWget').click(function(){
+		var url=prompt("Enter url",lasturl);
+		if(!url)return;
+		else lasturl=url;
+		$.post('ctrl.php',{'do':'wget','url':url},function(json){
+			console.info(json);
+			//$('#myModal .modal-title').modal(filename);
+		}).error(function(e){
+			console.error(e.responseText);
+		});
+
 	});
 
 });

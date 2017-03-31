@@ -8,44 +8,58 @@ require __DIR__."/../../src/MIDI/midi.class.php";
 
 $dat=[];
 switch($_POST['do']){
-	
+
 	case 'browse':
-		
+
 		$f=glob("../../midifiles/*.mid");
-		
+
 		$midi = new Midi();
-		
+
 		foreach($f as $file){
-			
+
 			$midi->importMid($file);
-			
+
 			$f=[];
 			$f['name']=basename($file);
 			$f['size']=filesize($file);
-			
+
 			// get midifile info //
-			$f['bpm']=$midi->getBpm();//returns tempo as beats per minute (0 if tempo not set). 
-			$f['timebase']=$midi->getTimebase();//returns timebase value. 
-			$f['trackCount']=$midi->getTrackCount();//returns number of tracks. 
+			$f['bpm']=$midi->getBpm();//returns tempo as beats per minute (0 if tempo not set).
+			$f['timebase']=$midi->getTimebase();//returns timebase value.
+			$f['trackCount']=$midi->getTrackCount();//returns number of tracks.
 
 			$dat['files'][]=$f;
 		}
-		
+
 		exit(json_encode($dat));
-	
-	
+
+	case 'wget':
+		$dat['post']=$_POST;
+		//$file = 'http://www.domain.com/somefile.jpg';
+		$dat['headers'] = @get_headers($_POST['url']);
+		/*
+		if(!$file_headers || $file_headers[0] == 'HTTP/1.1 404 Not Found') {
+		    $exists = false;
+		}
+		else {
+		    $exists = true;
+		}
+		file_put_contents("Tmpfile.zip", fopen("http://someurl/file.zip", 'r'));
+		*/
+		exit(json_encode($dat));
+
 	case 'fileInfo':
 
 		$dat['post']=$_POST;
-		
+
 		$midi = new Midi();
 		$midi->importMid(__DIR__."/../../midifiles/".$_POST['filename']);
 		//$track = $midi->getTrack(0);
-		
-		$dat['bpm']=$midi->getBpm();//returns tempo as beats per minute (0 if tempo not set). 
-		$dat['timebase']=$midi->getTimebase();//returns timebase value. 
-		$dat['trackCount']=$midi->getTrackCount();//returns number of tracks. 
-		
+
+		$dat['bpm']=$midi->getBpm();//returns tempo as beats per minute (0 if tempo not set).
+		$dat['timebase']=$midi->getTimebase();//returns timebase value.
+		$dat['trackCount']=$midi->getTrackCount();//returns number of tracks.
+
 		$track = $midi->getTrack(0);
 
 		// list of meta events that we are interested in (adjust!)
@@ -60,11 +74,11 @@ switch($_POST['do']){
 				$dat['trackName']=trim(explode('TrkName',$msgStr)[1]);
 			}
 		}
-		
+
 
 		exit(json_encode($dat));
 
-	
+
 	default:
 		$dat=['error'=>'hello?'];
 		$dat['post']=$_POST;

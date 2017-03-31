@@ -13,5 +13,14 @@ $box->icon("fa fa-search");
 $box->id("boxFilter");
 $box->collapsable(true);
 $box->body($htm);
-$box->footer('<a href=# class="btn btn-default" id=btnUpload><i class="fa fa-upload"></i> Upload midi file</a>');
+
+$btns=[];
+if (is_writeable(__DIR__."/../../midifiles/")) {
+	$btns[]='<a href=#btn class="btn btn-default" id=btnUpload><i class="fa fa-upload"></i> Upload midi file</a> ';
+	$btns[]='<a href=#btn class="btn btn-default" id=btnWget>wget</a> ';
+} else {
+	$btns[]='<a href=#btn class="btn btn-default" id=btnUpload disabled><i class="fa fa-upload"></i> dest not writable</a>';
+}
+$box->footer($btns);
+
 echo $box;
