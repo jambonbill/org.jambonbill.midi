@@ -4,27 +4,33 @@ $progs=glob("img/program*.png");
 
 $htm='<div class="row">';
 
-$htm.='<div class="col-sm-4">';//NAME
+$htm.='<div class="col-sm-3">';//NAME
 $htm.='<div class="form-group">';
 $htm.='<label>Name</label>';
 $htm.='<input class="form-control" placeholder="Patch name">';
 $htm.='</div>';
 $htm.='</div>';
 
-$htm.='<div class="col-sm-4">';//VOlume
+$htm.='<div class="col-sm-3">';//VOlume
 $htm.='<div class="form-group">';
 $htm.='<label>Volume</label>';
-$htm.='<input type=range max=255 class="form-control" placeholder="Patch name">';
+$htm.='<input type=range value=180 max=255 class="form-control" placeholder="Patch name">';
 $htm.='</div>';
 $htm.='</div>';
 
-$htm.='<div class="col-sm-4">';//Pan
+$htm.='<div class="col-sm-3">';//Pan
 $htm.='<div class="form-group">';
 $htm.='<label>Paning</label>';
 $htm.='<input type=range max=255 class="form-control" placeholder="Patch name">';
 $htm.='</div>';
 $htm.='</div>';
 
+$htm.='<div class="col-sm-3">';//Flags
+$htm.='<div class="form-group">';
+$htm.='<label>Flags</label>';
+$htm.='<input type=range value=0 max=255 class="form-control" placeholder="Patch name">';
+$htm.='</div>';
+$htm.='</div>';
 
 $htm.='</div>';
 

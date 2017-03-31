@@ -17,7 +17,8 @@ $(function(){
 	$('input').change(function(e){
 		var val=e.currentTarget.value;
 		var nam=e.currentTarget.name;
-		console.info('change',"name="+nam,"value="+val);
+		var OP=e.currentTarget.dataset.op;
+		console.info('OP='+OP,"name="+nam,"value="+val);
 	});
 
 	$('#btnOpen').click(function(){
