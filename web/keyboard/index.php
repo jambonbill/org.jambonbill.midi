@@ -25,12 +25,6 @@ include "midi_channels.php";
 
 <div class='row'>
 
-	<div class='col-sm-6'>
-	<?php
-	include "box_outputs.php";
-	?>
-	</div>
-
 	
 	<div class='col-sm-6'>
 	<?php
@@ -38,7 +32,11 @@ include "midi_channels.php";
 	?>
 	</div>
 
-	
+	<div class='col-sm-6'>
+	<?php
+	include "box_messages.php";
+	?>
+	</div>
 	
 </div>
 
@@ -52,11 +50,7 @@ include "midi_channels.php";
 	?>
 	</div>
 
-	<div class='col-sm-6'>
-	<?php
-	include "box_messages.php";
-	?>
-	</div>
+	
 
 </div>
 

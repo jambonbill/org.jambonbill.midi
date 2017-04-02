@@ -28,8 +28,8 @@ function displayKeyMap()
 
 $(function(){
 	
-	var context=null;   // the Web Audio "context" object
-	var midiAccess=null;  // the MIDIAccess object.
+	//var context=null;   // the Web Audio "context" object
+	//var midiAccess=null;  // the MIDIAccess object.
 	var _midiChannel=0;
 	var _portId='';
 	
@@ -81,76 +81,11 @@ $(function(){
 	}
 
 
-	function onMIDIInit(midi) {
-		
-		//console.log('onMIDIInit(midi)',midi);
-		midiAccess = midi;
-
-		var outputs=midiAccess.outputs.values();
-		
-		var options=[];
-		for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
-			options.push(output.value);
-		}  
-		console.info(options);
-		for(var i in options){
-			var x = document.getElementById("midi_outputs");
-			var option = document.createElement("option");
-			option.value = options[i].id;
-			option.text = options[i].name;
-			x.add(option);
-		}
-
-		if (options.length==0) {
-			console.error("No MIDI output devices present");
-			$('#midi_outputs').attr('disabled','disabled');
-	        return;
-		}else{
-			$('#midi_outputs').attr('disabled',false);
-			$('#midi_outputs').attr('size',options.length);
-		}
-		
-	    
-	    if ($.cookie('midi_portId')) {
-	        _portId=$.cookie('midi_portId'); 
-	        setPortId(_portId);
-	    }else{
-	        $('#boxLog .box-body').html('Midi ready. Select midi output');    
-	        $('#midi_outputs').focus();
-	    }
-
-	}
-
-
-	function onMIDIReject(err) {
-		console.error("The MIDI system failed to start.");
-		$('#midi_outputs').attr('disabled','disabled')
-	}
-
 
 	function setPortId(id){
 		
-		console.info('setPortId()',id);
-	    
-	    //here we should make sure the portId is available
-	    
-	    _portId=id;
-	    
-	    $.cookie('midi_portId', _portId);
-	    
-	    var outputs=midiAccess.outputs.values();
-		
-		var options=[];
-		for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
-			//options.push(output.value);
-			if(output.value.id==_portId){
-				$('#boxOutputs .box-title').html("Output: "+output.value.name);
-			}
-		}  
-	    
-	    $('#boxLog .box-body').html("Output : "+_portId);
-	    $('#octave,#prgs').attr('disabled',false);
-	    $("#midi_outputs").val(_portId);
+		console.info('setPortId()',id);	    
+		_portId=id;
 	}
 
 
@@ -206,6 +141,11 @@ $(function(){
 	function noteOff(noteNumber,midiChannel)
 	{
 		
+		if(!_portId){
+			console.warn('!_portId');
+			return;
+		}
+		
 		if(!_portId||!noteNumber){
 			console.warn(!_portId||!noteNumber);
 			return;
@@ -242,19 +182,18 @@ $(function(){
 	}
 
 	 
-	$("#midi_outputs").change(function(e){
-        setPortId($("#midi_outputs").val());
-	});
+	
     
-    $("#octave").change(function(e){
-		setOctave(+$("#octave").val());
-    });
-
     function setOctave(n){
     	_octave=+n;
         console.info("Octave "+_octave);
         $("#octave").val(_octave);
     }
+
+	$("#octave").change(function(e){
+		setOctave(+$("#octave").val());
+    });
+
 
     $('#btnMapping').click(function(){
         displayKeyMap();
@@ -315,20 +254,7 @@ $(function(){
 		
 	});
 
-	$("body").keyup(function(e) {
-		
-		
-		var n=keyCodeToMidiNote(e.keyCode);
-		noteOff(n+(_octave*12),_midiChannel);
-	});
-    
 
-	// Midi channel selector //
-    $('ul>li').click(function(e){
-    	$('ul>li').removeClass("active");
-    	$(this).addClass("active");
-    	selectMidiChannel(e.currentTarget.dataset.channel);
-    });
 	
     
     function selectMidiChannel(n){
@@ -338,34 +264,62 @@ $(function(){
     }
 
 	
-	$('#btnTest').click(function(){
-		
-		noteOn(60,_midiChannel);
-		setTimeout(function(){
-			noteOff(60,_midiChannel);
-		},500);
-	});
 	
-	$('#btnMidiPanic').click(function(){
-		midiPanic(_midiChannel);
-	});
     
-	$('#prgs').change(function(){
-		console.info("$('#prgs').change");
-		prgChange(+$('#prgs').val(),_midiChannel);
-	});
+    function init(){
+		
+		$("body").keyup(function(e) {
+			
+			
+			var n=keyCodeToMidiNote(e.keyCode);
+			noteOff(n+(_octave*12),_midiChannel);
+		});
     
 
-    // patch up prefixes
-    window.AudioContext=window.AudioContext||window.webkitAudioContext;
+		// Midi channel selector //
+	    $('ul>li').click(function(e){
+	    	$('ul>li').removeClass("active");
+	    	$(this).addClass("active");
+	    	selectMidiChannel(e.currentTarget.dataset.channel);
+	    });
 
-    context = new AudioContext();
+    	$('#btnTest').click(function(){
+		
+			noteOn(60,_midiChannel);
+			setTimeout(function(){
+				noteOff(60,_midiChannel);
+			},500);
+		});
+	
+		$('#btnMidiPanic').click(function(){
+			midiPanic(_midiChannel);
+		});
+	    
+		$('#prgs').change(function(){
+			console.info("$('#prgs').change");
+			prgChange(+$('#prgs').val(),_midiChannel);
+		});
+    	
+    	console.info('init()');
 
-    if (navigator.requestMIDIAccess)
-        navigator.requestMIDIAccess().then( onMIDIInit, onMIDIReject );
-    else
-        console.warn("No MIDI support present in your browser")
-
-    console.log("init ok, midiChannel=",_midiChannel);
-
+	    var ops=$.midiOutputs();
+		for(var i in ops){
+			var o=ops[i];
+			var x = document.getElementById("midiOutput");
+		    var option = document.createElement("option");
+		    option.value = o.id;
+		    option.text = o.name;
+		    x.add(option);
+		}	
+		$('select#midiOutput').attr('disabled',false);
+		$('select#octave').attr('disabled',false);
+		$('select#prgs').attr('disabled',false);
+		$('select#midiOutput').change(function(e){
+			console.log(e.currentTarget.value);
+			setPortId(e.currentTarget.value);
+		});
+    }
+	
+	setTimeout(init,500);
+    //init();
 });

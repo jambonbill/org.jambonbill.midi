@@ -2,24 +2,20 @@
 $htm=[];
 
 $htm[]="<div class='row'>";
-/*
+
 $htm[]="<div class='col-xs-6'>";
-$htm[]="<select class='form-control' id=midiChannel disabled=disabled>";
-for($i=0;$i<16;$i++){
-	$htm[]="<option value=$i>Channel #".($i+1)."</option>";
-}
-$htm[]="</select>";
+$htm[]="<select class='form-control' id=midiOutput disabled=disabled></select>";
 $htm[]="</div>";
-*/
-$htm[]="<div class='col-xs-6'>";
+
+$htm[]="<div class='col-xs-3'>";
 $htm[]="<select class='form-control' id=octave disabled=disabled>";
 for($i=0;$i<8;$i++){
-	$htm[]="<option value='$i'>Octave #".($i+1)."</option>";
+	$htm[]="<option value='$i'>Oct #".($i+1)."</option>";
 }
 $htm[]="</select>";
 $htm[]="</div>";
 
-$htm[]="<div class='col-xs-6'>";
+$htm[]="<div class='col-xs-3'>";
 $htm[]="<select class='form-control' id=prgs disabled=disabled>";
 for($i=0;$i<128;$i++){
 	$htm[]="<option value='$i'>Prg #".($i+1)."</option>";
