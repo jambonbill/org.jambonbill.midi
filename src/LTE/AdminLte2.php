@@ -20,6 +20,7 @@ class AdminLte2
      */
     private $path='';// static path
     private $config=[];//admin config from json file
+    private $_menu;//left menu data
     private $title= 'title';// document title
     private $lang= 'en';//$_SERVER['HTTP_ACCEPT_LANGUAGE']
 
@@ -48,6 +49,21 @@ class AdminLte2
                 //echo "diff=$diff\n";
                 $this->path=str_repeat("../", $diff);
             }
+            
+            if (is_object($this->config->menu)) {
+                $this->_menu=$this->$this->config->menu;
+            } else if ($this->config->menu&&is_file(__DIR__.'/'.$this->config->menu)) {
+
+                $content=file_get_contents(__DIR__.'/'.$this->config->menu);
+                $this->_menu=json_decode($content);
+                if ($err=json_last_error()) {
+                    die("error $err".json_last_error_msg()."<br>$content");
+                }
+
+            } else {
+                die($this->config->menu . " not found");
+            }
+
         }else{
             throw new \Exception("Error : config.json file not found in ".realpath("."), 1);
         }
@@ -304,7 +320,7 @@ class AdminLte2
 
         // sidebar menu: : style can be found in sidebar.less -->
         //$HTML[]= $this->menu();
-        $HTML[]= $this->menu();
+        $HTML[]= $this->menuHtml();
 
         $HTML[]='</section>';
         $HTML[]='</aside>';
@@ -316,6 +332,7 @@ class AdminLte2
      * Return left menu
      * @return string html
      */
+    /*
     public function menu($json = '')
     {
 
@@ -394,6 +411,109 @@ class AdminLte2
         $HTML[]='</ul>';
         return implode('', $HTML);
     }
+    */
+   
+    /**
+     * GET/SET left menu data
+     * @param  string $json [description]
+     * @return [type]       [description]
+     */
+    public function menuData($json='')
+    {
+        //echo __FUNCTION__."($json)";
+        if(is_object($json)){
+            $this->_menu=$json;
+        }
+
+        if($this->_menu){
+            return $this->_menu;
+        }
+        return [];
+    }
+
+
+    /**
+     * Return left menu html
+     * @return string html
+     */
+    public function menuHtml()
+    {
+
+        //echo __FUNCTION__."()";
+        //print_r($this->menuData());        exit;
+
+        $HTML=[];
+        $HTML[]='<ul class="sidebar-menu">';
+
+        foreach($this->menuData() as $name=>$o){
+
+            $title='';
+            $class='';
+
+            if(!$o)continue;
+            if(isset($o->class))$class='class="'.$o->class.'"';
+            if(isset($o->title))$title='title="'.$o->title.'"';
+            if (isset($o->sub)) {
+                $HTML[]='<li class="treeview" '.$title.'>';
+                //if(!isset($o->url))$o->url='#';
+                if(!isset($o->icon))$o->icon='';
+                //if(preg_match("/^(http|ftp|#)/",$o->url)){
+                $HTML[]='<a href="'.@$o->url.'">';
+                $HTML[]='<i class="'.$o->icon.'"></i> <span>'.$o->text.'</span>';
+                $HTML[]='<i class="fa fa-angle-left pull-right"></i>';
+                $HTML[]='</a>';
+                $HTML[]='<ul class="treeview-menu">';
+
+                foreach($o->sub as $obj){
+
+                    $HTML[]='<li>';
+
+                    if(isset($obj->url)){
+                        if(preg_match("/^(http|ftp|#)/",$obj->url)){
+                            //echo "<li>".$obj->url;
+                            $HTML[]="<a href='".$obj->url."'>";
+                        } else {
+                            //TODO : Auto Highlight
+                            if (isset($obj->title)) {
+                                $TITLE=$obj->title;
+                            } else {
+                                $TITLE=basename($obj->url);
+                            }
+                            $HTML[]='<a href="'.$this->path.$obj->url.'" title="'.$TITLE.'">';
+                        }
+                    }
+
+                    if(isset($obj->icon))$HTML[]="<i class='".$obj->icon."'></i> ";
+                    $HTML[]='<span>'.$obj->text.'</span></a>';
+                    $HTML[]='</li>';
+                }
+                $HTML[]='</ul>';
+                $HTML[]='</li>';
+            } else {
+                if(isset($o->id)){
+                    $HTML[]='<li '.$class.' '.$title.' id="'.$o->id.'">';    
+                }else{
+                    $HTML[]='<li '.$class.' '.$title.'>';    
+                }
+                
+                if(isset($o->url)){
+                    if(preg_match("/^(http|ftp|#)/",$o->url)){
+                        $HTML[]='<a href="'.$o->url.'">';
+                    }else{
+                        $HTML[]='<a href="'.$this->path.$o->url.'">';
+                    }
+                }
+                if(isset($o->icon))$HTML[]='<i class="'.$o->icon.'"></i> ';
+                $HTML[]='<span>'.@$o->text.'</span>';
+                //$HTML[]='<small class="label pull-right bg-green">new</small>';//small
+                if(isset($o->url))$HTML[]='</a>';
+                $HTML[]='</li>';
+            }
+        }
+        $HTML[]='</ul>';
+        return implode('', $HTML);
+    }
+
 
     /**
     * @brief the list of js scripts to be included
