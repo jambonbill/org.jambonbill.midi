@@ -1,8 +1,8 @@
-var context;
-var midiAccess=null;  // the MIDIAccess object.
+//var context;
+//var midiAccess=null;  // the MIDIAccess object.
 
 $(function(){
-
+	/*
 	var midi_inputs=[];
 	var midi_outputs=[];	
 
@@ -79,6 +79,43 @@ $(function(){
 	    $('#midiChannel,#octave').attr('disabled',false);
 	    $("#midi_outputs").val(portId);
 	}
+	*/
+	$('#btnLoadSysex').click(function(){
+		console.log('#btnLoadSysex');
+		$('#modalSysex').modal('show');
+	});
+	
+	$('#btnSendSysex').click(function(){
+		console.log('#btnSendSysex');
+	});
+
+
+	$('#loadFromFile').change(function(evt) {
+			evt.stopPropagation();
+			evt.preventDefault();
+			var file = evt.target.files[0];
+			var reader = new FileReader();
+			var data = false;
+			reader.onload = (function(theFile) {
+				return function(e) {
+					//data = JSON.parse(e.target.result);
+					data = e.target.result;
+					console.log(data.length+"bytes");
+					/*
+					function toHex(byte) {
+					  return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+					}
+					
+					for(var i in data){
+						var b=data[i];
+						//console.log(toHex(b));
+					}
+					*/
+				}
+			})(file);
+			//reader.readAsText(file);
+			reader.readAsDataURL(file);
+		});
 
 	$('#btnSaveSysex').click(function(){
 		var content=$('#sysex_in').val();

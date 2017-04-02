@@ -7,6 +7,7 @@ require __DIR__."/../../vendor/autoload.php";
 
 $admin = new LTE\AdminLte2();
 $admin->title("Sysex");
+include "custom_menu.php";
 echo $admin;
 
 ?>
@@ -22,13 +23,13 @@ echo $admin;
 
 	<div class='col-sm-6'>
 	<?php
-	include "box_inputs.php";
+	//include "box_inputs.php";
 	?>
 	</div>
 
 	<div class='col-sm-6'>
 	<?php
-	include "box_outputs.php";
+	//include "box_outputs.php";
 	?>
 	</div>
 	
@@ -38,13 +39,13 @@ echo $admin;
 
 	<div class='col-sm-6'>
 	<?php
-	include "box_receive.php";
+	include "box_send.php";
 	?>
 	</div>
 
 	<div class='col-sm-6'>
 	<?php
-	include "box_send.php";
+	include "box_receive.php";
 	?>
 	</div>
 
