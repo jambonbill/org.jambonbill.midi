@@ -543,7 +543,7 @@ var midiAccess=null;  // the global MIDIAccess object.
 
 $(function(){
   
-  console.info("midi.app.js");
+    console.info("midi.app.js");
   
     // patch up prefixes
     window.AudioContext=window.AudioContext||window.webkitAudioContext;
