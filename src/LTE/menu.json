@@ -31,11 +31,12 @@
 		"url":"jasmid/"
    	},
 
-    "spectrum":{
-        "text":"Input analyser",
-        "icon":"fa fa-microphone",
-        "url":"spectrum/"
+    "cc":{
+    "text":"Control Changes",
+    "icon":"fa fa-terminal",
+    "url":"control_changes/"
     },
+
 
    	"sysex":{
 		"text":"Sysex",
