@@ -12,6 +12,7 @@ $box->title("Search");
 $box->icon("fa fa-search");
 $box->id("boxFilter");
 $box->collapsable(true);
+$box->loading(true);
 $box->body($htm);
 
 $btns=[];

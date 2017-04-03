@@ -1,5 +1,6 @@
 
 $(function(){
+
 	var files=[];
 	$.post('ctrl.php',{'do':'browse'},function(json){
 
@@ -78,7 +79,9 @@ $(function(){
 		var url=prompt("Enter url",lasturl);
 		if(!url)return;
 		else lasturl=url;
+		$('#boxFilter .overlay').show();
 		$.post('ctrl.php',{'do':'wget','url':url},function(json){
+			$('#boxFilter .overlay').hide();
 			console.info(json);
 			//$('#myModal .modal-title').modal(filename);
 		}).error(function(e){
@@ -87,4 +90,5 @@ $(function(){
 
 	});
 
+	$('#boxFilter .overlay').hide();
 });

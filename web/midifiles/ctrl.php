@@ -36,16 +36,25 @@ switch($_POST['do']){
 	case 'wget':
 		$dat['post']=$_POST;
 		//$file = 'http://www.domain.com/somefile.jpg';
-		$dat['headers'] = @get_headers($_POST['url']);
-		/*
-		if(!$file_headers || $file_headers[0] == 'HTTP/1.1 404 Not Found') {
-		    $exists = false;
+		$dat['headers'] = @get_headers(trim($_POST['url']));
+
+		if (!$dat['headers'] || $dat['headers'][0] == 'HTTP/1.1 404 Not Found') {
+		    $dat['error']=$file_headers[0];
+		} else {
+		    if (file_put_contents("/tmp/Tmpmid.mid", fopen(trim($_POST['url']), 'r'))) {
+		    	$dat['msg']="ok!";
+		    	$midi = new Midi();
+		    	$midi->importMid("/tmp/Tmpmid.mid");
+		    	$dat['bpm']=$midi->getBpm();//returns tempo as beats per minute (0 if tempo not set).
+				$dat['timebase']=$midi->getTimebase();//returns timebase value.
+				$dat['trackCount']=$midi->getTrackCount();//returns number of tracks.
+				$dat['track0'] = $midi->getTrack(0);
+		    } else {
+		    	$dat['error']="Copy error";
+		    }
 		}
-		else {
-		    $exists = true;
-		}
-		file_put_contents("Tmpfile.zip", fopen("http://someurl/file.zip", 'r'));
-		*/
+
+
 		exit(json_encode($dat));
 
 	case 'fileInfo':
@@ -69,8 +78,6 @@ switch($_POST['do']){
 		foreach ($track as $msgStr){
 			$msg = explode(' ',$msgStr);
 			if ($msg[1]=='Meta'&&$msg[2]=='TrkName') {
-				//print_r($msgStr);//ex : 0 Meta TrkName "A Message to Rudy by THE SPECIALS"
-				//$dat['meta'][]=$msg[2].': '.substr($msgStr,strpos($msgStr,'"'));
 				$dat['trackName']=trim(explode('TrkName',$msgStr)[1]);
 			}
 		}
