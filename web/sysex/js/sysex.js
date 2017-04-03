@@ -2,95 +2,38 @@
 //var midiAccess=null;  // the MIDIAccess object.
 
 $(function(){
-	/*
-	var midi_inputs=[];
-	var midi_outputs=[];	
 
-	// patch up prefixes
-    window.AudioContext=window.AudioContext||window.webkitAudioContext;
-
-    context = new AudioContext();
-
-    if (navigator.requestMIDIAccess)
-        navigator.requestMIDIAccess({sysex:true}).then( onMIDIInit, onMIDIReject );
-    else
-        console.warn("No MIDI support present in your browser")
-
-	console.log('sysex.js');
-
-	
-	function onMIDIInit(midi) {
-		
-		
-		midiAccess = midi;
-
-		var outputs=midiAccess.outputs.values();
-		
-		var options=[];
-		for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
-			options.push(output.value);
-		}  
-
-		for(var i in options){
-			var x = document.getElementById("midi_outputs");
-			var option = document.createElement("option");
-			option.value = options[i].id;
-			option.text = options[i].name;
-			x.add(option);
-		}
-
-		if (options.length==0) {
-			console.error("No MIDI output devices present");
-			$('#midi_outputs').attr('disabled','disabled');
-	        return;
-		}else{
-			$('#midi_outputs').attr('disabled',false);
-			$('#midi_outputs').attr('size',options.length);
-		}
-		
-	    
-	    if ($.cookie('midi_portId')) {
-	        portId=$.cookie('midi_portId'); 
-	        setPortId(portId);
-	    }else{
-	        $('#boxLog .box-body').html('Midi ready. Select midi output');    
-	    }
-
-	}
-
-
-	function onMIDIReject(err) {
-		console.error("The MIDI system failed to start.");
-		$('#midi_outputs').attr('disabled','disabled')
-	}
-
-
-	function setPortId(id){
-		
-		console.info('setPortId()',id);
-	    
-	    //here we should make sure the portId is available
-	    
-	    portId=id;
-	    
-	    $.cookie('midi_portId', portId);
-	    
-	    $('#boxLog .box-body').html("Output : "+portId);
-	    $('#midiChannel,#octave').attr('disabled',false);
-	    $("#midi_outputs").val(portId);
-	}
-	*/
 	$('#btnLoadSysex').click(function(){
 		console.log('#btnLoadSysex');
 		$('#modalSysex').modal('show');
 	});
-	
+
 	$('#btnSendSysex').click(function(){
 		console.log('#btnSendSysex');
+
+		var device_number=0x00;
+		var output = _midiAccess.outputs.get(_portId);
+		output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);
+
 	});
 
+	$('#btnPing').click(function(){//F0 00 00 7E 4B <device number> 0F F7
+
+		if (!_portId) {
+			console.warn('!portid');
+			return;
+		}
+
+		console.log('click ping');
+		var device_number=0x00;
+		var output = _midiAccess.outputs.get(_portId);
+		output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);
+	});
 
 	$('#loadFromFile').change(function(evt) {
+
+			$('#modalSysex').modal('hide');
+
 			evt.stopPropagation();
 			evt.preventDefault();
 			var file = evt.target.files[0];
@@ -98,14 +41,28 @@ $(function(){
 			var data = false;
 			reader.onload = (function(theFile) {
 				return function(e) {
+
+					var chars  = new Uint8Array(e.target.result);
+					//console.log(chars);
+					console.log(chars.length+" bytes");
+					var str='';
+					for(var i=0;i<chars.length;i++){
+						var s="0"+chars[i].toString(16).toUpperCase();
+						str+=s.substr(0,2)+" ";//dat.push(s);
+					}
+					console.info("Sysex as HEX",str);
+					$('textarea#midi_send').val(str);
+
 					//data = JSON.parse(e.target.result);
-					data = e.target.result;
-					console.log(data.length+"bytes");
+					//data = e.target.result;
+					//console.log(data);
+					//console.log(data.length+"bytes");
+					//console.log('data[0]',"0x",data[0]) ;
 					/*
 					function toHex(byte) {
 					  return ('0' + (byte & 0xFF).toString(16)).slice(-2);
 					}
-					
+
 					for(var i in data){
 						var b=data[i];
 						//console.log(toHex(b));
@@ -114,7 +71,9 @@ $(function(){
 				}
 			})(file);
 			//reader.readAsText(file);
-			reader.readAsDataURL(file);
+			//reader.readAsDataURL(file);
+			//reader.readAsBinaryString(file);
+			reader.readAsArrayBuffer(file);
 		});
 
 	$('#btnSaveSysex').click(function(){
@@ -122,7 +81,7 @@ $(function(){
 		if(!content){
 			return;
 		}
-		var uriContent = "data:application/octet-stream," + encodeURIComponent(content);	
+		var uriContent = "data:application/octet-stream," + encodeURIComponent(content);
 		newWindow = window.open(uriContent, 'new');
 	});
 

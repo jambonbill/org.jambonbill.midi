@@ -23,22 +23,6 @@ echo $admin;
 
 	<div class='col-sm-6'>
 	<?php
-	//include "box_inputs.php";
-	?>
-	</div>
-
-	<div class='col-sm-6'>
-	<?php
-	//include "box_outputs.php";
-	?>
-	</div>
-	
-</div>
-
-<div class='row'>
-
-	<div class='col-sm-6'>
-	<?php
 	include "box_send.php";
 	?>
 	</div>

@@ -4,7 +4,7 @@ $box->title("Send");
 $box->icon("fa fa-text");
 $box->id("boxSend");
 $box->collapsable(true);
-$box->body("<textarea class='form-control' id=midi_send rows=10 placeholder='Paste your hex code here'></textarea>");
+$box->body("<textarea class='form-control' id=midi_send rows=10 placeholder='Paste your hex code here' style='font-family:monospace;width:100%' readonly></textarea>");
 $btns=[];
 $btns[]="<a href=# class='btn btn-default' id=btnLoadSysex><i class='fa fa-folder-open-o'></i> Load .syx</a> ";
 $btns[]="<a href=# class='btn btn-default' id=btnSendSysex><i class='fa fa-play'></i> Send</a>";
@@ -15,7 +15,7 @@ echo $box;
 // MODAL //
 
 $htm=[];
-//$htm[]='<form enctype="multipart/form-data" class="form-control">';//action="upload.php" method="post" 
+//$htm[]='<form enctype="multipart/form-data" class="form-control">';//action="upload.php" method="post"
 $htm[]='<input type="file" name="file" id="loadFromFile" accept=".syx" required><br />';
 //$htm[]='<input type="submit" value="Upload file" name="submit" id=btnSubmit class="form-control"><br />';
 //$htm[]='</form>';
