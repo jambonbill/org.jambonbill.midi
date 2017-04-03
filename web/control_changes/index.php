@@ -21,7 +21,25 @@ echo $admin;
 
 <div class='row'>
 
-	<div class='col-sm-6'>
+	<div class='col-sm-3'>
+	<?php
+	include "box_cc.php";
+	?>
+	</div>
+
+	<div class='col-sm-3'>
+	<?php
+	include "box_cc.php";
+	?>
+	</div>
+
+	<div class='col-sm-3'>
+	<?php
+	include "box_cc.php";
+	?>
+	</div>
+
+	<div class='col-sm-3'>
 	<?php
 	include "box_cc.php";
 	?>
