@@ -20,6 +20,14 @@ echo $admin;
 <section class="content">
 
 <div class='row'>
+	<div class='col-sm-12'>
+	<?php
+	include "box_setup.php";
+	?>
+	</div>
+</div>
+
+<div class='row'>
 
 	<div class='col-sm-3'>
 	<?php
