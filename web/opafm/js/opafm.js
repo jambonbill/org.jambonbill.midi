@@ -10,8 +10,8 @@ $(function(){
 
 	function selectAlgorithm(n){
 		console.info('selectAlgorithm(n)',n);
-		$("button.algorithm").find("[data-id='"+n+"']").removeClass('btn-default');
-		$("button.algorithm").find("[data-id='"+n+"']").addClass('btn-primary');
+		$("button.algorithm").find("[data-id='"+n+"']").removeClass('active');
+		$("button.algorithm").find("[data-id='"+n+"']").addClass('active');
 	}
 
 	$('input').change(function(e){
