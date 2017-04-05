@@ -9,14 +9,14 @@ $htm=[];
 
 $htm[]="<div class=row>";
 
-$htm[]="<div class=col-sm-4>";
-$htm[]="<label>Name</label>";
-$htm[]="<input type=range id=midi_send value=0 max=127>";
-$htm[]="</div>";
+$htm[]='<div class=col-sm-4>';
+$htm[]='<label>Name</label>';
+$htm[]='<input type=text class="form-control" id=patch_name placeholder="Config name">';
+$htm[]='</div>';
 
 $htm[]="<div class=col-sm-4>";
 $htm[]="<label>Output</label>";
-$htm[]="<input type=range id=midi_send value=0 max=127>";
+$htm[]="<select class=form-control id=midiOutput><option>Select midi output</select>";
 $htm[]="</div>";
 
 
