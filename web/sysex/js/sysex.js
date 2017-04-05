@@ -10,13 +10,13 @@ $(function(){
 
 	$('#btnSendSysex').click(function(){
 		console.log('#btnSendSysex');
-
+		var _portId=$('select#midiOutput').val();
 		var device_number=0x00;
-		var output = _midiAccess.outputs.get(_portId);
+		var output = midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);
 
 	});
-
+	/*
 	$('#btnPing').click(function(){//F0 00 00 7E 4B <device number> 0F F7
 
 		if (!_portId) {
@@ -26,9 +26,10 @@ $(function(){
 
 		console.log('click ping');
 		var device_number=0x00;
-		var output = _midiAccess.outputs.get(_portId);
+		var output = midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);
 	});
+	*/
 
 	$('#loadFromFile').change(function(evt) {
 
@@ -52,6 +53,7 @@ $(function(){
 					}
 					console.info("Sysex as HEX",str);
 					$('textarea#midi_send').val(str);
+					$('a#btnSendSysex').attr('disabled',false);
 
 					//data = JSON.parse(e.target.result);
 					//data = e.target.result;
@@ -84,6 +86,43 @@ $(function(){
 		var uriContent = "data:application/octet-stream," + encodeURIComponent(content);
 		newWindow = window.open(uriContent, 'new');
 	});
+
+
+
+	function init(){
+
+		console.info('init()');
+
+		// Midi channel selector //
+	    $('ul>li').click(function(e){
+	    	$('ul>li').removeClass("active");
+	    	$(this).addClass("active");
+	    	selectMidiChannel(e.currentTarget.dataset.channel);
+	    });
+
+
+	    var ops=$.midiOutputs();
+		for(var i in ops){
+			var o=ops[i];
+			var x = document.getElementById("midiOutput");
+		    var option = document.createElement("option");
+		    option.value = o.id;
+		    option.text = o.name;
+		    x.add(option);
+		}
+
+		$('select#midiOutput').attr('disabled',false);
+		$('select#octave').attr('disabled',false);
+		$('select#prgs').attr('disabled',false);
+		$('select#midiOutput').change(function(e){
+			console.log(e.currentTarget.value);
+			if(e.currentTarget.value){
+				$('a#btnLoadSysex').attr('disabled',false);
+			}
+		});
+    }
+
+	setTimeout(init,500);
 
 });
 
