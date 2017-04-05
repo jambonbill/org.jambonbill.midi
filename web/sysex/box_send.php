@@ -12,9 +12,7 @@ $btns[]="<a href=# class='btn btn-default' id=btnLoadSysex disabled><i class='fa
 $btns[]="<a href=# class='btn btn-default' id=btnSendSysex disabled><i class='fa fa-play'></i> Send</a>";
 $btns[]="</div>";
 $btns[]="<div class=col-sm-6>";
-$btns[]="<select class=form-control id=midiOutput>";
-$btns[]="<option>Select midi output";
-$btns[]="</select>";
+$btns[]="<select class=form-control id=midiOutput><option>Select midi output</select>";
 $btns[]="</div>";
 $btns[]="</div>";
 $box->footer($btns);
