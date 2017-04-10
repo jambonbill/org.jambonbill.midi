@@ -114,15 +114,35 @@ $(function(){
 		$('select#midiOutput').attr('readonly',false);
 		$('select#octave').attr('disabled',false);
 		$('select#prgs').attr('disabled',false);
+		
 		$('select#midiOutput').change(function(e){
 			console.log(e.currentTarget.value);
+			$.cookie('portId',e.currentTarget.value);
 			if(e.currentTarget.value){
 				$('a#btnLoadSysex').attr('disabled',false);
 			}
 		});
+
+		if($.cookie('portId')){
+			$('select#midiOutput').val($.cookie('portId'));
+			$('a#btnLoadSysex').attr('disabled',false);
+		}
+
+		$.MIDIMessageEventHandler=function(event){
+	    	var msg=event.data[0];
+	    	var midichannel=event.data[0] & 0x0f;
+	    	var type=msg & 0xf0;
+	    	var sdump=event.data;
+			console.log('sdump.length='+sdump.length);
+	    	var hstr='';
+	    	for(var i in sdump){
+	    		//console.log(sdump[i]);
+	    		var hx=sdump[i].toString(16);
+	    		if(hx.length==1)hx='0'+hx;
+	    		hstr+=hx.toUpperCase();
+	    	}
+	    }
     }
 
 	setTimeout(init,500);
-
 });
-
