@@ -200,59 +200,7 @@ $(function(){
     });
 
 
-    // Keyboard //
-	$("body").keydown(function(e) {
-		
-        if (!_portId) {
-            $('#boxLog .box-body').html("<i class='fa fa-warning'></i> Select midi output");
-            $('#midi_outputs').focus();
-            return;
-        }
-		
-        $('#keyname').val('test');
-        $('#keycode').val(e.keyCode);
-        
-        var htm='Key:'+e.keyCode;
-		
-		
-		if (kmap[e.keyCode]) {
-			
-			var n=keyCodeToMidiNote(e.keyCode);
-			//console.log("n="+n);
-			var nid=n%12;
-			var oct=Math.floor(n/12);
-			var midinote=n+(+_octave*12);
-			noteOn(midinote,_midiChannel);
-
-			htm=midiNoteToString(midinote) + " midinote("+midinote+") on channel "+_midiChannel;
-            $('#boxLog .box-body').html(htm); 
-		
-		} else {
-			
-            if (e.keyCode>=112&&e.keyCode<=115) {//F1234-Keys
-                
-                console.log("F"+e.keyCode);
-                
-                setOctave(e.keyCode-111);
-                
-                e.stopPropagation();
-                e.preventDefault();
-                return;
-            }
-            
-            switch(e.keyCode){
-                
-                case 27://ESC
-                    midiPanic();
-                    break;
-                
-                default:
-                	console.warn("Key:"+e.keyCode+" not mapped !");
-                	break;
-            }
-		}
-		
-	});
+    
 
 
 	
@@ -268,9 +216,61 @@ $(function(){
     
     function init(){
 		
+		// Keyboard //
+		$("body").keydown(function(e) {
+			
+	        if (!_portId) {
+	            $('#boxLog .box-body').html("<i class='fa fa-warning'></i> Select midi output");
+	            $('#midi_outputs').focus();
+	            return;
+	        }
+			
+	        $('#keyname').val('test');
+	        $('#keycode').val(e.keyCode);
+	        
+	        var htm='Key:'+e.keyCode;
+			
+			
+			if (kmap[e.keyCode]) {
+				
+				var n=keyCodeToMidiNote(e.keyCode);
+				//console.log("n="+n);
+				var nid=n%12;
+				var oct=Math.floor(n/12);
+				var midinote=n+(+_octave*12);
+				noteOn(midinote,_midiChannel);
+
+				htm=midiNoteToString(midinote) + " midinote("+midinote+") on channel "+_midiChannel;
+	            $('#boxLog .box-body').html(htm); 
+			
+			} else {
+				
+	            if (e.keyCode>=112&&e.keyCode<=115) {//F1234-Keys
+	                
+	                console.log("F"+e.keyCode);
+	                
+	                setOctave(e.keyCode-111);
+	                
+	                e.stopPropagation();
+	                e.preventDefault();
+	                return;
+	            }
+	            
+	            switch(e.keyCode){
+	                
+	                case 27://ESC
+	                    midiPanic();
+	                    break;
+	                
+	                default:
+	                	console.warn("Key:"+e.keyCode+" not mapped !");
+	                	break;
+	            }
+			}
+			
+		});
+		
 		$("body").keyup(function(e) {
-			
-			
 			var n=keyCodeToMidiNote(e.keyCode);
 			noteOff(n+(_octave*12),_midiChannel);
 		});
@@ -284,7 +284,6 @@ $(function(){
 	    });
 
     	$('#btnTest').click(function(){
-		
 			noteOn(60,_midiChannel);
 			setTimeout(function(){
 				noteOff(60,_midiChannel);
