@@ -10,16 +10,11 @@ function SidV2() {
 
 	};
 
-
 	var decode64=function(base64data){
-
 		//console.info('decode64(base64data)');
-
 		_b64=base64data;
 		var datastr=atob(_b64);
-
 		//console.info('datastr.length='+datastr.length);
-
 		_bin=[];
 		var hexstr='';
 		for(var i=0;i<datastr.length;i++){
@@ -28,29 +23,23 @@ function SidV2() {
 			if(x.length==1)x='0'+x;
 			hexstr+=x+' ';
 		}
-		//console.log(hexstr);
-		decode();
 		return _bin;
 	}
-
 
 	var load=function(bin){
 		//console.log('load',bin);
 		_bin=bin;
-		decode();
 	}
-
-
 
 	var decode=function(){// decode binary patch //
 
-		console.info('decode()',_bin.length + " bytes");
+		//console.info('decode()', _bin.length + " bytes");
 
 		_head=new Uint8Array(10);
 
 		patchData['device-number']=_bin[5];
         patchData['bank']=_bin[8];
-        patchData['patch']=_bin[9];
+        patchData['patch']=_bin[9];//patch number
 
 		//_patch= new Uint8Array(512);
 		_patch=[];

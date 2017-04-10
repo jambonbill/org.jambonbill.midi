@@ -1,64 +1,9 @@
-var SID;
-
+var SID;//global scope for console debug
 $(function(){
+	
+	$.MIDIMessageEventHandler=function(event){
 
-	/*
-	var context=null;   // the Web Audio "context" object
-	var _midiAccess=null;  // the MIDIAccess object.
-	var _portId;
-	var _inputs;
-	var _outputs;
-	// patch up prefixes
-    window.AudioContext=window.AudioContext||window.webkitAudioContext;
-    context = new AudioContext();
-
-    if (navigator.requestMIDIAccess)
-        navigator.requestMIDIAccess({sysex:true}).then( onMIDIInit, onMIDIReject );
-    else
-        console.warn("No MIDI support present in your browser");
-	*/
-
-
-	function MIDIMessageEventHandler(event) {
-
-		/*
-		Acknowledge:
-	    F0 00 00 7E 4B <device> 0F <sids> F7
-
-	    Master SID (Device ID 00)
-	      <sids>: contains flags for the SID cores which have processed the
-	      previous SysEx string successfully.
-
-	      Note that the destination SIDs can be selected with ...0C 00 <sids>...
-	      If SID cores are not available, or have been disconnected during
-	      runtime, the appr. flags in the acknowledge response are automatically
-	      cleared to notify about this
-
-	    Slave SID (Device ID 01, 02, 03)
-	      <sids> is always 00
-
-		DisAcknowledge (Error)
-		F0 00 00 7E 4B <device> 0E <error-code> F7
-
-		<error-code>:
-		   01 == received less bytes then expected
-		   03 == wrong checksum
-		   0a == bankstick or patch/drumset/ensemble not available
-		   0b == parameter not available
-		   0c == invalid command
-		   10 == RAM access not supported
-		   11 == BankStick too small (only 32k BS connected, patch number >= 64)
-		12 == wrong type
-		13 == selected SID not available
-
-
-		PING:
-		F0 00 00 7E 4B <device number> 0F F7
-		Ping (just sends back the same SysEx string + <sids>)
-
-		 */
     	//var msg=event.data[0] & 0xf0;
-
     	var msg=event.data[0];
     	var midichannel=event.data[0] & 0x0f;
     	var type=msg & 0xf0;
@@ -68,8 +13,16 @@ $(function(){
 		console.log('sdump.length='+sdump.length);
 
     	if (sdump.length==1036) {
-    		console.info("Sysex dump received");
+    		notification("Sysex dump received","now calm down");
+    		console.log(sdump);
     		SID.load(sdump);
+    		var data=SID.decode();
+    		console.log(data);
+    		var blob = new Blob([sdump], {type: "application/octet-stream"});
+        	//saveAs(blob, "patch__.syx");
+        	//var objectUrl = URL.createObjectURL(blob);
+        	//window.open(objectUrl);
+    		
     		return;
     	}
 
@@ -86,9 +39,8 @@ $(function(){
     	switch(hstr){
 
     		case 'F000007E4B000FF7':
-    			notification("Ping received!",hstr);
+    			notification("Ping received!","now we're talking");
     			break;
-
 
     		default:
     			console.warn('unknow sdump',hstr);
@@ -103,7 +55,58 @@ $(function(){
     	//parse event, and make notifications
     	//notification("Incoming sysex",hstr.toUpperCase());
     }
+    
 
+    function init(){
+    	console.log('init()');
+		var ins=$.midiInputs();
+		for(var i in ins){
+			var o=ins[i];
+			var x = document.getElementById("midiInput");
+			var opt = document.createElement("option");
+		    opt.value = o.id;
+		    opt.text = o.name;
+		    x.add(opt);
+		}
+    	
+    	var ops=$.midiOutputs();
+		for(var i in ops){
+			var o=ops[i];
+			var x = document.getElementById("midiOutput");
+		    var opt = document.createElement("option");
+		    opt.value = o.id;
+		    opt.text = o.name;
+		    x.add(opt);
+		}
+
+		$('select#midiInput, select#midiOutput').attr('disabled',false);
+		$('select#midiInput, select#midiOutput').attr('readonly',false);
+		
+		$('select#midiInput').change(function(e){
+			console.log(e.currentTarget.value);
+			$.cookie('inputId',e.currentTarget.value);
+			if(e.currentTarget.value){
+				//$('a#btnLoadSysex').attr('disabled',false);
+			}
+		});
+
+		$('select#midiOutput').change(function(e){
+			console.log(e.currentTarget.value);
+			$.cookie('outputId',e.currentTarget.value);
+			if(e.currentTarget.value){
+				//$('a#btnLoadSysex').attr('disabled',false);
+			}
+		});
+
+		if($.cookie('inputId')){
+			$('select#midiInput').val($.cookie('inputId'));
+		}
+		if($.cookie('outputId')){
+			$('select#midiOutput').val($.cookie('outputId'));
+		}
+    }
+
+    setTimeout(init,500);
 
     function readSyxHeader(sdump)
     {
@@ -119,48 +122,7 @@ $(function(){
     	return true;
     }
 
-    /*
-    $.midiAccess=function(){
-    	return _midiAccess;
-    }
-
-	$.midiInputs=function(){
-		return _inputs;
-	}
-
-	$.midiOutputs=function(){
-		return _outputs;
-	}
-
-	$.midiOutput=function(){
-		if (!_portId) {
-			console.warn('!_portId');
-			return;
-		}
-		return _midiAccess.outputs.get(_portId);
-	}
-
-
-	function onMIDIReject(err) {
-		console.error("The MIDI system failed to start.");
-		$('#midi_outputs').attr('disabled','disabled')
-	}
-
-
-	$.midiPortId=function(id){
-
-		console.info('$.midiPortId()',id);
-
-	    //here we should make sure the portId is available
-
-	    if (id) {
-	    	_portId=id;
-	    }
-
-	    $.cookie('midi_portId', _portId);
-	    return _portId;
-	}
-	*/
+   
 
 	var engines=['Lead','Bassline','Drum','Multi'];
 	var _files;
@@ -191,6 +153,7 @@ $(function(){
 		htm+='<th>Filename</th>';
 		htm+='<th>Name</th>';
 		htm+='<th width=80>Engine</th>';
+		htm+='<th width=20 title="Patch number">Patch</th>';
 		htm+='<th width=20>Bnk</th>';
 		htm+='<th width=20 title="checksum">CS</th>';
 		htm+='<thead>';
@@ -203,6 +166,7 @@ $(function(){
 			htm+='<td>'+o.basename;
 			htm+='<td>'+o.patch.name;
 			htm+='<td>'+engines[o.patch.engine];
+			htm+='<td style="text-align:center">'+o.patch.patch;
 			htm+='<td style="text-align:center">'+o.patch.bank;
 			htm+='<td style="text-align:right">'+o.patch.checksum.toUpperCase();
 		}
@@ -216,30 +180,44 @@ $(function(){
 		$("table").tablesorter();
 
 		$("#boxPatches tbody>tr").click(function(e){
-			var filename=e.currentTarget.dataset.filename;
-			console.log(e,filename);
-
-			$("#myModal").modal('show');
-			$("#boxPatches .overlay").show();
-			$.post('ctrl.php',{'do':'preview','file':filename},function(json){
-				$("#boxPatches .overlay").hide();
-				console.log(json);
-				SID.decode64(json.bin);
-				$('#modalPatch').modal('show');
-			}).error(function(e){
-				console.error(e.responseText);
-			});
+			var filename=e.currentTarget.dataset.filename;	
+			if(!filename)return;
+			preview(filename);
 		});
 	}
 
 
-	/*
 	function preview(filename){
 		console.info('preview()',filename);
-		if(!filename)return;
+	
+		$("#myModal").modal('show');
+		
+		$("#boxPatches .overlay").show();
+		$.post('ctrl.php',{'do':'preview','file':filename},function(json){
+			$("#boxPatches .overlay").hide();
+			console.log(json);
+			SID.decode64(json.bin);
+			var data=SID.decode();
+			console.info("patch data",data);
+			$('#modalPatch').modal('show');
+			$('#modalPatch .modal-title').html(data.patchName);
+			/*
+			bank:1
+			device-number:0
+			engine:1
+			//extSwitch:0
+			osc_detune:4
+			osc_phase_offset:0
+			patch:8
+			patchName:"Bassline 7      "
+			volume:127
+			*/
 
+		}).error(function(e){
+			console.error(e.responseText);
+		});
 	}
-	*/
+
 
 
 	$('#btnOpen').click(function(){
@@ -254,13 +232,12 @@ $(function(){
 		});
 	});
 
-	$('#midi_outputs').change(function(){
-		$.midiPortId($('#midi_outputs').val());
-	});
+	
 
 
 	$('#btnPing').click(function(){//F0 00 00 7E 4B <device number> 0F F7
-
+		
+		var _portId=$('#midiOutput').val();
 		if (!_portId) {
 			console.warn('!portid');
 			return;
@@ -268,7 +245,7 @@ $(function(){
 
 		console.log('click ping');
 		var device_number=0x00;
-		var output = _midiAccess.outputs.get(_portId);
+		var output = midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);
 	});
 
@@ -279,7 +256,7 @@ $(function(){
     to test the patch independent of the MIDI channel)
 	*/
 	$('#btnPlay').click(function(){//F0 00 00 7E 4B <device-number> 0C 09 [<ins>] F7
-
+		var _portId=$('#midiOutput').val();
 		if(!_portId){
 			console.warn('!portid');
 			return;
@@ -287,14 +264,13 @@ $(function(){
 		console.log('click btnPlay');
 
 		var device_number=0x00;
-		var output = _midiAccess.outputs.get(_portId);
+		var output = midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x0C,0x09,0x00,0xF7] );
 	});
 
 
 	$('#btnStop').click(function(){//0C/b) F0 00 00 7E 4B <device-number> 0C 08 F7
-
-
+		var _portId=$('#midiOutput').val();
 		if(!_portId){
 			console.warn('!portid');
 			return;
@@ -307,7 +283,7 @@ $(function(){
 		// 0C/b) F0 00 00 7E 4B <device-number> 0C 08 F7
 		console.log('allNotesOff()');
 		var device_number=0x00;
-		var output = _midiAccess.outputs.get(_portId);
+		var output = midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x0C,0x08,0xF7]);
 	}
 
@@ -316,7 +292,7 @@ $(function(){
 	// F0 00 00 7E 4B <device-number> 01 00 <bank> <patch> F7
 	$('#btnReq1').click(function(){
 
-
+		var _portId=$('#midiOutput').val();
 		if(!_portId){
 			console.warn('!portid');
 			return;
@@ -327,8 +303,10 @@ $(function(){
 		var device_number=0x00;
 		var patch=0x00;
 		var bank=0x00;
-		var output = _midiAccess.outputs.get(_portId);
-		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x01,0x00,bank,patch,0xF7]);
+		patch=prompt("Enter pacth number",patch);
+		bank=prompt("Enter bank number",bank);
+		var output = midiAccess.outputs.get(_portId);
+		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x01,0x00,+bank,+patch,0xF7]);
 	});
 
 
@@ -337,7 +315,8 @@ $(function(){
     // Request the current patch edit buffer (direct read from RAM)
 	// F0 00 00 7E 4B <device-number> 01 08 00 00 F7
 	$('#btnReq2').click(function(){
-
+		
+		var _portId=$('#midiOutput').val();
 		if(!_portId){
 			console.warn('!portid');
 			return;
@@ -346,21 +325,25 @@ $(function(){
 		console.log('Request the current patch edit buffer (direct read from RAM)');
 
 		var device_number=0x00;
-		var output = _midiAccess.outputs.get(_portId);
+		var output = midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x01,0x08,0x00,0x00,0xF7] );
 
 	});
 
+	
 	/*
 	  03/a) F0 00 00 7E 4B <device-number> 03 00 <bank> F7
         Request a dump of the whole patch <bank> (128 patches)
         Only 64 patches are sent when a 32k BankStick is accessed
 	*/
 	$('#btnReq3').click(function(){
+		var _portId=$('#midiOutput').val();
 		var device_number=0x00;
 		var bank=0x00;
-		var output = _midiAccess.outputs.get(_portId);
-		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x03,0x00,bank,0xF7] );
+		bank=prompt("Get bank number",bank)
+		
+		var output = midiAccess.outputs.get(_portId);
+		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x03,0x00,+bank,0xF7] );
 	});
 
 	$('#btnDirectWrite').click(function(){
@@ -392,7 +375,7 @@ $(function(){
 		var value_h=value >> 7;
 		var value_l=value & 0x7F;
 
-		var output = _midiAccess.outputs.get(_portId);
+		var output = midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x06,WOPT, AH, AL, value_l, value_h, 0xF7] );
 
 	}
