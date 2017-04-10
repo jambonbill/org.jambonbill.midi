@@ -57,6 +57,7 @@ $btns[]='<div class=row>';
 $btns[]='<div class="col-md-6">';
 $btns[]='<a href=#btn class="btn btn-default" id=btnOpen><i class="fa fa-folder-open-o"></i> Open xml patch</a> ';
 $btns[]='<a href=#btn class="btn btn-default" id=btnSave><i class="fa fa-save"></i> Save as xml</a> ';
+$btns[]='<a href=#btn class="btn btn-default" id=btnPing disabled>Ping</a> ';
 $btns[]='<a href=#btn class="btn btn-default" id=btnTest disabled><i class="fa fa-play"></i> Test (middle C)</a>';
 $btns[]='</div>';
 $btns[]='<div class="col-md-6">';
