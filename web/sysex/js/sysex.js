@@ -1,21 +1,38 @@
-//var context;
-//var midiAccess=null;  // the MIDIAccess object.
-
 $(function(){
+
+	var _sysex=[];
 
 	$('#btnLoadSysex').click(function(){
 		console.log('#btnLoadSysex');
 		$('#modalSysex').modal('show');
 	});
 
+	$('#modalSysex').on('shown.bs.modal',function(){
+        $('#loadFromFile').click();
+    });
+
 	$('#btnSendSysex').click(function(){
-		console.log('#btnSendSysex');
+
+		//console.log('#btnSendSysex',_sysex);
+
+	 	if (!_sysex||_sysex.length==0) {
+			console.warn("nothing to send");
+			return;
+		}
+
+
+		console.info("sending "+_sysex.length+" bytes");
+
 		var _portId=$('select#midiOutput').val();
 		var device_number=0x00;
-		var output = midiAccess.outputs.get(_portId);
-		output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);
 
+		var output = midiAccess.outputs.get(_portId);
+		//output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);
+		output.send( _sysex );
+		console.log("sent");
+		notification("Sent","n bytes sent to "+_portId);
 	});
+
 	/*
 	$('#btnPing').click(function(){//F0 00 00 7E 4B <device number> 0F F7
 
@@ -23,7 +40,6 @@ $(function(){
 			console.warn('!portid');
 			return;
 		}
-
 		console.log('click ping');
 		var device_number=0x00;
 		var output = midiAccess.outputs.get(_portId);
@@ -45,7 +61,9 @@ $(function(){
 
 					var chars  = new Uint8Array(e.target.result);
 					//console.log(chars);
+					_sysex=chars;
 					console.log(chars.length+" bytes");
+
 					var str='';
 					for(var i=0;i<chars.length;i++){
 						var s="0"+chars[i].toString(16).toUpperCase();
@@ -54,27 +72,8 @@ $(function(){
 					console.info("Sysex as HEX",str);
 					$('textarea#midi_send').val(str);
 					$('a#btnSendSysex').attr('disabled',false);
-
-					//data = JSON.parse(e.target.result);
-					//data = e.target.result;
-					//console.log(data);
-					//console.log(data.length+"bytes");
-					//console.log('data[0]',"0x",data[0]) ;
-					/*
-					function toHex(byte) {
-					  return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-					}
-
-					for(var i in data){
-						var b=data[i];
-						//console.log(toHex(b));
-					}
-					*/
 				}
 			})(file);
-			//reader.readAsText(file);
-			//reader.readAsDataURL(file);
-			//reader.readAsBinaryString(file);
 			reader.readAsArrayBuffer(file);
 		});
 
@@ -112,6 +111,7 @@ $(function(){
 		}
 
 		$('select#midiOutput').attr('disabled',false);
+		$('select#midiOutput').attr('readonly',false);
 		$('select#octave').attr('disabled',false);
 		$('select#prgs').attr('disabled',false);
 		$('select#midiOutput').change(function(e){
