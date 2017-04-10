@@ -530,7 +530,7 @@ if (Notification.permission !== "granted"){
 function notification(a,b){
   console.warn(a,b);
   var notification = new Notification(a, {
-      icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+      icon: '../dist/img/jambonbill.png',
       body: b,
   });
 }
@@ -543,11 +543,10 @@ var midiAccess=null;  // the global MIDIAccess object.
 
 $(function(){
   
-    console.info("midi.app.js");
+    //console.info("midi.app.js");
   
     // patch up prefixes
     window.AudioContext=window.AudioContext||window.webkitAudioContext;
-
     var context = new AudioContext();
 
     if (navigator.requestMIDIAccess)
@@ -556,7 +555,7 @@ $(function(){
         console.warn("No MIDI support present in your browser");
 
     function onMIDIInit(midi) {                
-        console.info('midi init!');
+        //console.info('midi init!');
         midiAccess = midi;
       }
 
@@ -570,41 +569,32 @@ $(function(){
         alert("#btnMenuConfig.click");
     });
 
+    $.MIDIMessageEventHandler=function(event){};
+    
     $.midiInputs=function(){
-        
         if (!midiAccess) {
             console.warn("no midi access (yet?)");
             return;
         }
-        
         var inputs=midiAccess.inputs.values();
         var midiInputs=[];
         for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
+            input.value.onmidimessage = $.MIDIMessageEventHandler;
             midiInputs.push(input.value);
-        }
-  
-        for(var i in midiInputs){
-           //console.info("input",midiInputs[i].id,midiInputs[i].name);
         }
         return midiInputs;
     }
     
     $.midiOutputs=function(){
-        
         if(!midiAccess){
             console.warn("no midi access (yet?)");
             return;
         }
-        
         var outputs=midiAccess.outputs.values();
         var options=[];
         for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
           options.push(output.value);
         }  
-
-        for(var i in options){
-          //console.info('output',options[i].id,options[i].name);
-        }
         return options;
     }
 });
