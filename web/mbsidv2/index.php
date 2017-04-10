@@ -8,11 +8,10 @@ require __DIR__."/../../vendor/autoload.php";
 $admin = new LTE\AdminLte2();
 $admin->title("MB6582");
 echo $admin;
-
 ?>
 <section class="content-header">
   <h1><i class='fa fa-terminal'></i> MBSIDV2 Patches
-  <small><a href='http://midibox.org/forums/topic/15119-midibox-sid-v2-patches/?page=2'>http://midibox.org/forums/topic/15119-midibox-sid-v2-patches/?page=2</a>
+  <small><a href='http://midibox.org/forums/topic/15119-midibox-sid-v2-patches/?page=2'>http://midibox.org/forums/topic/15119-midibox-sid-v2-patches/?page=2</a></small>
   </h1>
 </section>
 
@@ -30,6 +29,7 @@ echo $admin;
 	<div class='col-sm-12'>
 	<?php
 	include "box_patches.php";
+	include "modal_patch.php";
 	?>
 	</div>
 

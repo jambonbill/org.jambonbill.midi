@@ -2,8 +2,8 @@ function SidV2() {
 
 	var _b64='';
 	var _bin=[];
-	var _patch=[];	
-	
+	var _patch=[];
+
 	var patchData={};
 
 	function twoscomplement(bin){
@@ -12,14 +12,14 @@ function SidV2() {
 
 
 	var decode64=function(base64data){
-		
+
 		//console.info('decode64(base64data)');
-		
+
 		_b64=base64data;
 		var datastr=atob(_b64);
-		
+
 		//console.info('datastr.length='+datastr.length);
-		
+
 		_bin=[];
 		var hexstr='';
 		for(var i=0;i<datastr.length;i++){
@@ -33,19 +33,19 @@ function SidV2() {
 		return _bin;
 	}
 
-	
+
 	var load=function(bin){
 		//console.log('load',bin);
 		_bin=bin;
 		decode();
 	}
 
-	
+
 
 	var decode=function(){// decode binary patch //
-		
+
 		console.info('decode()',_bin.length + " bytes");
-		
+
 		_head=new Uint8Array(10);
 
 		patchData['device-number']=_bin[5];
@@ -83,7 +83,7 @@ function SidV2() {
             var MAX=_patch[addr+4];
             KNOBS.push([P1,P2,INI,MIN,MAX]);
         }
-        
+
         patchData['knobs']=KNOBS;
 
 
@@ -111,7 +111,7 @@ function SidV2() {
 		left['keytracking']=_patch[0x058];
 		left['reserved']=_patch[0x059];
         patchData['filt_left']=left;
-        
+
 
         //patchData['filt_right']=rght;// TODO
 
@@ -137,7 +137,7 @@ function SidV2() {
 	        voice['finetune']=_patch[0x069];//(-128..127)
 	        voice['pitchrange']=_patch[0x06a];//(0..127)
 	        voice['portamentoRate']=_patch[0x06b];// | [7:0]  (0..255)
-	        
+
 	        voice['arpMode']=_patch[0x06c];//todo
       		voice['arpSpeedDivider']=_patch[0x06d];
       		voice['arpGatelength']=_patch[0x06e];
@@ -145,29 +145,30 @@ function SidV2() {
 
 	        voices.push(voice);
         }
-        
+
         patchData['voices']=voices;
 
 
         // 6 LFO's // TODO //
 
-       	// 8 * Modulation Path // TODO 
-       
+       	// 8 * Modulation Path // TODO
+
        	// 4 x Wavetable Sequencer #1 // TODO
 
         switch(patchData['engine']){
-        	
+
         	default:
         		decodeLead();
         		break;
         }
 
-		console.info(patchData);
-	}	
-	
+		//console.info(patchData);
+		return patchData;
+	}
+
 
 	function decodeLead(){
-		
+
 		//console.info('decodeLead()');
 		/*
 		0x050 | [0] 0=Mono, 1=Legato
@@ -187,15 +188,15 @@ function SidV2() {
 		patchData['volume']=_patch[0x052];
 		patchData['osc_phase_offset']=_patch[0x053];
 	}
-	
+
 	this.patch=function(){
 		return _patch;
 	}
-	
+
 	this.patchBin=function(){
 		return _bin;
 	}
-	
+
 	var patchName=function()
 	{
 		var name='';

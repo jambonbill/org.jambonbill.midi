@@ -2,7 +2,7 @@ var SID;
 
 $(function(){
 
-
+	/*
 	var context=null;   // the Web Audio "context" object
 	var _midiAccess=null;  // the MIDIAccess object.
 	var _portId;
@@ -10,64 +10,13 @@ $(function(){
 	var _outputs;
 	// patch up prefixes
     window.AudioContext=window.AudioContext||window.webkitAudioContext;
-
     context = new AudioContext();
 
     if (navigator.requestMIDIAccess)
         navigator.requestMIDIAccess({sysex:true}).then( onMIDIInit, onMIDIReject );
     else
         console.warn("No MIDI support present in your browser");
-
-
-	function onMIDIInit(midi) {
-
-		//console.log('onMIDIInit(midi)',midi);
-		_midiAccess = midi;
-
-
-		var inputs=_midiAccess.inputs.values();
-
-	  	for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
-	    	input.value.onmidimessage = MIDIMessageEventHandler;
-	    	//_inputs.push(input.value);
-	  	}
-
-		var outputs=_midiAccess.outputs.values();
-
-		_outputs=[];
-		for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
-			_outputs.push(output.value);
-		}
-
-		console.log(_outputs);
-
-		/*
-		for(var i in _outputs){
-			var x = document.getElementById("midi_outputs");
-			var option = document.createElement("option");
-			option.value = _outputs[i].id;
-			option.text = _outputs[i].name;
-			x.add(option);
-		}
-		*/
-
-		if (_outputs.length==0) {
-			console.error("No MIDI output devices present");
-			//$('#midi_outputs').attr('disabled','disabled');
-	        return;
-		}else{
-			console.info(_outputs.length+" midi output(s) detected",_outputs);
-		}
-
-
-	    if ($.cookie('midi_portId')) {
-	        _portId=$.cookie('midi_portId');
-	        $.midiPortId(_portId);
-	    }else{
-	        $('#boxLog .box-body').html('Midi ready. Select midi output');
-	        //$('#midi_outputs').focus();
-	    }
-	}
+	*/
 
 
 	function MIDIMessageEventHandler(event) {
@@ -170,7 +119,7 @@ $(function(){
     	return true;
     }
 
-
+    /*
     $.midiAccess=function(){
     	return _midiAccess;
     }
@@ -211,7 +160,7 @@ $(function(){
 	    $.cookie('midi_portId', _portId);
 	    return _portId;
 	}
-
+	*/
 
 	var engines=['Lead','Bassline','Drum','Multi'];
 	var _files;
@@ -237,12 +186,13 @@ $(function(){
 		//console.info('displayPatches()',_files);
 
 		var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
+
 		htm+='<thead>';
 		htm+='<th>Filename</th>';
 		htm+='<th>Name</th>';
-		htm+='<th>Engine</th>';
-		htm+='<th>Bank</th>';
-		htm+='<th>Checksum</th>';
+		htm+='<th width=80>Engine</th>';
+		htm+='<th width=20>Bnk</th>';
+		htm+='<th width=20 title="checksum">CS</th>';
 		htm+='<thead>';
 		htm+='</thead>';
 		htm+='<tbody>';
@@ -253,8 +203,8 @@ $(function(){
 			htm+='<td>'+o.basename;
 			htm+='<td>'+o.patch.name;
 			htm+='<td>'+engines[o.patch.engine];
-			htm+='<td>'+o.patch.bank;
-			htm+='<td>'+o.patch.checksum;
+			htm+='<td style="text-align:center">'+o.patch.bank;
+			htm+='<td style="text-align:right">'+o.patch.checksum.toUpperCase();
 		}
 
 		htm+='</tbody>';
@@ -270,10 +220,12 @@ $(function(){
 			console.log(e,filename);
 
 			$("#myModal").modal('show');
-
+			$("#boxPatches .overlay").show();
 			$.post('ctrl.php',{'do':'preview','file':filename},function(json){
+				$("#boxPatches .overlay").hide();
 				console.log(json);
 				SID.decode64(json.bin);
+				$('#modalPatch').modal('show');
 			}).error(function(e){
 				console.error(e.responseText);
 			});
