@@ -15,6 +15,7 @@
 	    "plugins/jQuery/jquery.cookie.js",
 	    "plugins/jQuery/jquery-tablesorter.min.js",
     	"bootstrap/js/bootstrap.min.js",
+    	"dist/js/FileSaver.min.js",
     	"dist/js/app.js"
 	],
 	"layout":{
