@@ -5,18 +5,17 @@
    		"class":"header"
    	},
 
-  "conf":{
-      "text":"Config",
-      "icon":"fa fa-cog",
-      "url":"#btn",
-      "id":"btnMenuConfig"
-    },
-
    	"monitor":{
 		"text":"Monitor",
 		"icon":"fa fa-search",
 		"url":"monitor/"
    	},
+
+    "router":{
+      "text":"Router",
+      "icon":"fa fa-terminal",
+      "url":"router/"
+    },
 
    	"keyboard":{
 		"text":"Keyboard",
