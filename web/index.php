@@ -1,2 +1,2 @@
 <?php
-header("location:./monitor");
+header("location:./home");
