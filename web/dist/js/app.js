@@ -544,7 +544,25 @@ var midiAccess=null;  // the global MIDIAccess object.
 $(function(){
   
     //console.info("midi.app.js");
-  
+    $.onMIDIInit=function(event){};
+    $.onMIDIReject=function(event){};
+    $.MIDIMessageEventHandler=function(event){};
+
+    var onMIDIInit=function(midi) {                
+        console.info('app.js midi init!');
+        midiAccess = midi;
+        $.onMIDIInit(midi);
+    }
+
+
+    var onMIDIReject=function(err) {
+        console.error("The MIDI system failed to start.");
+        $.onMIDIReject(err);
+    }
+    
+   
+    
+    
     // patch up prefixes
     window.AudioContext=window.AudioContext||window.webkitAudioContext;
     var context = new AudioContext();
@@ -554,22 +572,7 @@ $(function(){
     else
         console.warn("No MIDI support present in your browser");
 
-    function onMIDIInit(midi) {                
-        //console.info('midi init!');
-        midiAccess = midi;
-      }
-
-
-    function onMIDIReject(err) {
-        console.error("The MIDI system failed to start.");
-        //$('#midi_outputs').attr('disabled','disabled')
-    }
-
-    $('#btnMenuConfig').click(function(){
-        alert("#btnMenuConfig.click");
-    });
-
-    $.MIDIMessageEventHandler=function(event){};
+       
     
     $.midiInputs=function(){
         if (!midiAccess) {
