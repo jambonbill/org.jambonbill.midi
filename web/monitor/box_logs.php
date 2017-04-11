@@ -8,7 +8,8 @@ $box->title("Incoming midi events");
 $box->icon("fa fa-list");
 $box->id("boxIncoming");
 $box->boxTools("<button class=\"btn btn-box-tool\" title='Clear' id=btnClearLogs><i class='fa fa-times'></i></button> ");
-$box->collapsable(true);
+
 $box->body("<pre>Waiting...</pre>");
-//$box->footer($btn);
+$box->collapsable(true);
+$box->loading(1);
 echo $box;

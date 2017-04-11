@@ -88,11 +88,11 @@ $(function(){
 
 
 
-	function init(){
-
-		console.info('init()');
-
-		// Midi channel selector //
+	$.onMIDIInit=function(midi) {                
+        
+        midiAccess = midi;
+        
+        // Midi channel selector //
 	    $('ul>li').click(function(e){
 	    	$('ul>li').removeClass("active");
 	    	$(this).addClass("active");
@@ -127,7 +127,9 @@ $(function(){
 			$('select#midiOutput').val($.cookie('portId'));
 			$('a#btnLoadSysex').attr('disabled',false);
 		}
-
+		
+		$('.overlay').hide();
+		
 		$.MIDIMessageEventHandler=function(event){
 	    	var msg=event.data[0];
 	    	var midichannel=event.data[0] & 0x0f;
@@ -142,7 +144,7 @@ $(function(){
 	    		hstr+=hx.toUpperCase();
 	    	}
 	    }
-    }
 
-	setTimeout(init,500);
+
+    }
 });

@@ -1,9 +1,8 @@
 <?php
 $box=new LTE\Box;
+$box->id("boxSend");
 $box->title("Send");
 $box->icon("fa fa-text");
-$box->id("boxSend");
-$box->collapsable(true);
 $box->body("<textarea class='form-control' id=midi_send rows=10 placeholder='Paste your hex code here' style='font-family:monospace;width:100%' readonly></textarea>");
 $btns=[];
 $btns[]="<div class=row>";
@@ -16,6 +15,8 @@ $btns[]="<select class=form-control id=midiOutput readonly><option>Select midi o
 $btns[]="</div>";
 $btns[]="</div>";
 $box->footer($btns);
+$box->loading(true);
+$box->collapsable(true);
 echo $box;
 
 

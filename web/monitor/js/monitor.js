@@ -1,60 +1,3 @@
-// jambonbill midi.js 
-// http://www.w3.org/TR/webmidi/#examples-of-web-midi-api-usage-in-javascript
-
-var context=null;   // the Web Audio "context" object
-var midiAccess=null;  // the MIDIAccess object.
-var midiInputs=[];
-var logs=[];
-
-window.addEventListener('load', function() {
-  // patch up prefixes
-  window.AudioContext=window.AudioContext||window.webkitAudioContext;
-
-  context = new AudioContext();
-
-  if (navigator.requestMIDIAccess)
-    navigator.requestMIDIAccess().then( onMIDIInit, onMIDIReject );
-  else
-    console.log("No MIDI support present in your browser")
-
-} );
-
-
-function onMIDIInit(midi) {
-  
-  //console.log('onMIDIInit(midi)',midi);
-  console.log('MIDI ready!');
-  midiAccess = midi;
-
-  var inputs=midiAccess.inputs.values();
-  midiInputs=[];
-  for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
-    //console.log("input",input);
-    input.value.onmidimessage = MIDIMessageEventHandler;
-    midiInputs.push(input.value);
-  }
-  
-  //console.log(midiInputs);
-  
-  for(var i in midiInputs){
-    var x = document.getElementById("midi_inputs");
-    var option = document.createElement("option");
-    option.value = midiInputs[i].id;
-    option.text = midiInputs[i].name;
-    x.add(option);
-  }
-
-  $('#midi_inputs').attr('size',midiInputs.length);
-
-  
-  if (midiInputs.length==0)
-    console.error("No MIDI input devices present.");
-}
-
-function onMIDIReject(err) {
-  console.error("The MIDI system failed to start.");
-}
-
 function msgType(msg){
   
   var msg=msg & 0xf0;
@@ -231,11 +174,5 @@ $(function(){
 
     });
 
-    // SHIT Midi BPM Counter
-    /*
-    setInterval(function(){
-        console.info("BPM",continues);
-        //continues=0;
-    }, 1000);
-    */
+    
 });

@@ -10,7 +10,7 @@ $admin->title("MIDI monitor");
 echo $admin;
 ?>
 <section class="content-header">
-  <h1><i class='fa fa-list'></i> MIDI Monitor
+  <h1>MIDI Monitor
   <small></small>
   </h1>
 </section>
