@@ -1,12 +1,12 @@
 <?php
-// MIDI 
+// MIDI
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 
 require __DIR__."/../../vendor/autoload.php";
 
-$admin = new LTE\AdminLte2();
-$admin->title("MIDI");
+$admin = new LTE\AdminLte2;
+$admin->title("MIDI monitor");
 echo $admin;
 ?>
 <section class="content-header">
