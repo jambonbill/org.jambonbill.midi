@@ -1,10 +1,9 @@
 <?php
-// test.php
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 
 require __DIR__."/../../vendor/autoload.php";
-require __DIR__."/../../src/MIDI/midi.class.php";
+//require __DIR__."/../../src/MIDI/midi.class.php";
 
 $admin = new LTE\AdminLte2();
 $admin->title("midi.jambonbill.org");
@@ -12,12 +11,10 @@ $admin->title("midi.jambonbill.org");
 $META=[];//http://ogp.me
 
 // TWITTER META
-//$META[]=['name'=>"twitter:card",    'content'=>'summary'];
-$META[]=['name'=>"twitter:card",    'content'=>'summary_large_image'];
+$META[]=['name'=>"twitter:card",    'content'=>'summary'];
 $META[]=['name'=>"twitter:site",    'content'=>"@jambonbill"];
 $META[]=['name'=>"twitter:title",   'content'=>"midi.jambonbill.org"];
 $META[]=['name'=>"twitter:description", 'content'=>'MIDI tools and stuff'];
-
 $META[]=['name'=>"twitter:image",   'content'=>'http://midi.jambonbill.org/dist/img/midi.gif'];
 
 // FACEBOOK META
@@ -33,7 +30,6 @@ $META[]=['name'=>"description",   'content'=>'MIDI tools and stuff'];
 
 //
 $admin->meta($META);//Set Meta's
-
 
 echo $admin;
 ?>
