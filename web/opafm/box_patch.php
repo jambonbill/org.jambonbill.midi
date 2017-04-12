@@ -41,7 +41,7 @@ $htm.='<label>Algorithm</label><br />';
 $htm.='<div class="btn-group" role="group">';
 foreach($progs as $k=>$prog){
 	$htm.='<button type="button" class="btn btn-default algorithm" title="Algorithm '.($k+1).'" data-id='.($k+1).'>';
-	$htm.="<img src=$prog width=40 height=40>";
+	$htm.="<img src=$prog width=32 height=32>";
 	$htm.='</button>';
 }
 $htm.='</div>';
@@ -55,16 +55,22 @@ $box->body($htm);
 $btns=[];
 $btns[]='<div class=row>';
 $btns[]='<div class="col-md-6">';
-$btns[]='<a href=#btn class="btn btn-default" id=btnOpen><i class="fa fa-folder-open-o"></i> Open xml patch</a> ';
-$btns[]='<a href=#btn class="btn btn-default" id=btnSave><i class="fa fa-save"></i> Save as xml</a> ';
-$btns[]='<a href=#btn class="btn btn-default" id=btnPing disabled>Ping</a> ';
-$btns[]='<a href=#btn class="btn btn-default" id=btnTest disabled><i class="fa fa-play"></i> Test (middle C)</a>';
+$btns[]='<div class="btn-group">';
+$btns[]='<a href=#btn class="btn btn-default" id=btnOpen title="Load xml patch"><i class="fa fa-folder-open-o"></i></a>';
+$btns[]='<a href=#btn class="btn btn-default" id=btnSave><i class="fa fa-save"></i></a>';
+//$btns[]='<a href=#btn class="btn btn-default" id=btnPing disabled>Ping</a>';
+$btns[]='<a href=#btn class="btn btn-default" id=btnTest disabled><i class="fa fa-play"></i> Test</a>';
 $btns[]='</div>';
-$btns[]='<div class="col-md-6">';
-$btns[]="<select class=form-control id=midiOutput><option>Select midi output</select>";
+
+$btns[]='</div>';
+$btns[]='<div class="col-md-3">';
+$btns[]="<select class=form-control id=midiInput></select>";
+$btns[]='</div>';
+$btns[]='<div class="col-md-3">';
+$btns[]="<select class=form-control id=midiOutput></select>";
 $btns[]='</div>';
 $btns[]='</div>';
 $box->footer($btns);
 $box->collapsable(true);
-$box->loading(false);
+$box->loading(1);
 echo $box;

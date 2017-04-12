@@ -30,7 +30,7 @@ echo $admin;
 
 	<?php
 	for($OP=1;$OP<=4;$OP++) {
-		echo '<div class="col-sm-5">';
+		echo '<div class="col-sm-6">';
 		include "box_operator.php";
 		echo '</div>';
 	}

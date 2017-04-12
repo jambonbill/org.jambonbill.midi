@@ -1,7 +1,19 @@
 // jambonbill opafm.js
 // http://www.w3.org/TR/webmidi/#examples-of-web-midi-api-usage-in-javascript
-
 $(function(){
+
+	$.onMIDIInit=function(midi) {                    
+        midiAccess = midi;
+        
+        $('.overlay').hide();
+    }
+
+	
+
+    $.onMIDIReject=function(err) {
+        console.error("The MIDI system failed to start.",err);
+        alert("The MIDI system failed to start");
+    }
 
 	$('button.algorithm').click(function(e){
 		//console.log(e.currentTarget.dataset.id);

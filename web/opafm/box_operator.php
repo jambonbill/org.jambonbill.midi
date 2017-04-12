@@ -105,8 +105,9 @@ $box->title("Operator ".$OP);
 //$box->icon("fa fa-filter");
 $box->id("boxOperator$OP");
 //$box->boxTools("<button class=\"btn btn-box-tool\" title='Clear'><i class='fa fa-times'></i></button> ");
-//$box->collapsable(1);
-//$box->collapsed(1);
+
 $box->body($htm);
+$box->collapsable(1);
+$box->loading(1);
 echo $box;
 
