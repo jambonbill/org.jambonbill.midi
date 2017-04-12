@@ -1,7 +1,7 @@
 $(function(){
-	
-	$.onMIDIInit=function(midi) {                
-        
+
+	$.onMIDIInit=function(midi) {
+
         midiAccess = midi;
         //console.info('midi init!', midiAccess);
         displayInputs();
@@ -10,10 +10,10 @@ $(function(){
 
 
     $.onMIDIReject=function(err) {
-        console.error("The MIDI system failed to start.");
-        alert("The MIDI system failed to start.");
-    }	
-	
+        console.error(err);
+        alert("The MIDI system failed to start");
+    }
+
     function displayInputs(){
 		//console.info('displayInputs()');
 		var htm='<table class="table table-hover" style="cursor:pointer">';
@@ -22,7 +22,7 @@ $(function(){
 		htm+='<th>Manufacturer</th>';
 		//htm+='<th>State</th>';
 		htm+='</thead>';
-		
+
 		htm+='<tbody>';
 		var ins=$.midiInputs();
 		for(var i in ins){
@@ -34,14 +34,16 @@ $(function(){
 			//htm+='<td>'+o.state;
 		}
 		htm+='</tbody>';
+
 		if(ins.length==0){
 			htm='<pre>none</pre>';
 		}
+
 		$('#boxInputs .box-body').html(htm);
 		$('#boxInputs table').tablesorter();
 		$('#boxInputs .overlay').hide();
     }
-    
+
     function displayOutputs(){
     	//console.info('displayOutputs()');
 		var htm='<table class="table table-hover" style="cursor:pointer">';
@@ -50,7 +52,7 @@ $(function(){
 		htm+='<th>Manufacturer</th>';
 		//htm+='<th>State</th>';
 		htm+='</thead>';
-		
+
 		htm+='<tbody>';
 		var out=$.midiOutputs();
 		for(var i in out){
@@ -69,7 +71,7 @@ $(function(){
 		$('#boxOutputs .overlay').hide();
 		$('#boxOutputs table').tablesorter();
     }
-    
+
     $('#btnRefresh1,#btnRefresh2').click(function(){
     	displayInputs();
     	displayOutputs();
