@@ -153,7 +153,23 @@ function MIDIMessageEventHandler(event) {
 var filters=[];
 
 $(function(){
-  
+    
+    $.onMIDIInit=function(midi) {                    
+        midiAccess = midi;    
+        var ins=$.midiInputs();
+        var out=$.midiOutputs();
+        for(var i in ins){
+            var a=ins[i];
+            var s=document.getElementById("midiInput");
+            var o=document.createElement("option");
+            o.value=a.id;
+            o.text=a.name;
+            s.add(o);
+        }
+
+        $('.overlay').hide();
+    }
+
     $('#btnClearLogs').click(function(){
         //console.log('btnClear');
         clearLogs();
