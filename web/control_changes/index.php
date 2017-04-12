@@ -35,29 +35,11 @@ echo $admin;
 	?>
 	</div>
 
-	<div class='col-sm-3'>
-	<?php
-	include "box_cc.php";
-	?>
-	</div>
-
-	<div class='col-sm-3'>
-	<?php
-	include "box_cc.php";
-	?>
-	</div>
-
-	<div class='col-sm-3'>
-	<?php
-	include "box_cc.php";
-	?>
-	</div>
-
 </div>
 
 
 <script type="text/javascript" src='js/cc.js'></script>
 
 <?php
-$admin->footer("Jambonbill world organisation");
+$admin->footer("Jambonbill MIDI world organisation");
 $admin->end();
