@@ -5,6 +5,21 @@ $(function(){
 	$.onMIDIInit=function(midi) {                
         midiAccess = midi;
         console.info('midi init!', midiAccess);
+        
+        $.MIDIMessageEventHandler=function(event){
+            
+            var msg=event.data[0];
+            var midichannel=event.data[0] & 0x0f;
+            var type=msg & 0xf0;
+            if(type==0xf0){
+                continues++;
+                return;
+            }
+            //do something with CC's
+            console.info('$.MIDIMessageEventHandler(event)',event);
+            //logs.push({'t':new Date(),'msg':msg,'e':event});
+        }
+
         var ins=$.midiInputs();
 		var out=$.midiOutputs();
 		for(var i in ins){

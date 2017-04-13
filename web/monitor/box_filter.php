@@ -25,6 +25,6 @@ $box->icon("fa fa-filter");
 $box->id("boxFilters");
 //$box->boxTools("<button class=\"btn btn-box-tool\" title='Clear'><i class='fa fa-times'></i></button> ");
 $box->body($htm);
-$box->collapsed(1);
+$box->collapsable(0);
 $box->loading(1);
 echo $box;

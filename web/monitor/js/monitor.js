@@ -1,79 +1,3 @@
-function msgType(msg){
-  
-  var msg=msg & 0xf0;
-  
-  var msgtypes={
-    0x10:'0x10 ?',
-    0x20:'0x20 ?',
-    0x30:'0x30 ?',
-    0x40:'0x40 ?',
-    0x80:'Note off',
-    0x90:'Note on',
-    0xa0:'AfterTouch',
-    0xb0:'Control change',
-    0xc0:'Program change',
-    0xe0:'Pich wheel',
-    0xf0:'Continue'
-  }  
-  switch(msg){
-    case 0x90:
-        return   msgtypes[msg] + " <i class='text-muted'>C-0</i>";
-    case 0xb0:
-        return   msgtypes[msg] + " <i class='text-muted'>#0</i>";
-  }
-  return msgtypes[msg];
-}
-
-
-function dispLog()
-{
-    if(logs.length>20)logs.shift();
-    
-    var htm='<table class="table table-hover table-condensed">';
-    
-    htm+='<thead>';
-    htm+='<th width=100>Time</th>';
-    htm+='<th>Type</th>';
-    htm+='<th width=50>Msg</th>';
-    htm+='<th width=50>Chn</th>';
-    htm+='<th width=50>B1</th>';
-    htm+='<th width=50>B2</th>';
-    htm+='</thead>';
-    
-    htm+='<tbody>';
-    for(var i=0;i<logs.length;i++){
-      var d=logs[i].t;
-      var msg=logs[i].e.data[0];
-      var midichannel=msg & 0x0f;
-      htm+='<tr>';
-      htm+='<td>'+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"-"+d.getMilliseconds();
-      
-      //var msgtype=table-condensed
-
-      htm+='<td>'+msgType(msg);
-      htm+='<td>0x'+msg.toString(16);
-      
-      htm+='<td>'+(midichannel+1);
-      htm+='<td>';
-      if(logs[i].e.data[1])htm+=logs[i].e.data[1];
-      
-      htm+='<td>';
-      if(logs[i].e.data[2])htm+=logs[i].e.data[2];
-      //htm+='<td>';
-    }
-    htm+='</tbody>';
-    htm+='</table>';
-    
-    $('#boxIncoming .box-body').html(htm);
-}
-
-
-function clearLogs(){
-  console.log('clearLogs()');
-  logs=[];
-  dispLog();
-}
-
 /*
 http://www.gweep.net/~prefect/eng/reference/protocol/midispec.html
 Messages :
@@ -85,77 +9,32 @@ C = Program (patch) change
 D = Channel Pressure 
 E = Pitch Wheel
  */
-var continues=0;//bpm counter
-function MIDIMessageEventHandler(event) {
-  
-    //var msg=event.data[0] & 0xf0;
-    var msg=event.data[0];
-    var midichannel=event.data[0] & 0x0f;
-    var type=msg & 0xf0;
-    
-    if(type==0xf0){
-        continues++;
-    }
 
-    // Filter here
-    for(i in filters){
-        if(type==filters[i])return;
-    }
-
-    
-    //logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
-    logs.push({'t':new Date(),'msg':msg,'e':event});
-
-    dispLog();
-
-  // Mask off the lower nibble (MIDI channel, which we don't care about)
-  /*
-  switch (event.data[0] & 0xf0) {
-    
-    case 0x90://note on
-      
-      if (event.data[2]!=0) {  // if velocity != 0, this is a note-on message
-        var note=event.data[1];
-        var velo=event.data[2];
-        //console.log('note-on',event.data[0] & 0x0f,note,velo);
-        
-        // if velocity == 0, fall thru: it's a note-off
-      }
-      break;
-
-    case 0x80://note off
-      //noteOff(event.data[1]);
-      console.log('note-off',event.data[0] & 0x0f,event.data[1],event.data[2]);
-      break;
-    
-    case 0xb0://modulation
-      //console.log("modulation");
-      break;
-
-    case 0xe0://pitch
-      //console.log("pitch");
-      break;
-
-    case 0xf0://continue
-      //console.log("0xf0");
-      break;
-
-    default:
-      hexString = (event.data[0] & 0xf0).toString(16);
-      console.log(hexString);
-      //console.log('MIDIMessageEventHandler(event)',event);    
-      break;
-  }
-  */
-}
-
-
-var filters=[];
 
 $(function(){
     
+    var continues=0;//bpm counter
+    var filters=[];
+    var logs=[];
+    
     $.onMIDIInit=function(midi) {                    
-        midiAccess = midi;    
+        console.info('onMIDIInit');
+        midiAccess = midi;
+        
+        $.MIDIMessageEventHandler=function(event){
+            
+            var msg=event.data[0];
+            var midichannel=event.data[0] & 0x0f;
+            var type=msg & 0xf0;
+            if(type==0xf0){
+                continues++;
+                return;
+            }
+            console.info('$.MIDIMessageEventHandler(event)',event);
+            logs.push({'t':new Date(),'msg':msg,'e':event});
+            dispLog();//
+        }
+
         var ins=$.midiInputs();
         var out=$.midiOutputs();
         for(var i in ins){
@@ -166,8 +45,103 @@ $(function(){
             o.text=a.name;
             s.add(o);
         }
+        
+        
 
         $('.overlay').hide();
+    }
+    /*
+    $.MIDIMessageEventHandler(event) {
+        //var msg=event.data[0] & 0xf0;
+        console.info('$.MIDIMessageEventHandler(event)');
+        var msg=event.data[0];
+        var midichannel=event.data[0] & 0x0f;
+        var type=msg & 0xf0;
+        if(type==0xf0){
+            continues++;
+        }
+
+        
+        for(i in filters){// Filter here
+            if(type==filters[i])return;
+        }
+        
+        //logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
+        logs.push({'t':new Date(),'msg':msg,'e':event});
+        dispLog();//
+    }
+    */
+    
+    function msgType(msg){      
+        var msg=msg & 0xf0;
+        var msgtypes={
+            0x10:'0x10 ?',
+            0x20:'0x20 ?',
+            0x30:'0x30 ?',
+            0x40:'0x40 ?',
+            0x80:'Note off',
+            0x90:'Note on',
+            0xa0:'AfterTouch',
+            0xb0:'Control change',
+            0xc0:'Program change',
+            0xe0:'Pich wheel',
+            0xf0:'Continue'
+        }  
+        switch(msg){
+            case 0x90:
+                return   msgtypes[msg] + " <i class='text-muted'>C-0</i>";
+            case 0xb0:
+                return   msgtypes[msg] + " <i class='text-muted'>#0</i>";
+        }
+        return msgtypes[msg];
+    }
+    
+    function dispLog(){
+        if(logs.length>20)logs.shift();
+        
+        var htm='<table class="table table-hover table-condensed">';
+        
+        htm+='<thead>';
+        htm+='<th width=100>Time</th>';
+        htm+='<th>Type</th>';
+        htm+='<th width=50>Msg</th>';
+        htm+='<th width=50>Chn</th>';
+        htm+='<th width=50>B1</th>';
+        htm+='<th width=50>B2</th>';
+        htm+='</thead>';
+        
+        htm+='<tbody>';
+        for(var i=0;i<logs.length;i++){
+          var d=logs[i].t;
+          var msg=logs[i].e.data[0];
+          var midichannel=msg & 0x0f;
+          htm+='<tr>';
+          htm+='<td>'+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"-"+d.getMilliseconds();
+          
+          //var msgtype=table-condensed
+
+          htm+='<td>'+msgType(msg);
+          htm+='<td>0x'+msg.toString(16);
+          
+          htm+='<td>'+(midichannel+1);
+          htm+='<td>';
+          if(logs[i].e.data[1])htm+=logs[i].e.data[1];
+          
+          htm+='<td>';
+          if(logs[i].e.data[2])htm+=logs[i].e.data[2];
+          //htm+='<td>';
+        }
+        htm+='</tbody>';
+        htm+='</table>';
+        
+        $('#boxIncoming .box-body').html(htm);
+    }
+
+
+    function clearLogs(){
+      console.log('clearLogs()');
+      logs=[];
+      dispLog();
     }
 
     $('#btnClearLogs').click(function(){

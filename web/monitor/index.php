@@ -18,21 +18,18 @@ echo $admin;
 <section class="content">
 
 <div class='row'>
-	<div class='col-sm-6'>
+	<div class='col-sm-5'>
 	<?php include "box_inputs.php";?>
-	</div>
-
-	<div class='col-sm-6'>
 	<?php include "box_filter.php";?>
 	</div>
-
-</div>
-
-<div class='row'>
-	<div class='col-sm-12'>
+	<div class='col-sm-7'>
 	<?php include "box_logs.php";?>
 	</div>
 </div>
+
+
+	
+
 
 <script type="text/javascript" src='js/monitor.js'></script>
 <?php
