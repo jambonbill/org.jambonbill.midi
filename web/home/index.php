@@ -8,28 +8,7 @@ require __DIR__."/../../vendor/autoload.php";
 $admin = new LTE\AdminLte2();
 $admin->title("midi.jambonbill.org");
 
-$META=[];//http://ogp.me
-
-// TWITTER META
-$META[]=['name'=>"twitter:card",    'content'=>'summary'];
-$META[]=['name'=>"twitter:site",    'content'=>"@jambonbill"];
-$META[]=['name'=>"twitter:title",   'content'=>"midi.jambonbill.org"];
-$META[]=['name'=>"twitter:description", 'content'=>'MIDI tools and stuff'];
-$META[]=['name'=>"twitter:image",   'content'=>'http://midi.jambonbill.org/dist/img/midi.gif'];
-
-// FACEBOOK META
-$META[]=['property'=>'og:url',      'content'=>'http://midi.jambonbill.org'];
-$META[]=['property'=>"og:type",     'content'=>"article"];
-$META[]=['property'=>"og:title",    'content'=>"midi.jambonbill.org"];
-$META[]=['property'=>"og:description", 'content'=>'MIDI tools and stuff'];
-$META[]=['property'=>"og:image",    'content'=>'http://midi.jambonbill.org/dist/img/midi.gif'];
-$META[]=['property'=>"og:locale",   'content'=>"en_US"];
-
-// LAW DESCRIPTION
-$META[]=['name'=>"description",   'content'=>'MIDI tools and stuff'];
-
-//
-$admin->meta($META);//Set Meta's
+include "meta.php";
 
 echo $admin;
 ?>
