@@ -53,12 +53,6 @@
       "text":"OPA FM editor",
       "icon":"fa fa-terminal",
       "url":"opafm/"
-    },
-
-    "tracker":{
-      "text":"Tracker",
-      "icon":"fa fa-terminal",
-      "url":"tracker/"
     }
 
 
