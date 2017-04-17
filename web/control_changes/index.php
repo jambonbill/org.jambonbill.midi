@@ -9,12 +9,12 @@ $admin = new LTE\AdminLte2();
 $admin->title("Control changes");
 //include "custom_menu.php";
 echo $admin;
-
+//http://anthonyterrien.com/demo/knob/
 ?>
 <section class="content-header">
   <h1><i class='fa fa-terminal'></i> Control changes
   </h1>
-  http://anthonyterrien.com/demo/knob/
+
 </section>
 
 
@@ -28,13 +28,15 @@ echo $admin;
 	</div>
 </div>
 
-<div class='row'>
+<div class='row' id=ccboxes>
 
-	<div class='col-sm-3'>
+	<div class='col-sm-3 connectedSortable ui-sortable'>
+	Hello
 	<?php
-	include "box_cc.php";
+	//include "box_cc.php";
 	?>
 	</div>
+
 
 </div>
 
