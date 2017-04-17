@@ -54,7 +54,7 @@ $box->body($htm);
 
 $btns=[];
 $btns[]='<div class=row>';
-$btns[]='<div class="col-md-6">';
+$btns[]='<div class="col-md-3">';
 $btns[]='<div class="btn-group">';
 $btns[]='<a href=#btn class="btn btn-default" id=btnOpen title="Load xml patch"><i class="fa fa-folder-open-o"></i></a>';
 $btns[]='<a href=#btn class="btn btn-default" id=btnSave><i class="fa fa-save"></i></a>';
@@ -63,13 +63,22 @@ $btns[]='<a href=#btn class="btn btn-default" id=btnTest disabled><i class="fa f
 $btns[]='</div>';
 
 $btns[]='</div>';
+
 $btns[]='<div class="col-md-3">';
 $btns[]="<select class=form-control id=midiInput></select>";
 $btns[]='</div>';
+
 $btns[]='<div class="col-md-3">';
 $btns[]="<select class=form-control id=midiOutput></select>";
 $btns[]='</div>';
+
+
+$btns[]='<div class="col-md-3">';
+$btns[]="<select class=form-control id=midiChannel></select>";
 $btns[]='</div>';
+
+$btns[]='</div>';
+
 $box->footer($btns);
 $box->collapsable(true);
 $box->loading(1);
