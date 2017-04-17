@@ -55,6 +55,7 @@ include "midi_channels.php";
 </div>
 
 
+<script type="text/javascript" src='js/keymap.js'></script>
 <script type="text/javascript" src='js/keyboard.js'></script>
 
 <?php
