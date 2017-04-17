@@ -35,7 +35,7 @@ $htm[]="</div>";
 $box->body($htm);
 
 $btns=[];
-$btns[]="<a href=# class='btn btn-default' id=btnAdd>Add item</a>";
+$btns[]="<a href=# class='btn btn-primary' id=btnAdd>Add item</a>";
 $btns[]="<a href=# class='btn btn-default' id=btnClearAll>Clear all</a>";
 $btns[]="<a href=# class='btn btn-default' id=btnLoadConf>Load config</a>";
 $btns[]="<a href=# class='btn btn-default' id=btnSaveConf>Save config</a>";
