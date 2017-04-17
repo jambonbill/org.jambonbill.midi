@@ -20,14 +20,19 @@ $(function(){
             var msg=event.data[0];
             var midichannel=event.data[0] & 0x0f;
             var type=msg & 0xf0;
-            var ccNum=event.data[1];
-            var ccVal=event.data[2];
+            var a=event.data[1];
+            var b=event.data[2];
             switch(type){
                 
                 case 0xb0:    //CC
-                    console.log("CC#"+ccNum, "Chan#"+(midichannel+1), ccVal);
-                    $('footer.main-footer').html("Incoming CC#"+ccNum + " Val:"+ccVal);
+                    console.log("CC#"+a, "Chan#"+(midichannel+1), b);
+                    $('footer.main-footer').html("Incoming CC#"+a + " Val:"+b);
                     break;
+
+                case 0xc0://'Program change'
+                    $('footer.main-footer').html("Prg change#"+a);
+                    break;
+                
                 case 0xf0://con
                     //continues++;
                     break;
