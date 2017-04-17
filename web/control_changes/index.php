@@ -41,6 +41,7 @@ echo $admin;
 </div>
 
 
+<script type="text/javascript" src='js/keymap.js'></script>
 <script type="text/javascript" src='js/cc.js'></script>
 
 <?php

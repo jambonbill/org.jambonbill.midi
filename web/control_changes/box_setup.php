@@ -24,7 +24,7 @@ $htm[]="<select class=form-control id=midiOutput></select>";
 $htm[]="</div>";
 
 $htm[]="<div class=col-sm-3>";
-$htm[]="<label>Channel</label>";
+$htm[]="<label>Output channel</label>";
 $htm[]="<select class=form-control id=midiChannel>";
 for($i=0;$i<16;$i++)$htm[]="<option value=$i>Channel #".($i+1);
 $htm[]="</select>";

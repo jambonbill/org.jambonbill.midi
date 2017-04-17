@@ -1,6 +1,15 @@
 // jambonbill cc.js
-
 $(function(){
+
+    var config={
+        'name':'new',
+        'comment':'',
+        'midiInput':'',
+        'midiOutput':'',
+        'midichannel':'',
+        'widgets':[]
+    };
+    var _notes=[];//notes being played
 
 	$.onMIDIInit=function(midi) {
         midiAccess = midi;
@@ -11,13 +20,22 @@ $(function(){
             var msg=event.data[0];
             var midichannel=event.data[0] & 0x0f;
             var type=msg & 0xf0;
-            if(type==0xf0){
-                continues++;
-                return;
+            var ccNum=event.data[1];
+            var ccVal=event.data[2];
+            switch(type){
+                
+                case 0xb0:    //CC
+                    console.log("CC#"+ccNum, "Chan#"+(midichannel+1), ccVal);
+                    $('footer.main-footer').html("Incoming CC#"+ccNum + " Val:"+ccVal);
+                    break;
+                case 0xf0://con
+                    //continues++;
+                    break;
+                
+                default:
+                    console.info('$.MIDIMessageEventHandler(event)',event);
+                    break;
             }
-            //do something with CC's
-            console.info('$.MIDIMessageEventHandler(event)',event);
-            //logs.push({'t':new Date(),'msg':msg,'e':event});
         }
 
         var ins=$.midiInputs();
@@ -39,8 +57,8 @@ $(function(){
 		    s.add(o);
 		}
 
-        $( "#sortable" ).sortable();
-        $( "#sortable" ).disableSelection();
+       // $( "#sortable" ).sortable();
+        //$( "#sortable" ).disableSelection();
 
         $('.overlay').hide();
     }
@@ -50,6 +68,48 @@ $(function(){
         console.error("The MIDI system failed to start.");
         alert("The MIDI system failed to start.");
     }
+
+    function noteOn(midinote){
+        
+        for(var i in _notes)
+            if(_notes[i]==midinote)return;//dont play it twice
+        
+        console.info('noteOn(midinote)');
+        var chan=+$('select#midiChannel').val();
+        var portId=$('select#midiOutput').val();
+        var noteOnMessage = [0x90+chan, midinote, 0x7f];    // note on, middle C, full velocity
+        var output = midiAccess.outputs.get(portId);
+        output.send( noteOnMessage );
+        _notes.push(midinote);
+    }
+    
+    function noteOff(midinote){
+        console.info('noteOff(midinote)');
+        var chan=+$('select#midiChannel').val();
+        var portId=$('select#midiOutput').val();
+        var output = midiAccess.outputs.get(portId);
+        output.send( [0x80+chan, midinote, 0x40]);// note off
+        var nn=[];//new note buffer
+        for(var i in _notes){
+            if(_notes[i]!=midinote)nn.push(_notes[i]);
+        }
+        _notes=nn;
+    }
+
+    
+    // Keyboard //
+    _octave=2;
+    $("body").keydown(function(e) {
+        var n=keyCodeToMidiNote(e.keyCode);
+        if(!n)return;
+        noteOn(n+(_octave*12));
+    });
+    
+    $("body").keyup(function(e) {
+        var n=keyCodeToMidiNote(e.keyCode);
+        if(!n)return;
+        noteOff(n+(_octave*12));
+    });
 
 
 	$('input').change(function(e){
@@ -74,36 +134,6 @@ $(function(){
 
 	*/
 
-
-	var midiNote=function(chan,midinote,length) {
-
-      	var chan=0;
-        if(chan<0||chan>16){
-            return false;
-        }
-
-        if(midinote<0)return false;
-        if(midinote>128)return false;
-
-        if(!portId()){
-            console.warn('!portID');
-            return false;
-        }
-
-        var len=500.0;
-        if(length>0)len=length;
-
-        var noteOnMessage = [0x90+chan, midinote, 0x7f];    // note on, middle C, full velocity
-        var portId=$('select#midiOutput').val();
-        var output = midiAccess.outputs.get(portId);
-		if(!output){
-            console.error('!output');
-            return false;
-        }
-        output.send( noteOnMessage );  //omitting the timestamp means send immediately.
-        output.send( [0x80+chan, midinote, 0x40], window.performance.now() + len ); // Inlined array creation- note off, middle C,                                                                        // release velocity = 64, timestamp = now + 1000ms.
-        return true;
-    }
 
 
     //http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec/pgm.htm
@@ -154,7 +184,7 @@ $(function(){
     $('a#btnAdd').click(function(){
         console.info('btnAdd');
         var ccn=prompt("CC#",0);
-        cclib.push(itemCC("range",ccn));
+        config.widgets.push(itemCC("range",ccn));
         makeItReal();
         /*
         var htm='<div class="col-sm-3 connectedSortable ui-sortable">';
@@ -173,18 +203,26 @@ $(function(){
 
 
     $('a#btnSaveConf').click(function(){
-        console.info('a#btnSaveConf',cclib);
-        var data = JSON.stringify(cclib);
+        console.info('a#btnSaveConf');
+        
+        var filename="ccConfig.json";
+        filename=prompt("Enter filename",filename);
+        if(!filename)return false;
+        
+        var data = JSON.stringify(config);
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
-        element.setAttribute('download', "ccConfig.json");
+        element.setAttribute('download', filename);
         element.style.display = 'none';
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
     });
 
-    var cclib=[];//list of widgets/cc binding
+    
+
+    
+    //var cclib=[];//list of widgets/cc binding
 
     function itemCC(type,n){
     	return {
@@ -197,7 +235,8 @@ $(function(){
     }
 
     function clearLib(){
-        cclib=[];
+        //cclib=[];
+        config.widgets=[];
     }
 
     function newLib(){
@@ -212,12 +251,12 @@ $(function(){
 
         //newLib();
 
-        console.info('makeItReal()',cclib);
+        console.info('makeItReal()');
 
         $('div#ccboxes').html('');
 
-        for(var i in cclib){
-    		var o=cclib[i];
+        for(var i in config.widgets){
+    		var o=config.widgets[i];
     		console.log(o);
             var htm='<div class="col-sm-3 connectedSortable ui-sortable">';
             htm+=whtml(i);
@@ -228,7 +267,7 @@ $(function(){
 
     function whtml(i){
 
-        var o=cclib[i];
+        var o=config.widgets[i];
         var name=o.name;
         var type=o.type;
         var ccnum=o.ccnum;
@@ -238,7 +277,12 @@ $(function(){
         var htm='<div class="box box-solid" id="boxCC">';
         htm+='<div class="box-header ui-sortable-handle" style="cursor: move">';
         htm+='<h3 class="box-title"><i class="fa fa-text"></i> '+name+'</h3>';
-        //htm+='<div class="pull-right box-tools"><button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse"><i class="fa fa-minus"></i></button><button class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="" data-original-title="Remove"><i class="fa fa-times"></i></button></div>';
+        
+        htm+='<div class="pull-right box-tools">';
+        htm+='<button class="btn btn-box-tool" title="Edit" data-num='+ccnum+'><i class="fa fa-edit"></i></button>';
+        //htm+='<button class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="" data-original-title="Remove"><i class="fa fa-times"></i></button>';
+        htm+='</div>';
+        
         htm+='</div>';
         htm+='<div class="box-body" style="">';
         htm+='<div class="row">';
