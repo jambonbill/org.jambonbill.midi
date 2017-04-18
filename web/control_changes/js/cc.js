@@ -79,7 +79,7 @@ $(function(){
         for(var i in _notes)
             if(_notes[i]==midinote)return;//dont play it twice
 
-        console.info('noteOn(midinote)');
+        //console.info('noteOn(midinote)');
         var chan=+$('select#midiChannel').val();
         var portId=$('select#midiOutput').val();
         var noteOnMessage = [0x90+chan, midinote, 0x7f];    // note on, middle C, full velocity
@@ -89,7 +89,7 @@ $(function(){
     }
 
     function noteOff(midinote){
-        console.info('noteOff(midinote)');
+        //console.info('noteOff(midinote)');
         var chan=+$('select#midiChannel').val();
         var portId=$('select#midiOutput').val();
         var output = midiAccess.outputs.get(portId);
@@ -101,16 +101,59 @@ $(function(){
         _notes=nn;
     }
 
+    //http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec/pgm.htm
+    var sendPrgChange=function(chan,value)
+    {
+        var chan=0;
+
+        if(chan<0||chan>16){
+            return false;
+        }
+
+
+        var portId=$('select#midiOutput').val();
+        var output=midiAccess.outputs.get(portId);
+        if(!output){
+            console.error('!output');
+            return false;
+        }
+        output.send( [0xC0+chan, value] );
+        return true;
+    }
+
+
+    // Send control change
+    // http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec/ctllist.htm
+    var sendMidiCC=function(chan,ccNumber,value)
+    {
+
+        if(chan<0||chan>16){
+            return false;
+        }
+
+        var portId=$('select#midiOutput').val();
+        var output=midiAccess.outputs.get(portId);
+        if(!output) {
+            console.error('!output');
+            return false;
+        }
+        output.send( [0xB0+chan, +ccNumber, +value] );
+        console.info('sendMidiCC',+chan,+ccNumber,+value);
+        return true;
+    }
+
 
     // Keyboard //
     _octave=2;
     $("body").keydown(function(e) {
+        if (["INPUT","SELECT","TEXTAREA"].indexOf(e.target.nodeName) !== -1) return;
         var n=keyCodeToMidiNote(e.keyCode);
         if(!n)return;
         noteOn(n+(_octave*12));
     });
 
     $("body").keyup(function(e) {
+        if (["INPUT","SELECT","TEXTAREA"].indexOf(e.target.nodeName) !== -1) return;
         var n=keyCodeToMidiNote(e.keyCode);
         if(!n)return;
         noteOff(n+(_octave*12));
@@ -141,45 +184,7 @@ $(function(){
 
 
 
-    //http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec/pgm.htm
-    var sendPrgChange=function(chan,value)
-    {
-        var chan=0;
-
-        if(chan<0||chan>16){
-            return false;
-        }
-
-
-        var portId=$('select#midiOutput').val();
-        var output=midiAccess.outputs.get(portId);
-        if(!output){
-            console.error('!output');
-            return false;
-        }
-        output.send( [0xC0+chan, value] );
-        return true;
-    }
-
-
-    // Send control change
-    // http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec/ctllist.htm
-    var sendMidiCC=function(chan,ccNumber,value)
-    {
-        var chan=0;
-        if(chan<0||chan>16){
-            return false;
-        }
-
-        var portId=$('select#midiOutput').val();
-        var output=midiAccess.outputs.get(portId);
-        if(!output) {
-            console.error('!output');
-            return false;
-        }
-        output.send( [0xB0+chan, ccNumber, value] );
-        return true;
-    }
+    
 
 
 
@@ -188,15 +193,10 @@ $(function(){
 
     $('a#btnAdd').click(function(){
         console.info('btnAdd');
-        var ccn=prompt("CC#",0);
-        config.widgets.push(itemCC("range",ccn));
+        var ccn=+prompt("CC#",0);
+        if(ccn>128)return;
+        config.widgets.push(itemCC("range",+ccn));
         makeItReal();
-        /*
-        var htm='<div class="col-sm-3 connectedSortable ui-sortable">';
-        htm+=whtml();
-        htm+='</div>';
-        $('div#ccboxes').append(htm);
-        */
     });
 
 
@@ -233,7 +233,7 @@ $(function(){
     	return {
     		'type':type,
     		'name':type+' #'+n,
-    		'ccnum':n,
+    		'ccnum':+n,
             'value':0,
     		'channel':0
     	}
@@ -255,8 +255,9 @@ $(function(){
     function makeItReal(){
 
         //newLib();
-
         console.info('makeItReal()');
+        
+        saveToLocalStorage();
 
         $('div#ccboxes').html('');
 
@@ -270,7 +271,24 @@ $(function(){
     	}
         // bind events //
         $('input[type=range]').change(function(e){
-            console.log('range',e,e.currentTarget.dataset.i);
+            console.log('value',e.currentTarget.value);
+            var W=config.widgets[e.currentTarget.dataset.i];
+            W.value=e.currentTarget.value;
+            
+            var chan=+$('select#midiChannel').val();
+            console.warn("chan="+chan);
+            sendMidiCC(chan,W.ccnum,W.value);
+        });
+
+        $('button.btn-edit').click(function(e){
+            var i=e.currentTarget.dataset.i;
+            //console.log(e.currentTarget.dataset.i);
+            var W=config.widgets[i];
+            var name=prompt("Widget name", W.name);
+            if(name){
+                W.name=name;
+                makeItReal();
+            }
         });
     }
 
@@ -283,12 +301,17 @@ $(function(){
         var value=o.value;
         var channel=0;
 
+        if(ccnum==NaN){
+            console.error(o);
+            return;
+        }
+
         var htm='<div class="box box-solid">';
         htm+='<div class="box-header ui-sortable-handle" style="cursor: move">';
         htm+='<h3 class="box-title"><i class="fa fa-text"></i> '+name+'</h3>';
 
         htm+='<div class="pull-right box-tools">';
-        htm+='<button class="btn btn-box-tool" title="Edit" data-num='+ccnum+'><i class="fa fa-edit"></i></button>';
+        htm+='<button class="btn btn-box-tool btn-edit" title="Edit" data-i='+i+' data-num='+ccnum+'><i class="fa fa-edit"></i></button>';
         //htm+='<button class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="" data-original-title="Remove"><i class="fa fa-times"></i></button>';
         htm+='</div>';
 
@@ -296,7 +319,7 @@ $(function(){
         htm+='<div class="box-body" style="">';
         htm+='<div class="row">';
             htm+='<div class="col-sm-12">';
-            htm+='<label>CC#'+ccnum+'</label>';
+            htm+='<label>CC#0x'+ccnum.toString(16).toUpperCase()+'</label>';
             htm+='<input type="range" data-i='+i+' value='+value+' max="127">';
             //htm+='<button class="btn btn-lg btn-default">CC#00</button></div>';
             htm+='</div>';
@@ -306,7 +329,54 @@ $(function(){
         return htm;
     }
 
-    makeItReal();
+
+
+
+
+
+
+    // Save current state to localStorage
+    function saveToLocalStorage(){
+        // store everything to local storage
+        var data = JSON.stringify(config);
+        var ko=Math.round(data.length/1024);
+        try{
+            localStorage.setItem('midiCCConfig',data);
+            //console.log(ko + "kb saved to localStorage");
+        }
+        catch(e){
+            console.error("Error saving "+ko+"kb to localStorage")
+            //alert();
+        }
+        return true;
+    }
+
+    function refreshByLocalstorage(){
+        
+        //console.info('refreshByLocalstorage()');
+        var str;
+        var data;
+        try{
+            str=localStorage.getItem('midiCCConfig');
+            if(str.length>10){
+                data = JSON.parse(str);
+            }else{
+                return;
+            }
+        }
+        catch(e){
+            console.log("Error decoding localStorage data");
+            return;
+        }
+        
+        //console.log('refreshByLocalstorage','data.length='+Math.round(str.length/1024)+"k");
+        if (data) {
+            config=data;
+            makeItReal();
+        }
+    }
+    
 
 	console.info("cc.js");
+    refreshByLocalstorage();
 });
