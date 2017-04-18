@@ -23,7 +23,7 @@ $(function(){
             var a=event.data[1];
             var b=event.data[2];
             switch(type){
-                
+
                 case 0xb0:    //CC
                     console.log("CC#"+a, "Chan#"+(midichannel+1), b);
                     $('footer.main-footer').html("Incoming CC#"+a + " Val:"+b);
@@ -32,11 +32,11 @@ $(function(){
                 case 0xc0://'Program change'
                     $('footer.main-footer').html("Prg change#"+a);
                     break;
-                
+
                 case 0xf0://con
                     //continues++;
                     break;
-                
+
                 default:
                     console.info('$.MIDIMessageEventHandler(event)',event);
                     break;
@@ -75,10 +75,10 @@ $(function(){
     }
 
     function noteOn(midinote){
-        
+
         for(var i in _notes)
             if(_notes[i]==midinote)return;//dont play it twice
-        
+
         console.info('noteOn(midinote)');
         var chan=+$('select#midiChannel').val();
         var portId=$('select#midiOutput').val();
@@ -87,7 +87,7 @@ $(function(){
         output.send( noteOnMessage );
         _notes.push(midinote);
     }
-    
+
     function noteOff(midinote){
         console.info('noteOff(midinote)');
         var chan=+$('select#midiChannel').val();
@@ -101,7 +101,7 @@ $(function(){
         _notes=nn;
     }
 
-    
+
     // Keyboard //
     _octave=2;
     $("body").keydown(function(e) {
@@ -109,7 +109,7 @@ $(function(){
         if(!n)return;
         noteOn(n+(_octave*12));
     });
-    
+
     $("body").keyup(function(e) {
         var n=keyCodeToMidiNote(e.keyCode);
         if(!n)return;
@@ -209,11 +209,11 @@ $(function(){
 
     $('a#btnSaveConf').click(function(){
         console.info('a#btnSaveConf');
-        
+
         var filename="ccConfig.json";
         filename=prompt("Enter filename",filename);
         if(!filename)return false;
-        
+
         var data = JSON.stringify(config);
         var element = document.createElement('a');
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
@@ -224,9 +224,9 @@ $(function(){
         document.body.removeChild(element);
     });
 
-    
 
-    
+
+
     //var cclib=[];//list of widgets/cc binding
 
     function itemCC(type,n){
@@ -268,6 +268,10 @@ $(function(){
             htm+='</div>';
             $('div#ccboxes').append(htm);
     	}
+        // bind events //
+        $('input[type=range]').change(function(e){
+            console.log('range',e,e.currentTarget.dataset.i);
+        });
     }
 
     function whtml(i){
@@ -279,25 +283,25 @@ $(function(){
         var value=o.value;
         var channel=0;
 
-        var htm='<div class="box box-solid" id="boxCC">';
+        var htm='<div class="box box-solid">';
         htm+='<div class="box-header ui-sortable-handle" style="cursor: move">';
         htm+='<h3 class="box-title"><i class="fa fa-text"></i> '+name+'</h3>';
-        
+
         htm+='<div class="pull-right box-tools">';
         htm+='<button class="btn btn-box-tool" title="Edit" data-num='+ccnum+'><i class="fa fa-edit"></i></button>';
         //htm+='<button class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="" data-original-title="Remove"><i class="fa fa-times"></i></button>';
         htm+='</div>';
-        
+
         htm+='</div>';
         htm+='<div class="box-body" style="">';
         htm+='<div class="row">';
             htm+='<div class="col-sm-12">';
             htm+='<label>CC#'+ccnum+'</label>';
-            htm+='<input type="range" id="midi_send" value='+value+' max="127">';
+            htm+='<input type="range" data-i='+i+' value='+value+' max="127">';
             //htm+='<button class="btn btn-lg btn-default">CC#00</button></div>';
             htm+='</div>';
         htm+='</div>';
-            //htm+='<div class="overlay" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>';
+        //htm+='<div class="overlay" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>';
         htm+='</div>';
         return htm;
     }
