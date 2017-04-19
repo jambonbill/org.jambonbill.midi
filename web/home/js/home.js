@@ -1,5 +1,7 @@
 $(function(){
-
+	
+	'use strict';
+	
 	$.onMIDIInit=function(midi) {
 
         midiAccess = midi;

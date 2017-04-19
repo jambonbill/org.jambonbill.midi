@@ -8,18 +8,20 @@ $htm=[];
 
 $htm[]="<div class=row>";
 
-$htm[]='<div class=col-sm-3>';
-$htm[]='<label>Name</label>';
-$htm[]='<input type=text class="form-control" id=patch_name placeholder="Config name">';
+$htm[]='<div class=col-sm-6>';
+$htm[]='<label>CC Config Name</label>';
+$htm[]='<input type=text class="form-control" id=configName placeholder="Config name">';
 $htm[]='</div>';
 
+/*
 $htm[]="<div class=col-sm-3>";
 $htm[]="<label>Input</label>";
 $htm[]="<select class=form-control id=midiInput></select>";
 $htm[]="</div>";
+*/
 
 $htm[]="<div class=col-sm-3>";
-$htm[]="<label>Output</label>";
+$htm[]="<label>Midi output</label>";
 $htm[]="<select class=form-control id=midiOutput></select>";
 $htm[]="</div>";
 

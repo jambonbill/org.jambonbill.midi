@@ -1,5 +1,7 @@
 // jambonbill cc.js
 $(function(){
+    
+    'use strict';
 
     var config={
         'name':'new',
@@ -45,7 +47,8 @@ $(function(){
 
         var ins=$.midiInputs();
 		var out=$.midiOutputs();
-		for(var i in ins){
+		/*
+        for(var i in ins){
 			var a=ins[i];
 			var s=document.getElementById("midiInput");
 		    var o=document.createElement("option");
@@ -53,6 +56,7 @@ $(function(){
 		    o.text=a.name;
 		    s.add(o);
 		}
+        */
 		for(var i in out){
 			var a=out[i];
 			var s=document.getElementById("midiOutput");
@@ -62,9 +66,8 @@ $(function(){
 		    s.add(o);
 		}
 
-       // $( "#sortable" ).sortable();
+        // $( "#sortable" ).sortable();
         //$( "#sortable" ).disableSelection();
-
         $('.overlay').hide();
     }
 
@@ -102,6 +105,7 @@ $(function(){
     }
 
     //http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec/pgm.htm
+    /*
     var sendPrgChange=function(chan,value)
     {
         var chan=0;
@@ -109,7 +113,6 @@ $(function(){
         if(chan<0||chan>16){
             return false;
         }
-
 
         var portId=$('select#midiOutput').val();
         var output=midiAccess.outputs.get(portId);
@@ -120,7 +123,7 @@ $(function(){
         output.send( [0xC0+chan, value] );
         return true;
     }
-
+    */
 
     // Send control change
     // http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec/ctllist.htm
@@ -144,7 +147,7 @@ $(function(){
 
 
     // Keyboard //
-    _octave=2;
+    var _octave=2;
     $("body").keydown(function(e) {
         if (["INPUT","SELECT","TEXTAREA"].indexOf(e.target.nodeName) !== -1) return;
         var n=keyCodeToMidiNote(e.keyCode);
@@ -167,28 +170,7 @@ $(function(){
 		console.info('OP='+OP,"name="+nam,"value="+val);
 	});
 
-	/*
-	$('#btnOpen').click(function(){
-		console.info('btnOpen');
-	});
-
-	$('#btnSave').click(function(){
-		console.info('btnSave');
-	});
-
-	$('#btnTest').click(function(){
-		console.info('btnTest');
-	});
-
-	*/
-
-
-
-    
-
-
-
-
+	
 
 
     $('a#btnAdd').click(function(){
@@ -224,8 +206,45 @@ $(function(){
         document.body.removeChild(element);
     });
 
+    
+    $('#btnUpdate').click(function(){
+        var i=$('#wnum').val();
+        var W=config.widgets[i];
+        console.log('#btnUpdate',i,W);
+        $('#modalWidget').modal('hide');
+        W.name=$('input#ccname').val();
+        W.ccnum=$('input#ccnumber').val();
+        W.value=$('input#ccvalue').val();
+        //W.channel=1;
+        W.comment=$('input#cccomment').val();
+        makeItReal();
+    });
 
+    
 
+    $('#btnDelete').click(function(){
+        console.log('#btnDelete');
+        var i=$('#wnum').val();
+        if(!confirm("Delete this widget #"+i+" ?"))return;
+        var NW=[];
+        for(var j in config.widgets){
+            if(j!=i){
+                NW.push(config.widgets[j]);
+            }
+            config.widgets=NW;
+        }
+        $('#modalWidget').modal('hide');
+        makeItReal();
+    });
+
+    $('input#configName').keyup(function(){
+        config.name=$('input#configName').val();
+        $('h1').html(config.name);
+    });
+
+    $('#modalWidget').on('shown.bs.modal',function(){
+        $('input#ccname').focus();
+    });
 
     //var cclib=[];//list of widgets/cc binding
 
@@ -235,7 +254,8 @@ $(function(){
     		'name':type+' #'+n,
     		'ccnum':+n,
             'value':0,
-    		'channel':0
+            'channel':0,
+    		'comment':'',
     	}
     }
 
@@ -280,20 +300,34 @@ $(function(){
             sendMidiCC(chan,W.ccnum,W.value);
         });
 
+        
         $('button.btn-edit').click(function(e){
             var i=e.currentTarget.dataset.i;
-            //console.log(e.currentTarget.dataset.i);
             var W=config.widgets[i];
+            console.log(W);
+            $('#modalWidget .modal-title').html(W.name);
+            $('input#wnum').val(i);
+            $('input#ccname').val(W.name);
+            $('input#ccnumber').val(W.ccnum);
+            $('input#ccvalue').val(W.value);
+            $('input#cccomment').val(W.comment);
+            /*            
             var name=prompt("Widget name", W.name);
             if(name){
                 W.name=name;
                 makeItReal();
             }
+            */
+            $('#modalWidget').modal('show');
         });
     }
 
+    
     function whtml(i){
-
+        if(!config.widgets[i]){
+            console.error("config.widgets["+i+"]");
+            return;
+        }
         var o=config.widgets[i];
         var name=o.name;
         var type=o.type;
