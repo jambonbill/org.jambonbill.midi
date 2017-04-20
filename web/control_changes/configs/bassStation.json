@@ -1,0 +1,13 @@
+{
+	"name":"BassStation",
+	"comment":"test test",
+	"midiInput":"",
+	"midiOutput":9,
+	"midichannel":"",
+	"widgets":[
+		{"type":"range","name":"Filter","ccnum":"44","value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"Resonance","ccnum":"45","value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"LFO","ccnum":"46","value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"Super deuxe","ccnum":"15","value":"65","channel":0,"comment":"Vla ty pas que ca marche !!"}
+	]
+}

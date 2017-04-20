@@ -1,0 +1,8 @@
+{"name":"MIDIBox","comment":"test test","midiInput":"","midiOutput":"","midichannel":10,
+	"widgets":[
+		{"type":"range","name":"MIDIResonance","ccnum":"40","value":"100","channel":0,"comment":"Yo"},
+		{"type":"range","name":"Super 10","ccnum":"10","value":"65","channel":0,"comment":"Vla ty pas que ca marche !!"},
+		{"type":"range","name":"Super 11","ccnum":"11","value":"65","channel":0,"comment":"Vla ty pas que ca marche !!"},
+		{"type":"range","name":"Super 12","ccnum":"12","value":"65","channel":0,"comment":"Vla ty pas que ca marche !!"},
+		{"type":"range","name":"Super 13","ccnum":"13","value":"65","channel":0,"comment":"Vla ty pas que ca marche !!"}
+	]}

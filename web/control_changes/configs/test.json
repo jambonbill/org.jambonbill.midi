@@ -1,0 +1,1 @@
+{"name":"Testnew","comment":"test test","midiInput":"","midiOutput":"","midichannel":"","widgets":[{"type":"range","name":"Resonance","ccnum":"44","value":"100","channel":0,"comment":"Yo"},{"type":"range","name":"Super deuxe","ccnum":"15","value":"65","channel":0,"comment":"Vla ty pas que ca marche !!"}]}
