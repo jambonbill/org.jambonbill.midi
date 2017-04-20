@@ -37,10 +37,16 @@ $htm[]="</div>";
 $box->body($htm);
 
 $btns=[];
+$btns[]='<div class="row">';
+$btns[]='<div class="col-sm-12">';
+$btns[]='<div class="btn-group">';
 $btns[]="<a href=# class='btn btn-primary' id=btnAdd>Add item</a>";
-$btns[]="<a href=# class='btn btn-default' id=btnClearAll>Clear all</a>";
-$btns[]="<a href=# class='btn btn-default' id=btnLoadConf>Load config</a>";
-$btns[]="<a href=# class='btn btn-default' id=btnSaveConf>Save config</a>";
+$btns[]="<a href=# class='btn btn-default' id=btnClearAll>Clear</a>";
+$btns[]="<a href=# class='btn btn-default' id=btnLoadConf>Load</a>";
+$btns[]="<a href=# class='btn btn-default' id=btnSaveConf>Save</a>";
+$btns[]="</div>";
+$btns[]="</div>";
+$btns[]="</div>";
 $box->footer($btns);
 
 $box->loading(1);

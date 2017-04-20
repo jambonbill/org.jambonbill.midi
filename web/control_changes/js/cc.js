@@ -103,8 +103,17 @@ $(function(){
         }
         _notes=nn;
     }
+    
+    $('select#midiOutput').change(function(){
+        config.midiOutput=$('select#midiOutput').val();
+    });
 
+    $.getConf=function(){
+        return config;
+    }
+    
     //http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec/pgm.htm
+    
     /*
     var sendPrgChange=function(chan,value)
     {
@@ -176,8 +185,11 @@ $(function(){
     $('a#btnAdd').click(function(){
         console.info('btnAdd');
         var ccn=+prompt("CC#",0);
-        if(ccn>128)return;
+        if(ccn>128){
+            return;
+        }
         config.widgets.push(itemCC("range",+ccn));
+
         makeItReal();
     });
 
@@ -187,6 +199,30 @@ $(function(){
         clearLib();
         makeItReal();
     });
+    
+    $('a#btnLoadConf').click(function(){
+        console.info('a#btnLoadConf');
+        $('#modalConfigs').modal('show');
+    });
+
+    $('#modalConfigs tbody>tr').click(function(e){
+        loadConfig(e.currentTarget.dataset.filename);
+    });
+    
+    
+    function loadConfig(fn){
+        console.info('loadConfig(fn)');
+        $.post('ctrl.php',{'do':'getConfig','filename':fn},function(json){
+            console.log(json);
+            if (json.config) {
+                config=json.config;
+                $('#modalConfigs').modal('hide');
+                makeItReal();
+            }
+        }).error(function(e){
+            console.error(e.responseText);
+        });
+    }
 
 
     $('a#btnSaveConf').click(function(){
@@ -228,11 +264,12 @@ $(function(){
         if(!confirm("Delete this widget #"+i+" ?"))return;
         var NW=[];
         for(var j in config.widgets){
+            var w=config.widgets[j]
             if(j!=i){
-                NW.push(config.widgets[j]);
+                NW.push(w);
             }
-            config.widgets=NW;
         }
+        config.widgets=NW;
         $('#modalWidget').modal('hide');
         makeItReal();
     });
@@ -255,6 +292,7 @@ $(function(){
     		'ccnum':+n,
             'value':0,
             'channel':0,
+            'color':'',
     		'comment':'',
     	}
     }
@@ -279,8 +317,16 @@ $(function(){
         
         saveToLocalStorage();
 
-        $('div#ccboxes').html('');
-
+        
+        
+        $('#boxSetup .box-title').html(config.name + " <small>midi output</small>");
+        $('input#configName').val(config.name);
+        
+        if (config.midichannel>0) {
+            $('select#midiChannel').val(config.midichannel);    
+        }
+        
+        $('div#ccboxes').html('');//
         for(var i in config.widgets){
     		var o=config.widgets[i];
     		console.log(o);
@@ -303,14 +349,6 @@ $(function(){
         
         $('button.btn-edit').click(function(e){
             var i=e.currentTarget.dataset.i;
-            var W=config.widgets[i];
-            console.log(W);
-            $('#modalWidget .modal-title').html(W.name);
-            $('input#wnum').val(i);
-            $('input#ccname').val(W.name);
-            $('input#ccnumber').val(W.ccnum);
-            $('input#ccvalue').val(W.value);
-            $('input#cccomment').val(W.comment);
             /*            
             var name=prompt("Widget name", W.name);
             if(name){
@@ -318,10 +356,21 @@ $(function(){
                 makeItReal();
             }
             */
+            popEdit(i)
             $('#modalWidget').modal('show');
         });
     }
 
+    function popEdit(i){
+        var W=config.widgets[i];
+        console.log(W);
+        $('#modalWidget .modal-title').html(W.name);
+        $('input#wnum').val(i);
+        $('input#ccname').val(W.name);
+        $('input#ccnumber').val(W.ccnum);
+        $('input#ccvalue').val(W.value);
+        $('input#cccomment').val(W.comment);
+    }
     
     function whtml(i){
         if(!config.widgets[i]){

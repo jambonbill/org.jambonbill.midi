@@ -45,6 +45,7 @@ echo $admin;
 <script type="text/javascript" src='js/cc.js'></script>
 
 <?php
+include "modal_configs.php";
 include "modal_widget.php";
 $admin->footer("Jambonbill MIDI world organisation");
 $admin->end();
