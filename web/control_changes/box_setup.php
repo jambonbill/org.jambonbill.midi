@@ -43,10 +43,10 @@ $btns[]='<div class="btn-group">';
 $btns[]="<a href=# class='btn btn-primary' id=btnAdd>Add item</a>";
 $btns[]="<a href=# class='btn btn-default' id=btnClearAll>Clear</a>";
 $btns[]="<a href=# class='btn btn-default' id=btnLoadConf>Load</a>";
-$btns[]="<a href=# class='btn btn-default' id=btnSaveConf>Save</a>";
-$btns[]="</div>";
-$btns[]="</div>";
-$btns[]="</div>";
+$btns[]='<a href=# class="btn btn-default" id=btnSaveConf><i class="fa fa-download"></i></a>';
+$btns[]='</div>';
+$btns[]='</div>';
+$btns[]='</div>';
 $box->footer($btns);
 
 $box->loading(1);

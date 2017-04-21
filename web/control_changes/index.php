@@ -40,10 +40,10 @@ echo $admin;
 
 </div>
 
-
+<link href="css/bootstrap-colorselector.css" rel="stylesheet" />
 <script type="text/javascript" src='js/keymap.js'></script>
 <script type="text/javascript" src='js/cc.js'></script>
-
+<script type="text/javascript" src='js/bootstrap-colorselector.js'></script>
 <?php
 include "modal_configs.php";
 include "modal_widget.php";

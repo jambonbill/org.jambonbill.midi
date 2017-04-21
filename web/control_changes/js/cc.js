@@ -1,6 +1,6 @@
 // jambonbill cc.js
 $(function(){
-    
+
     'use strict';
 
     var config={
@@ -103,7 +103,7 @@ $(function(){
         }
         _notes=nn;
     }
-    
+
     $('select#midiOutput').change(function(){
         config.midiOutput=$('select#midiOutput').val();
     });
@@ -111,9 +111,9 @@ $(function(){
     $.getConf=function(){
         return config;
     }
-    
+
     //http://www.blitter.com/~russtopia/MIDI/~jglatt/tech/midispec/pgm.htm
-    
+
     /*
     var sendPrgChange=function(chan,value)
     {
@@ -179,7 +179,7 @@ $(function(){
 		console.info('OP='+OP,"name="+nam,"value="+val);
 	});
 
-	
+
 
 
     $('a#btnAdd').click(function(){
@@ -199,7 +199,7 @@ $(function(){
         clearLib();
         makeItReal();
     });
-    
+
     $('a#btnLoadConf').click(function(){
         console.info('a#btnLoadConf');
         $('#modalConfigs').modal('show');
@@ -208,8 +208,8 @@ $(function(){
     $('#modalConfigs tbody>tr').click(function(e){
         loadConfig(e.currentTarget.dataset.filename);
     });
-    
-    
+
+
     function loadConfig(fn){
         console.info('loadConfig(fn)');
         $.post('ctrl.php',{'do':'getConfig','filename':fn},function(json){
@@ -228,8 +228,8 @@ $(function(){
     $('a#btnSaveConf').click(function(){
         console.info('a#btnSaveConf');
 
-        var filename="ccConfig.json";
-        filename=prompt("Enter filename",filename);
+        var filename=config.name+".json";
+        filename=prompt("Download as (enter filename)", filename);
         if(!filename)return false;
 
         var data = JSON.stringify(config);
@@ -242,7 +242,7 @@ $(function(){
         document.body.removeChild(element);
     });
 
-    
+
     $('#btnUpdate').click(function(){
         var i=$('#wnum').val();
         var W=config.widgets[i];
@@ -253,10 +253,11 @@ $(function(){
         W.value=$('input#ccvalue').val();
         //W.channel=1;
         W.comment=$('input#cccomment').val();
+        W.color=$('select#colorselector').val();
         makeItReal();
     });
 
-    
+
 
     $('#btnDelete').click(function(){
         console.log('#btnDelete');
@@ -292,7 +293,7 @@ $(function(){
     		'ccnum':+n,
             'value':0,
             'channel':0,
-            'color':'',
+            'color':'#EEEEEE',
     		'comment':'',
     	}
     }
@@ -314,18 +315,18 @@ $(function(){
 
         //newLib();
         console.info('makeItReal()');
-        
+
         saveToLocalStorage();
 
-        
-        
+
+
         $('#boxSetup .box-title').html(config.name + " <small>midi output</small>");
         $('input#configName').val(config.name);
-        
+
         if (config.midichannel>0) {
-            $('select#midiChannel').val(config.midichannel);    
+            $('select#midiChannel').val(config.midichannel);
         }
-        
+
         $('div#ccboxes').html('');//
         for(var i in config.widgets){
     		var o=config.widgets[i];
@@ -340,16 +341,16 @@ $(function(){
             console.log('value',e.currentTarget.value);
             var W=config.widgets[e.currentTarget.dataset.i];
             W.value=e.currentTarget.value;
-            
+
             var chan=+$('select#midiChannel').val();
             console.warn("chan="+chan);
             sendMidiCC(chan,W.ccnum,W.value);
         });
 
-        
+
         $('button.btn-edit').click(function(e){
             var i=e.currentTarget.dataset.i;
-            /*            
+            /*
             var name=prompt("Widget name", W.name);
             if(name){
                 W.name=name;
@@ -371,7 +372,7 @@ $(function(){
         $('input#ccvalue').val(W.value);
         $('input#cccomment').val(W.comment);
     }
-    
+
     function whtml(i){
         if(!config.widgets[i]){
             console.error("config.widgets["+i+"]");
@@ -389,7 +390,12 @@ $(function(){
             return;
         }
 
-        var htm='<div class="box box-solid">';
+        var style='';
+        if (o.color) {
+            style='style="border:solid '+o.color+'"';
+        }
+
+        var htm='<div class="box box-solid" '+style+'>';
         htm+='<div class="box-header ui-sortable-handle" style="cursor: move">';
         htm+='<h3 class="box-title"><i class="fa fa-text"></i> '+name+'</h3>';
 
@@ -435,7 +441,7 @@ $(function(){
     }
 
     function refreshByLocalstorage(){
-        
+
         //console.info('refreshByLocalstorage()');
         var str;
         var data;
@@ -451,15 +457,16 @@ $(function(){
             console.log("Error decoding localStorage data");
             return;
         }
-        
+
         //console.log('refreshByLocalstorage','data.length='+Math.round(str.length/1024)+"k");
         if (data) {
             config=data;
             makeItReal();
         }
     }
-    
+
 
 	console.info("cc.js");
     refreshByLocalstorage();
+    $('#colorselector').colorselector();
 });

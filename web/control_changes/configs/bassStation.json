@@ -1,13 +1,25 @@
 {
-	"name":"BassStation",
-	"comment":"test test",
+	"name":"Novation BassStation",
+	"comment":"Novation BassStation rack",
 	"midiInput":"",
 	"midiOutput":9,
-	"midichannel":"",
+	"midichannel":9,
 	"widgets":[
-		{"type":"range","name":"Filter","ccnum":"44","value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"Resonance","ccnum":"45","value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"LFO","ccnum":"46","value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"Super deuxe","ccnum":"15","value":"65","channel":0,"comment":"Vla ty pas que ca marche !!"}
+		{"type":"range","name":"Volume","ccnum":7,"value":100,"channel":0,"color":"#3c8dbc"},
+		{"type":"range","name":"Filt. freq.","ccnum":105,"value":100,"channel":0,"color":"#cc0000"},
+		{"type":"range","name":"Filt. reso.","ccnum":106,"value":100,"channel":0,"color":"#cc0000"},
+		{"type":"range","name":"Filt. mod.","ccnum":107,"value":100,"channel":0,"color":"#cc0000"},
+		{"type":"range","name":"Env1 attack","ccnum":108,"value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"Env1 decay","ccnum":109,"value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"Env1 sustain","ccnum":110,"value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"Env1 release","ccnum":111,"value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"Env1 velocity","ccnum":112,"value":"100","channel":0,"comment":"Bass"},
+
+		{"type":"range","name":"Env2 attack","ccnum":114,"value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"Env2 decay","ccnum":115,"value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"Env2 sustain","ccnum":116,"value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"Env2 release","ccnum":117,"value":"100","channel":0,"comment":"Bass"},
+		{"type":"range","name":"Env2 velocity","ccnum":118,"value":"100","channel":0,"comment":"Bass"}
+
 	]
 }
