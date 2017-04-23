@@ -1,17 +1,20 @@
 {
 	"name":"MBSIDV2 Lead",
 	"url":"http://svnmios.midibox.org/filedetails.php?repname=svn.mios&path=%2Ftrunk%2Fapps%2Fsynthesizers%2Fmidibox_sid_v2%2Fdoc%2Fmbsidv2_cc_chart.txt",
-	"comment":"test test",
-	"midiInput":"",
-	"midiOutput":"",
-	"midichannel":10,
 	
 	"widgets":[
-		{"type":"range","name":"Knob #1","ccnum":1},
-		{"type":"range","name":"Osc.phase offset","ccnum":2},
-		{"type":"range","name":"Osc.detune","ccnum":3},
-		{"type":"range","name":"Filt.Cutoff","ccnum":4},
-		{"type":"range","name":"Filt.Reso","ccnum":5},
-		{"type":"range","name":"Volume","ccnum":7}
+		{"type":"range","name":"Knob #1","cc":1},
+		{"type":"range","name":"Knob #2","cc":16},
+		{"type":"range","name":"Knob #3","cc":17},
+		{"type":"range","name":"Knob #4","cc":18},
+		{"type":"range","name":"Knob #5","cc":19},
+
+		{"type":"range","name":"Osc.phase offset","cc":2},
+		{"type":"range","name":"Osc.detune","cc":3},
+		{"type":"range","name":"Filt.Cutoff","cc":4},
+		{"type":"range","name":"Filt.Reso","cc":5},
+		{"type":"range","name":"Volume","cc":7},
+		{"type":"button","name":"All notes off","cc":123}
+
 	]
 }

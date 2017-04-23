@@ -9,17 +9,17 @@
 	"midichannel":10,
 	
 	"widgets":[
-		{"type":"range","name":"Filter type","ccnum":27},
-		{"type":"range","name":"Filter cutoff","ccnum":74},
-		{"type":"range","name":"Filter resonance","ccnum":71},
-		{"type":"range","name":"Amp Atack","ccnum":73},
-		{"type":"range","name":"Amp Decay","ccnum":75},
-		{"type":"range","name":"Amp Release","ccnum":72},
-		{"type":"range","name":"FX1","ccnum":115},
-		{"type":"range","name":"FX2","ccnum":116},
-		{"type":"range","name":"FX1 Control1","ccnum":13},
-		{"type":"range","name":"Arp type","ccnum":6},
-		{"type":"range","name":"Arp Latch","ccnum":13},
-		{"type":"range","name":"Arp Gate time","ccnum":13}
+		{"type":"range","name":"Filter type","cc":27},
+		{"type":"range","name":"Filter cutoff","cc":74},
+		{"type":"range","name":"Filter resonance","cc":71},
+		{"type":"range","name":"Amp Atack","cc":73},
+		{"type":"range","name":"Amp Decay","cc":75},
+		{"type":"range","name":"Amp Release","cc":72},
+		{"type":"range","name":"FX1","cc":115},
+		{"type":"range","name":"FX2","cc":116},
+		{"type":"range","name":"FX1 Control1","cc":13},
+		{"type":"range","name":"Arp type","cc":6},
+		{"type":"range","name":"Arp Latch","cc":13},
+		{"type":"range","name":"Arp Gate time","cc":13}
 	]
 }

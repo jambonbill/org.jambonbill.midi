@@ -1,25 +1,22 @@
 {
 	"name":"Novation BassStation",
 	"comment":"Novation BassStation rack",
-	"midiInput":"",
-	"midiOutput":9,
 	"midichannel":9,
 	"widgets":[
-		{"type":"range","name":"Volume","ccnum":7,"value":100,"channel":0,"color":"#3c8dbc"},
-		{"type":"range","name":"Filt. freq.","ccnum":105,"value":100,"channel":0,"color":"#cc0000"},
-		{"type":"range","name":"Filt. reso.","ccnum":106,"value":100,"channel":0,"color":"#cc0000"},
-		{"type":"range","name":"Filt. mod.","ccnum":107,"value":100,"channel":0,"color":"#cc0000"},
-		{"type":"range","name":"Env1 attack","ccnum":108,"value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"Env1 decay","ccnum":109,"value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"Env1 sustain","ccnum":110,"value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"Env1 release","ccnum":111,"value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"Env1 velocity","ccnum":112,"value":"100","channel":0,"comment":"Bass"},
-
-		{"type":"range","name":"Env2 attack","ccnum":114,"value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"Env2 decay","ccnum":115,"value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"Env2 sustain","ccnum":116,"value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"Env2 release","ccnum":117,"value":"100","channel":0,"comment":"Bass"},
-		{"type":"range","name":"Env2 velocity","ccnum":118,"value":"100","channel":0,"comment":"Bass"}
+		{"type":"range","name":"Volume","cc":7,"color":"#3c8dbc"},
+		{"type":"range","name":"Filt. freq.","cc":105,"color":"#cc0000"},
+		{"type":"range","name":"Filt. reso.","cc":106,"color":"#cc0000"},
+		{"type":"range","name":"Filt. mod.","cc":107,"color":"#cc0000"},
+		{"type":"range","name":"Env1 attack","cc":108},
+		{"type":"range","name":"Env1 decay","cc":109},
+		{"type":"range","name":"Env1 sustain","cc":110},
+		{"type":"range","name":"Env1 release","cc":111},
+		{"type":"range","name":"Env1 velocity","cc":112},
+		{"type":"range","name":"Env2 attack","cc":114},
+		{"type":"range","name":"Env2 decay","cc":115},
+		{"type":"range","name":"Env2 sustain","cc":116},
+		{"type":"range","name":"Env2 release","cc":117},
+		{"type":"range","name":"Env2 velocity","cc":118}
 
 	]
 }

@@ -8,18 +8,18 @@
 	"midichannel":0,
 	
 	"widgets":[
-		{"type":"range","name":"Algo","ccnum":0,"max":16},
-		{"type":"range","name":"OP1 VOLUME","ccnum":16},
-		{"type":"range","name":"OP1 COARSE","ccnum":17},
-		{"type":"range","name":"OP1 FINE","ccnum":18},
-		{"type":"range","name":"OP1 ENVATTACK","ccnum":19},
-		{"type":"range","name":"OP1 ENVDECAY","ccnum":20},
-		{"type":"range","name":"OP1 ENVSUSTAINLEVEL","ccnum":21},
-		{"type":"range","name":"OP1 ENVINITLEVEL","ccnum":22},
-		{"type":"range","name":"OP1 ENVRELEASE","ccnum":23},
-		{"type":"range","name":"OP1 LFOSPEED","ccnum":24},
-		{"type":"range","name":"OP1 LFOAMOUNT","ccnum":25},
-		{"type":"range","name":"OP1 FEEDBACK","ccnum":26},
-		{"type":"range","name":"OP1 FLAGS","ccnum":27}
+		{"type":"range","name":"Algo","cc":0,"max":16},
+		{"type":"range","name":"Op1 Volume","cc":16},
+		{"type":"range","name":"Op1 Coarse","cc":17},
+		{"type":"range","name":"Op1 Fine","cc":18},
+		{"type":"range","name":"Op1 Attack","cc":19},
+		{"type":"range","name":"Op1 Decay","cc":20},
+		{"type":"range","name":"Op1 Sustain","cc":21},
+		{"type":"range","name":"Op1 INITLEVEL","cc":22},
+		{"type":"range","name":"Op1 Release","cc":23},
+		{"type":"range","name":"Op1 LFO Speed","cc":24},
+		{"type":"range","name":"Op1 LFO Amnt","cc":25},
+		{"type":"range","name":"Op1 Feedback","cc":26},
+		{"type":"range","name":"Op1 Flags","cc":27}
 	]
 }
