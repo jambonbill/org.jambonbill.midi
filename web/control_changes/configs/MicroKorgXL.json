@@ -1,0 +1,25 @@
+{
+	"name":"MicroKorgXL",
+	"manufacturer":"Korg",
+	"url":"http://svnmios.midibox.org/filedetails.php?repname=svn.mios&path=%2Ftrunk%2Fapps%2Fsynthesizers%2Fmidibox_sid_v2%2Fdoc%2Fmbsidv2_cc_chart.txt",
+	"comment":"test test",
+	
+	"midiInput":"",
+	"midiOutput":"",
+	"midichannel":10,
+	
+	"widgets":[
+		{"type":"range","name":"Filter type","ccnum":27},
+		{"type":"range","name":"Filter cutoff","ccnum":74},
+		{"type":"range","name":"Filter resonance","ccnum":71},
+		{"type":"range","name":"Amp Atack","ccnum":73},
+		{"type":"range","name":"Amp Decay","ccnum":75},
+		{"type":"range","name":"Amp Release","ccnum":72},
+		{"type":"range","name":"FX1","ccnum":115},
+		{"type":"range","name":"FX2","ccnum":116},
+		{"type":"range","name":"FX1 Control1","ccnum":13},
+		{"type":"range","name":"Arp type","ccnum":6},
+		{"type":"range","name":"Arp Latch","ccnum":13},
+		{"type":"range","name":"Arp Gate time","ccnum":13}
+	]
+}

@@ -1,0 +1,25 @@
+{
+	"name":"OPAFM",
+	"manufacturer":"Fredslab",
+	"url":"http://fredslab.net/opa/",
+
+	"midiInput":"",
+	"midiOutput":"",
+	"midichannel":0,
+	
+	"widgets":[
+		{"type":"range","name":"Algo","ccnum":0,"max":16},
+		{"type":"range","name":"OP1 VOLUME","ccnum":16},
+		{"type":"range","name":"OP1 COARSE","ccnum":17},
+		{"type":"range","name":"OP1 FINE","ccnum":18},
+		{"type":"range","name":"OP1 ENVATTACK","ccnum":19},
+		{"type":"range","name":"OP1 ENVDECAY","ccnum":20},
+		{"type":"range","name":"OP1 ENVSUSTAINLEVEL","ccnum":21},
+		{"type":"range","name":"OP1 ENVINITLEVEL","ccnum":22},
+		{"type":"range","name":"OP1 ENVRELEASE","ccnum":23},
+		{"type":"range","name":"OP1 LFOSPEED","ccnum":24},
+		{"type":"range","name":"OP1 LFOAMOUNT","ccnum":25},
+		{"type":"range","name":"OP1 FEEDBACK","ccnum":26},
+		{"type":"range","name":"OP1 FLAGS","ccnum":27}
+	]
+}

@@ -1,0 +1,104 @@
+CC Chart of MIDIbox SID V2 --- Bassline Engine
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+CC # | Hex | Description                                  | Range       |
+=====+=====+==============================================+=============+
+   0 | 00h | Bank change                                  |  0-7: bank  |
+-----+-----+----------------------------------------------+-------------+
+   1 | 01h | Knob #1 (Assignable Parameters)              |  0-127: val |
+-----+-----+----------------------------------------------+-------------+
+   4 | 04h | Filter CutOff Frequency                      |  0-127: val |
+   5 | 05h | Filter Resonance                             |  0-127: val |
+-----+-----+----------------------------------------------+-------------+
+   6 | 06h | NRPN MSB Value                               |  0-127: val |
+-----+-----+----------------------------------------------+-------------+
+   7 | 07h | Volume (00h-7Fh)                             |  0-127: val |
+-----+-----+----------------------------------------------+-------------+
+  16 | 10h | Knob #2 (Assignable Parameters)              |  0-127: val |
+  17 | 11h | Knob #3 (Assignable Parameters)              |  0-127: val |
+  18 | 12h | Knob #4 (Assignable Parameters)              |  0-127: val |
+  19 | 13h | Knob #5 (Assignable Parameters)              |  0-127: val |
+-----+-----+----------------------------------------------+-------------+
+  20 | 14h | Voice Waveform                               |   0-15: val |
+     |     |   Bit 0: Triangle                            |             |
+     |     |   Bit 1: Saw                                 |             |
+     |     |   Bit 2: Pulse                               |             |
+     |     |   Bit 3: Noise (disables all other waveforms)|             |
+     |     |   Bit 4: Disable Voice                       |             |
+     |     |   Bit 5: Sync                                |             |
+     |     |   Bit 6: Ringmodulator                       |             |
+     |     | Example: 02h = 2 = Saw                       |             |
+     |     | Example: 05h = 5 = Triangle & Pulse          |             |
+     |     | Example: 21h = 33 = Triangle & Sync          |             |
+-----+-----+----------------------------------------------+-------------+
+  24 | 18h | Voice Transpose                              |  0- 63: neg |
+     |     |                                              |     64: off |
+     |     |                                              | 64-127: pos |
+-----+-----+----------------------------------------------+-------------+
+  28 | 1Ch | Voice Finetune                               |  0- 64: neg |
+     |     |                                              |     64: off |
+     |     |                                              | 64-127: pos |
+-----+-----+----------------------------------------------+-------------+
+  32 | 20h | Voice Portamento Rate                        |     0: off  |
+     |     |                                              | 1-127: val  |
+-----+-----+----------------------------------------------+-------------+
+  38 | 26h | NRPN LSB Value                               |  0-127: val |
+-----+-----+----------------------------------------------+-------------+
+  40 | 28h | Envelope 1 Pitch Depth                       |  0- 63: neg |
+     |     | negative depth (0-63) inverts the waveform   |     64: off |
+     |     |                                              | 65-127: pos |
+  41 | 29h | Envelope 1 Pulsewidth Depth                  |  0- 63: neg |
+     |     | negative depth (0-63) inverts the waveform   |     64: off |
+     |     |                                              | 65-127: pos |
+  42 | 2Ah | Envelope 1 Filter Depth                      |  0- 63: neg |
+     |     | negative depth (0-63) inverts the waveform   |     64: off |
+     |     |                                              | 65-127: pos |
+  43 | 2Bh | Envelope 1 Attack                            |  0-127: val |
+  44 | 2Ch | Envelope 1 Decay                             |  0-127: val |
+  45 | 2Dh | Envelope 1 Sustain                           |  0-127: val |
+  46 | 2Eh | Envelope 1 Release                           |  0-127: val |
+  47 | 2Fh | Envelope 1 Decay Accented                    |  0-127: val |
+-----+-----+----------------------------------------------+-------------+
+  50 | 32h | LFO1 Pitch Depth                             |  0- 63: neg |
+     |     | negative depth (0-63) inverts the waveform   |     64: off |
+     |     |                                              | 65-127: pos |
+  51 | 33h | LFO1 Pulsewidth Depth                        |  0- 63: neg |
+     |     | negative depth (0-63) inverts the waveform   |     64: off |
+     |     |                                              | 65-127: pos |
+  52 | 34h | LFO1 Filter Depth                            |  0- 63: neg |
+     |     | negative depth (0-63) inverts the waveform   |     64: off |
+     |     |                                              | 65-127: pos |
+  53 | 35h | LFO1 Rate                                    |      0: off |
+     |     |                                              |  1-127: val |
+-----+-----+----------------------------------------------+-------------+
+  54 | 36h | LFO2 Pitch Depth                             |  0- 63: neg |
+     |     | negative depth (0-63) inverts the waveform   |     64: off |
+     |     |                                              | 65-127: pos |
+  55 | 37h | LFO2 Pulsewidth Depth                        |  0- 63: neg |
+     |     | negative depth (0-63) inverts the waveform   |     64: off |
+     |     |                                              | 65-127: pos |
+  56 | 38h | LFO2 Filter Depth                            |  0- 63: neg |
+     |     | negative depth (0-63) inverts the waveform   |     64: off |
+     |     |                                              | 65-127: pos |
+  57 | 39h | LFO2 Rate                                    |      0: off |
+     |     |                                              |  1-127: val |
+-----+-----+----------------------------------------------+-------------+
+  60 | 3Ch | Bassline EnvMod                              |  0-127: val |
+  61 | 3Dh | Bassline Decay                               |  0-127: val |
+  62 | 3Eh | Bassline Accent                              |  0-127: val |
+-----+-----+----------------------------------------------+-------------+
+  68 | 44h | Voice Pulsewidth                             |  0- 63: neg |
+     |     |                                              |     64: mid |
+     |     |                                              | 64-127: pos |
+-----+-----+----------------------------------------------+-------------+
+  72 | 48h | VCA Attack                                   |  0- 15: val |
+  76 | 4Ch | VCA Decay                                    |  0- 15: val |
+  80 | 50h | VCA Sustain                                  |  0- 15: val |
+  84 | 54h | VCA Release                                  |  0- 15: val |
+-----+-----+----------------------------------------------+-------------+
+  98 | 62h | NRPN LSB                                     |  0-127: val |
+  99 | 63h | NRPN MSB                                     |  0-127: val |
+-----+-----+----------------------------------------------+-------------+
+ 123 | 7Bh | All Notes Off                                |      0: off |
+     |     |                                              |1-127: ignore|
+-----+-----+----------------------------------------------+-------------+
