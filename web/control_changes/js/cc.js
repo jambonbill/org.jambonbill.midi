@@ -11,6 +11,8 @@ $(function(){
         'midichannel':'',
         'widgets':[]
     };
+    
+    var _discover=false;
     var _notes=[];//notes being played
 
 	$.onMIDIInit=function(midi) {
@@ -25,14 +27,24 @@ $(function(){
             var a=event.data[1];
             var b=event.data[2];
             switch(type){
+                
+                case 0x80://note off
+                    $('footer.main-footer').html("Incoming Note off "+a + " Velo:"+b);
+                    break;
+
+                case 0x90://note on
+                    $('footer.main-footer').html("Incoming Note on "+a + " Val:"+b);
+                    break;
 
                 case 0xb0:    //CC
                     console.log("CC#"+a, "Chan#"+(midichannel+1), b);
                     $('footer.main-footer').html("Incoming CC#"+a + " Val:"+b);
+                    $("input[data-ccnum='"+a+"']").val(b);
+                    autoDiscover(a);
                     break;
 
                 case 0xc0://'Program change'
-                    $('footer.main-footer').html("Prg change#"+a);
+                    $('footer.main-footer').html("Incoming Prg change #"+a);
                     break;
 
                 case 0xf0://con
@@ -180,24 +192,41 @@ $(function(){
 	});
 
 
-
-
-    $('a#btnAdd').click(function(){
-        console.info('btnAdd');
-        var ccn=+prompt("CC#",0);
-        if(ccn>128){
-            return;
+    function autoDiscover(ccnum){
+        
+        var found=false;
+        
+        for(var i in config.widgets){
+            var o=config.widgets[i];
+            if (o.ccnum==ccnum) {
+                found=true;    
+            }
         }
-        config.widgets.push(itemCC("range",+ccn));
+        
+        if (!found) {
+            console.log("this is new: CC#"+ccnum);
+            config.widgets.push(itemCC("CC#", ccnum));
+            makeItReal();    
+        }
+        
+    }
 
+
+    function addWidget(){
+        config.widgets.push(itemCC("New widget", 0));
+    }
+
+
+    $('a#btnAdd').click(function(){        
+        console.info('btnAdd');
+        config.widgets.push(itemCC("New widget", 0));
         makeItReal();
+        popEdit(config.widgets.length-1);
     });
 
 
     $('a#btnClearAll').click(function(){
-        console.info("Clear all");
-        clearLib();
-        makeItReal();
+        clearAll();        
     });
 
     $('a#btnLoadConf').click(function(){
@@ -214,6 +243,10 @@ $(function(){
         console.info('loadConfig(fn)');
         $.post('ctrl.php',{'do':'getConfig','filename':fn},function(json){
             console.log(json);
+            if (json.error) {
+                console.error(json.error);
+                alert(json.error);
+            }
             if (json.config) {
                 config=json.config;
                 $('#modalConfigs').modal('hide');
@@ -248,7 +281,8 @@ $(function(){
         var W=config.widgets[i];
         console.log('#btnUpdate',i,W);
         $('#modalWidget').modal('hide');
-        W.name=$('input#ccname').val();
+        W.type=$('select#wtype').val();
+        W.name=$('input#ccname').val().replace(/</g, "&lt;");
         W.ccnum=$('input#ccnumber').val();
         W.value=$('input#ccvalue').val();
         //W.channel=1;
@@ -287,20 +321,26 @@ $(function(){
     //var cclib=[];//list of widgets/cc binding
 
     function itemCC(type,n){
-    	return {
+    	console.log('itemCC(type,n)',type,n)
+        return {
     		'type':type,
     		'name':type+' #'+n,
     		'ccnum':+n,
             'value':0,
+            'max':127,
             'channel':0,
+            'options':[],
             'color':'#EEEEEE',
     		'comment':'',
     	}
     }
 
-    function clearLib(){
+    function clearAll(){
+        console.info('clearAll()');
         //cclib=[];
+        config.name='New';
         config.widgets=[];
+        makeItReal();
     }
 
     function newLib(){
@@ -319,7 +359,7 @@ $(function(){
         saveToLocalStorage();
 
 
-
+        $('h1').html(config.name + " <small>midi output</small>");
         $('#boxSetup .box-title').html(config.name + " <small>midi output</small>");
         $('input#configName').val(config.name);
 
@@ -330,7 +370,7 @@ $(function(){
         $('div#ccboxes').html('');//
         for(var i in config.widgets){
     		var o=config.widgets[i];
-    		console.log(o);
+    		//console.log(o);
             var htm='<div class="col-sm-3 connectedSortable ui-sortable">';
             htm+=whtml(i);
             htm+='</div>';
@@ -358,33 +398,54 @@ $(function(){
             }
             */
             popEdit(i)
-            $('#modalWidget').modal('show');
+            
         });
     }
 
+    
     function popEdit(i){
+    
+        if(i==undefined){
+            console.error("popedit() i is undefined");
+            return false;
+        }
+    
+        if(!config.widgets[i]){
+            console.error('widget #'+i+" not found");
+            return false;
+        }
+    
         var W=config.widgets[i];
-        console.log(W);
+        //console.warn('popEdit('+i+')',W);
         $('#modalWidget .modal-title').html(W.name);
+        $('select#wtype').val(W.type);
         $('input#wnum').val(i);
         $('input#ccname').val(W.name);
         $('input#ccnumber').val(W.ccnum);
         $('input#ccvalue').val(W.value);
+        $('input#ccmax').val(W.max);
         $('input#cccomment').val(W.comment);
+        $('#modalWidget').modal('show');
     }
 
+    
     function whtml(i){
+
         if(!config.widgets[i]){
             console.error("config.widgets["+i+"]");
             return;
         }
+        
         var o=config.widgets[i];
         var name=o.name;
         var type=o.type;
         var ccnum=o.ccnum;
         var value=o.value;
+        var max=127;
+        if(o.max>0&&o.max<127)max=o.max;
         var channel=0;
-
+        
+        if(!name)name="CC#"+o.ccnum;
         if(ccnum==NaN){
             console.error(o);
             return;
@@ -401,7 +462,7 @@ $(function(){
 
         htm+='<div class="pull-right box-tools">';
         htm+='<button class="btn btn-box-tool btn-edit" title="Edit" data-i='+i+' data-num='+ccnum+'><i class="fa fa-edit"></i></button>';
-        //htm+='<button class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="" data-original-title="Remove"><i class="fa fa-times"></i></button>';
+        htm+='<button class="btn btn-box-tool btn-remove" title="Delete"><i class="fa fa-times"></i></button>';
         htm+='</div>';
 
         htm+='</div>';
@@ -409,7 +470,7 @@ $(function(){
         htm+='<div class="row">';
             htm+='<div class="col-sm-12">';
             htm+='<label>CC#0x'+ccnum.toString(16).toUpperCase()+'</label>';
-            htm+='<input type="range" data-i='+i+' value='+value+' max="127">';
+            htm+='<input type="range" data-ccnum='+ccnum+' data-i='+i+' value='+value+' max='+max+'>';
             //htm+='<button class="btn btn-lg btn-default">CC#00</button></div>';
             htm+='</div>';
         htm+='</div>';
