@@ -5,7 +5,7 @@ $htm.='<div class=row>';
 
 
 // Name
-$htm.='<div class="col-sm-12">';
+$htm.='<div class="col-sm-9">';
 $htm.='<div class="form-group">';
 	$htm.='<label>Widget name</label>';
 	$htm.='<input type=text class="form-control" id=ccname placeholder=name maxlength=16>';
@@ -20,6 +20,7 @@ $htm.='<div class="form-group">';
 	$htm.='<select id=wtype class="form-control">';
 	$htm.='<option value="range">Range</option>';
 	$htm.='<option value="button">Button</option>';
+	$htm.='<option value="select">Select</option>';
 	$htm.='</select>';
 $htm.='</div>';
 $htm.='</div>';
@@ -33,13 +34,22 @@ $htm.='<div class="form-group">';
 $htm.='</div>';
 $htm.='</div>';
 
-// CCNumber
+// Current value
 $htm.='<div class="col-sm-2">';
 $htm.='<div class="form-group">';
 	$htm.='<label>Value</label>';
-	$htm.='<input type=text id=ccvalue class="form-control" placeholder=Value style="text-align:right">';
+	$htm.='<input type=text id=ccvalue class="form-control" placeholder=Value style="text-align:right" readonly>';
 $htm.='</div>';
 $htm.='</div>';
+
+// Max value
+$htm.='<div class="col-sm-2">';
+$htm.='<div class="form-group">';
+	$htm.='<label>Max value</label>';
+	$htm.='<input type=text id=ccmax class="form-control" placeholder=MaxValue style="text-align:right">';
+$htm.='</div>';
+$htm.='</div>';
+
 
 // Midi channel
 $htm.='<div class="col-sm-2">';
