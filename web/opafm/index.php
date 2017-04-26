@@ -12,7 +12,7 @@ echo $admin;
 ?>
 <section class="content-header">
   <h1><i class='fa fa-cog'></i> OPA FM Shield Editor
-  <small><a href='http://fredslab.net/opa/'>http://fredslab.net/opa/</a></small>
+  <small><a href='http://fredslab.net/opa/'>http://fredslab.net/opa/</a> - <a href='https://raw.githubusercontent.com/jambonbill/MIDIUSB-OPA/master/CC_Implementation.txt'>CC_Implementation</a></small>
   </h1>
 </section>
 
