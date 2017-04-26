@@ -4,31 +4,31 @@ $progs=glob("img/program*.png");
 
 $htm='<div class="row">';
 
-$htm.='<div class="col-sm-3">';//NAME
+$htm.='<div class="col-xs-6 col-sm-3">';//NAME
 $htm.='<div class="form-group">';
 $htm.='<label>Name</label>';
 $htm.='<input class="form-control" placeholder="Patch name" maxlength=8>';
 $htm.='</div>';
 $htm.='</div>';
 
-$htm.='<div class="col-sm-3">';//VOlume
+$htm.='<div class="col-xs-6 col-sm-3">';//Volume
 $htm.='<div class="form-group">';
 $htm.='<label>Volume</label>';
-$htm.='<input type=range value=180 max=255 class="form-control">';
+$htm.='<input data-cc=9 type=range value=120 max=127 class="form-control">';
 $htm.='</div>';
 $htm.='</div>';
 
-$htm.='<div class="col-sm-3">';//Pan
+$htm.='<div class="col-xs-6 col-sm-3">';//Pan
 $htm.='<div class="form-group">';
 $htm.='<label>Paning</label>';
-$htm.='<input type=range max=255 class="form-control">';
+$htm.='<input data-cc=10 type=range value=64 max=127 class="form-control">';
 $htm.='</div>';
 $htm.='</div>';
 
-$htm.='<div class="col-sm-3">';//Flags
+$htm.='<div class="col-xs-6 col-sm-3">';//Flags
 $htm.='<div class="form-group">';
 $htm.='<label>Flags</label>';
-$htm.='<input type=range value=0 max=255 class="form-control">';
+$htm.='<input data-cc=11 type=range value=1 max=16 class="form-control">';
 $htm.='</div>';
 $htm.='</div>';
 
@@ -72,9 +72,12 @@ $btns[]='<div class="col-md-3">';
 $btns[]="<select class=form-control id=midiOutput></select>";
 $btns[]='</div>';
 
-
 $btns[]='<div class="col-md-3">';
-$btns[]="<select class=form-control id=midiChannel></select>";
+$btns[]='<select class=form-control id=midiChannel>';
+for($i=0;$i<16;$i++){
+	$btns[]='<option value='.$i.'>Channel #'.($i+1);
+}
+$btns[]='</select>';
 $btns[]='</div>';
 
 $btns[]='</div>';
