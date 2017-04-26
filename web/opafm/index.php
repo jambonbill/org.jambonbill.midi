@@ -27,16 +27,16 @@ echo $admin;
 </div>
 
 <div class='row'>
-
 	<?php
 	for($OP=1;$OP<=4;$OP++) {
 		echo '<div class="col-sm-6">';
 		include "box_operator.php";
 		echo '</div>';
 	}
-
 	?>
 	</div>
 </div>
-
+<style type="text/css">
+input[type=range]{cursor:pointer;}
+</style>
 <script type="text/javascript" src='js/opafm.js'></script>
