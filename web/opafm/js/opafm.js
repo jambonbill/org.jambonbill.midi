@@ -5,6 +5,39 @@ $(function(){
 	$.onMIDIInit=function(midi) {
         midiAccess = midi;
 
+        $.MIDIMessageEventHandler=function(event){
+
+            var msg=event.data[0];
+            var midichannel=event.data[0] & 0x0f;
+            var type=msg & 0xf0;
+            var a=event.data[1];
+            var b=event.data[2];
+            switch(type){
+
+                case 0x80://note off
+                    noteOff(a);
+                    //$('footer.main-footer').html("Incoming Note off "+a + " Velo:"+b);
+                    break;
+
+                case 0x90://note on
+                    noteOn(a,b);
+                    //$('footer.main-footer').html("Incoming Note on "+a + " Val:"+b);
+                    break;
+
+                case 0xc0://'Program change'
+                    //$('footer.main-footer').html("Incoming Prg change #"+a);
+                    break;
+
+                case 0xe0://'Pitch wheel'
+                    pitchBend(a,b);
+                    break;
+
+                default:
+                    //console.info('$.MIDIMessageEventHandler(event)',event);
+                    break;
+            }
+        }
+
         var ins=$.midiInputs();
 		var out=$.midiOutputs();
 
@@ -45,7 +78,7 @@ $(function(){
     }
 
 
-    function noteOn(midinote){
+    function noteOn(midinote,velocity){
 
         for(var i in _notes)
             if(_notes[i]==midinote)return;//dont play it twice
@@ -53,7 +86,9 @@ $(function(){
         //console.info('noteOn(midinote)');
         var chan=+$('select#midiChannel').val();
         var portId=$('select#midiOutput').val();
-        var noteOnMessage = [0x90+chan, midinote, 0x7f];    // note on, middle C, full velocity
+        var velo=0x7f;
+        if(velocity)velo=velocity;
+        var noteOnMessage = [0x90+chan, midinote, velo];    // note on, middle C, full velocity
         var output = midiAccess.outputs.get(portId);
         output.send( noteOnMessage );
         _notes.push(midinote);
@@ -89,7 +124,21 @@ $(function(){
         console.info('sendMidiCC',+chan,+ccNumber,+value);
         return true;
     }
-
+    
+    
+    function pitchBend(coarse, fine){
+        var chan=+$('select#midiChannel').val();
+        var portId=$('select#midiOutput').val();
+        var output=midiAccess.outputs.get(portId);
+        if (!output) {
+            console.error('!output');
+            return false;
+        }
+        output.send( [0xe0+chan, +coarse, +fine] );
+        console.info('pitchBend',+chan,+coarse,+fine);
+        return true;
+    }
+    //pitchBend(OPA_PROGRAMS program, int8_t coarse, int8_t fine);
 
 
 
@@ -130,9 +179,10 @@ $(function(){
 
 	$('input').change(function(e){
 		var val=e.currentTarget.value;
-		//var nam=e.currentTarget.name;
+		var name=e.currentTarget.name;
 		var CC=e.currentTarget.dataset.cc;
-		console.info('CC='+CC,"value="+val);
+		$(this).prev().html(name+" : "+e.currentTarget.value*2);
+        //console.info('CC='+CC,"value="+val);
         sendMidiCC(+$('select#midiChannel').val(),CC,val);
 	});
 
