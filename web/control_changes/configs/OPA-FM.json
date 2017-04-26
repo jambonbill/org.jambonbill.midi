@@ -8,10 +8,12 @@
 	"midichannel":0,
 	
 	"widgets":[
-		{"type":"range","name":"Algo","cc":0,"max":16},
+		{"type":"range","name":"Algorithm","cc":8,"max":16},
+		{"type":"range","name":"Algorithm","cc":8,"max":16},
+		{"type":"range","name":"Algorithm","cc":8,"max":16},
+		{"type":"separator"},
 		{"type":"range","name":"Op1 Volume","cc":16},
 		{"type":"range","name":"Op1 Coarse","cc":17},
-		{"type":"range","name":"Op1 Fine","cc":18},
 		{"type":"range","name":"Op1 Attack","cc":19},
 		{"type":"range","name":"Op1 Decay","cc":20},
 		{"type":"range","name":"Op1 Sustain","cc":21},
@@ -20,6 +22,7 @@
 		{"type":"range","name":"Op1 LFO Speed","cc":24},
 		{"type":"range","name":"Op1 LFO Amnt","cc":25},
 		{"type":"range","name":"Op1 Feedback","cc":26},
-		{"type":"range","name":"Op1 Flags","cc":27}
+		{"type":"range","name":"Op1 Flags","cc":27},
+		{"type":"separator"}
 	]
 }
