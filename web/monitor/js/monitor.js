@@ -84,7 +84,7 @@ $(function(){
             0xa0:'AfterTouch',
             0xb0:'Control change',
             0xc0:'Program change',
-            0xe0:'Pich wheel',
+            0xe0:'Pitch wheel',
             0xf0:'Continue'
         }  
         switch(msg){
