@@ -20,79 +20,80 @@
 $htm='';
 $htm.='<div class=row>';
 
-$htm.='<div class=col-sm-3>';
+$htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Volume</label>';
-$htm.='<input type=range data-op='.$OP.' value=0 max=255 name=volume>';
+$htm.='<input type=range data-cc='.($OP*16+0).' value=120 max=127 name=volume>';
 $htm.='</div></div>';
 
 
-$htm.='<div class=col-sm-3>';
+$htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Coarse</label>';
-$htm.='<input type=range data-op='.$OP.' value=0 max=255 name=coarse>';
+$htm.='<input type=range data-cc='.($OP*16+1).' value=12 max=127 name=coarse>';
 $htm.='</div></div>';
-
+/*
 $htm.='<div class=col-sm-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Fine</label>';
-$htm.='<input type=range data-op='.$OP.' value=0 max=255 name=fine>';
+$htm.='<input type=range data-cc='.($OP*16+2).' value=0 max=127 name=fine>';
 $htm.='</div></div>';
+*/
 
-$htm.='<div class=col-sm-3>';
+$htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>IniLevel</label>';
-$htm.='<input type=range data-op='.$OP.' value=0 max=255 name=envIniLevel>';
+$htm.='<input type=range data-cc='.($OP*16+3).' value=0 max=127 name=envIniLevel>';
 $htm.='</div></div>';
 
 
-$htm.='<div class=col-sm-3>';
+$htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Attack</label>';
-$htm.='<input type=range data-op='.$OP.' value=0 max=255 name=envAttack>';
+$htm.='<input type=range data-cc='.($OP*16+4).' value=0 max=127 name=envAttack>';
 $htm.='</div></div>';
 
-$htm.='<div class=col-sm-3>';
+$htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Decay</label>';
-$htm.='<input type=range data-op='.$OP.' value=0 max=255 name=envDecay>';
+$htm.='<input type=range data-cc='.($OP*16+5).' value=0 max=127 name=envDecay>';
 $htm.='</div></div>';
 
-$htm.='<div class=col-sm-3>';
+$htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Sustain</label>';
-$htm.='<input type=range data-op='.$OP.' value=0 max=255 name=envSusLevel>';
+$htm.='<input type=range data-cc='.($OP*16+6).' value=0 max=127 name=envSusLevel>';
 $htm.='</div></div>';
 
-$htm.='<div class=col-sm-3>';
+$htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Release</label>';
-$htm.='<input type=range data-op='.$OP.' value=0 max=255 name=envRelease>';
+$htm.='<input type=range data-cc='.($OP*16+7).' value=0 max=127 name=envRelease>';
 $htm.='</div></div>';
 
-$htm.='<div class=col-sm-4>';
+$htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>LFO Speed</label>';
-$htm.='<input type=range data-op='.$OP.' value=0 max=255 name=LFOSpeed>';
+$htm.='<input type=range data-cc='.($OP*16+8).' value=0 max=127 name=LFOSpeed>';
 $htm.='</div></div>';
 
-$htm.='<div class=col-sm-4>';
+$htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>LFO Amount</label>';
-$htm.='<input type=range data-op='.$OP.' value=0 max=255 name=LFOAmount>';
+$htm.='<input type=range data-cc='.($OP*16+9).' value=0 max=127 name=LFOAmount>';
 $htm.='</div></div>';
 
 if ($OP==4) {
-    $htm.='<div class=col-sm-4>';
+    $htm.='<div class=col-xs-3>';
     $htm.='<div class="form-group">';
     $htm.='<label>Feedback</label>';
-    $htm.='<input type=range data-op='.$OP.' value=0 max=255 name=feedback>';
+    $htm.='<input type=range data-cc='.($OP*16+10).' value=0 max=127 name=feedback>';
     $htm.='</div></div>';
 
-    $htm.='<div class=col-sm-4>';
+    $htm.='<div class=col-xs-3>';
     $htm.='<div class="form-group">';
     $htm.='<label>Flags</label>';
-    $htm.='<input type=range data-op='.$OP.' value=0 max=255 name=flags>';
+    $htm.='<input type=range data-cc='.($OP*16+11).' value=0 max=127 name=flags>';
     $htm.='</div></div>';
 }
 
@@ -107,7 +108,7 @@ $box->id("boxOperator$OP");
 //$box->boxTools("<button class=\"btn btn-box-tool\" title='Clear'><i class='fa fa-times'></i></button> ");
 
 $box->body($htm);
-$box->collapsable(1);
+//$box->collapsable(1);
 $box->loading(1);
 echo $box;
 
