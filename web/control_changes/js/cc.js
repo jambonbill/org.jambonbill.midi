@@ -11,7 +11,7 @@ $(function(){
         'midichannel':'',
         'widgets':[]
     };
-    
+
     var _discover=false;
     var _notes=[];//notes being played
 
@@ -27,7 +27,7 @@ $(function(){
             var a=event.data[1];
             var b=event.data[2];
             switch(type){
-                
+
                 case 0x80://note off
                     $('footer.main-footer').html("Incoming Note off "+a + " Velo:"+b);
                     break;
@@ -159,23 +159,28 @@ $(function(){
         return config;
     }
 
-    
 
 
-    
+
+
 
 
     // Keyboard //
     var _octave=2;
     $("body").keydown(function(e) {
-        if (["INPUT","SELECT","TEXTAREA"].indexOf(e.target.nodeName) !== -1) return;
+        //console.log(e.target,e.target.type);
+        if (["INPUT","SELECT","TEXTAREA"].indexOf(e.target.nodeName) !== -1){
+          if(e.target.type!='range')return;
+        }
         var n=keyCodeToMidiNote(e.keyCode);
         if(!n)return;
         noteOn(n+(_octave*12));
     });
 
     $("body").keyup(function(e) {
-        if (["INPUT","SELECT","TEXTAREA"].indexOf(e.target.nodeName) !== -1) return;
+        if (["INPUT","SELECT","TEXTAREA"].indexOf(e.target.nodeName) !== -1) {
+            if(e.target.type!='range')return;
+        }
         var n=keyCodeToMidiNote(e.keyCode);
         if(!n)return;
         noteOff(n+(_octave*12));
@@ -191,22 +196,22 @@ $(function(){
 
 
     function autoDiscover(ccnum){
-        
+
         var found=false;
-        
+
         for(var i in config.widgets){
             var o=config.widgets[i];
             if (o.cc==ccnum) {
-                found=true;    
+                found=true;
             }
         }
-        
+
         if (!found) {
             console.log("this is new: CC#"+ccnum);
             config.widgets.push(itemCC("CC#", ccnum));
-            makeItReal();    
+            makeItReal();
         }
-        
+
     }
 
 
@@ -215,7 +220,7 @@ $(function(){
     }
 
 
-    $('a#btnAdd').click(function(){        
+    $('a#btnAdd').click(function(){
         console.info('btnAdd');
         config.widgets.push(itemCC("New widget", 0));
         makeItReal();
@@ -224,7 +229,7 @@ $(function(){
 
 
     $('a#btnClearAll').click(function(){
-        clearAll();        
+        clearAll();
     });
 
     $('a#btnPrgChange').click(function(){
@@ -233,7 +238,7 @@ $(function(){
         sendPrgChange(p);
     });
 
-    
+
 
     $('a#btnLoadConf').click(function(){
         console.info('a#btnLoadConf');
@@ -333,6 +338,7 @@ $(function(){
     		'name':type+' #'+n,
     		'cc':+n,
             'value':0,
+            'min':0,
             'max':127,
             'channel':0,
             'options':[],
@@ -377,12 +383,10 @@ $(function(){
         for(var i in config.widgets){
     		var o=config.widgets[i];
     		//console.log(o);
-            var htm='<div class="col-sm-3 col-lg-2 connectedSortable ui-sortable">';
-            htm+=whtml(i);
-            htm+='</div>';
-            $('div#ccboxes').append(htm);
+
+            $('div#ccboxes').append(whtml(i));
     	}
-        
+
         // bind events //
         $('input[type=range]').change(function(e){
             console.log('value',e.currentTarget.value);
@@ -405,23 +409,23 @@ $(function(){
             }
             */
             popEdit(i)
-            
+
         });
     }
 
-    
+
     function popEdit(i){
-    
+
         if(i==undefined){
             console.error("popedit() i is undefined");
             return false;
         }
-    
+
         if(!config.widgets[i]){
             console.error('widget #'+i+" not found");
             return false;
         }
-    
+
         var W=config.widgets[i];
         //console.warn('popEdit('+i+')',W);
         $('#modalWidget .modal-title').html(W.name);
@@ -430,29 +434,32 @@ $(function(){
         $('input#ccname').val(W.name);
         $('input#ccnumber').val(W.cc);
         $('input#ccvalue').val(W.value);
+        $('input#ccmin').val(W.min);
         $('input#ccmax').val(W.max);
         $('input#cccomment').val(W.comment);
         $('#modalWidget').modal('show');
     }
 
-    
+
     function whtml(i){
 
         if(!config.widgets[i]){
             console.error("config.widgets["+i+"]");
             return;
         }
-        
+
         var o=config.widgets[i];
         var name=o.name;
         var type=o.type;
         var cc=o.cc;
-        var value=o.value;
+        var value=o.val;
         if(!value)value=0;
+        var min=0;
         var max=127;
+        if(o.min>0&&o.min<127)min=o.min;
         if(o.max>0&&o.max<127)max=o.max;
         var channel=0;
-        
+
         if(!name)name="CC#"+cc;
         if(cc==NaN){
             console.error(o);
@@ -464,12 +471,18 @@ $(function(){
             style='style="border:solid '+o.color+'"';
         }
 
-        var htm='<div class="box box-solid" '+style+'>';
+        if(type=='separator'){
+            var htm='<div class="col-sm-12"><hr /></div>';
+            return htm;
+        }
+
+        var htm='<div class="col-sm-3 col-lg-2 connectedSortable ui-sortable">';
+        htm+='<div class="box box-solid" '+style+'>';
         htm+='<div class="box-header ui-sortable-handle" style="cursor: move">';
         htm+='<h3 class="box-title" title="CC#'+cc+'"><i class="fa fa-text"></i> '+name+'</h3>';
         htm+='<div class="pull-right box-tools">';
         htm+='<button class="btn btn-box-tool btn-edit" title="Edit" data-i='+i+' data-num='+cc+'><i class="fa fa-edit"></i></button>';
-        htm+='<button class="btn btn-box-tool btn-remove" title="Delete"><i class="fa fa-times"></i></button>';
+        //htm+='<button class="btn btn-box-tool btn-remove" title="Delete"><i class="fa fa-times"></i></button>';
         htm+='</div>';
 
         htm+='</div>';
@@ -482,14 +495,14 @@ $(function(){
                     htm+='<button class="btn btn-lg btn-default">CC#x Value='+value+'</button></div>';
                     break;
                 default:
-                    htm+='<input type="range" data-cc='+cc+' data-i='+i+' value='+value+' max='+max+'>';
+                    htm+='<input type="range" data-cc='+cc+' data-i='+i+' value='+value+' min='+min+' max='+max+'>';
                     break;
             }
-            
-            
+
             htm+='</div>';
         htm+='</div>';
         //htm+='<div class="overlay" style="display: none;"><i class="fa fa-refresh fa-spin"></i></div>';
+        htm+='</div>';
         htm+='</div>';
         return htm;
     }
