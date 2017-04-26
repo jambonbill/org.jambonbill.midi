@@ -42,11 +42,19 @@ $htm.='<div class="form-group">';
 $htm.='</div>';
 $htm.='</div>';
 
+// Min value
+$htm.='<div class="col-sm-2">';
+$htm.='<div class="form-group">';
+	$htm.='<label>Min value</label>';
+	$htm.='<input type=text id=ccmin class="form-control" placeholder=Min style="text-align:right">';
+$htm.='</div>';
+$htm.='</div>';
+
 // Max value
 $htm.='<div class="col-sm-2">';
 $htm.='<div class="form-group">';
 	$htm.='<label>Max value</label>';
-	$htm.='<input type=text id=ccmax class="form-control" placeholder=MaxValue style="text-align:right">';
+	$htm.='<input type=text id=ccmax class="form-control" placeholder=Max style="text-align:right">';
 $htm.='</div>';
 $htm.='</div>';
 
