@@ -18,24 +18,35 @@ echo $admin;
 
 <section class="content">
 
-<div class='row'>
-	<div class='col-sm-12'>
-	<?php
-	include "box_patch.php";
-	?>
+	<div class='row'>
+		<div class='col-sm-12'>
+		<?php
+		include "box_patch.php";
+		include "modal_patch.php";
+		?>
+		</div>
 	</div>
-</div>
 
-<div class='row'>
-	<?php
-	for($OP=1;$OP<=4;$OP++) {
-		echo '<div class="col-sm-6">';
-		include "box_operator.php";
-		echo '</div>';
-	}
-	?>
+	<div class='row'>
+		<?php
+		for($OP=1;$OP<=4;$OP++) {
+			echo '<div class="col-sm-6">';
+			include "box_operator.php";
+			echo '</div>';
+		}
+		?>
 	</div>
-</div>
+
+	<div class='row'>
+		<div class='col-sm-12'>
+		<?php
+		include "box_actions.php";
+		?>
+		</div>
+	</div>
+
+</section>
+
 <style type="text/css">
 input[type=range]{cursor:pointer;}
 </style>
