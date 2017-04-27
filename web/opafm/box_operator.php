@@ -108,7 +108,7 @@ $box->id("boxOperator$OP");
 //$box->boxTools("<button class=\"btn btn-box-tool\" title='Clear'><i class='fa fa-times'></i></button> ");
 
 $box->body($htm);
-//$box->collapsable(1);
+$box->collapsable(1);
 $box->loading(1);
 echo $box;
 
