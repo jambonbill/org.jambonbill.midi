@@ -64,7 +64,7 @@ $(function(){
 		}
 
         // Try to select the Arduino from the midi out list //
-        if(detected){
+        if (detected) {
             $('#midiOutput').val(detected);
         }
         // Auto Forward midi notes to the output
@@ -124,8 +124,8 @@ $(function(){
         console.info('sendMidiCC',+chan,+ccNumber,+value);
         return true;
     }
-    
-    
+
+
     function pitchBend(coarse, fine){
         var chan=+$('select#midiChannel').val();
         var portId=$('select#midiOutput').val();
@@ -172,10 +172,14 @@ $(function(){
 
 	function selectAlgorithm(n){
 		console.info('selectAlgorithm(n)',n);
-		$("button.algorithm").find("[data-id='"+n+"']").removeClass('active');
-		$("button.algorithm").find("[data-id='"+n+"']").addClass('active');
+		//$("button.algorithm").find("[data-id='"+n+"']").removeClass('active');
+		//$("button.algorithm").find("[data-id='"+n+"']").addClass('active');
         sendMidiCC(+$('select#midiChannel').val(),8,n);
 	}
+
+    $('select#algorithm').change(function(){
+        selectAlgorithm($('select#algorithm').val());
+    });
 
 	$('input').change(function(e){
 		var val=e.currentTarget.value;
@@ -186,18 +190,78 @@ $(function(){
         sendMidiCC(+$('select#midiChannel').val(),CC,val);
 	});
 
+
+    $('#btnNew').click(function(){
+        if(!confirm("Clear all ?"))return;
+
+        $('#patchname').val("New");
+
+        var ranges=$('input[type=range]');
+        for(var i=0;i<ranges.length;i++){
+            if(!ranges[i].dataset){
+                console.warn(i);
+                continue;
+            }
+            var cc=ranges[i].dataset.cc;
+            if(cc<16)continue;
+            ranges[i].value=0;
+            sendMidiCC(+$('select#midiChannel').val(),cc,ranges[i].value);
+        }
+        //Algorithm1
+        var algonum=1;
+        $('#algorithm').val(algonum);
+        sendMidiCC(+$('select#midiChannel').val(),8,algonum);
+    });
+
 	$('#btnOpen').click(function(){
 		console.info('btnOpen');
+        $('#modalPatches').modal('show');
 	});
 
 	$('#btnSave').click(function(){
 		console.info('btnSave');
 	});
 
-	$('#btnTest').click(function(){
-		console.info('btnTest');
+	$('#btnRandom').click(function(){
+		console.info('btnRandom');
+        $('#patchname').val("RANDOM");
+        var ranges=$('input[type=range]');
+
+
+
+        for(var i=0;i<ranges.length;i++){
+
+            if(!ranges[i].dataset){
+                console.warn(i);
+                continue;
+            }
+
+            // TODO : LIMIT RELEASE
+            // TODO : FORCE IN TUNE
+
+            var cc=ranges[i].dataset.cc;
+            if(cc<16)continue;
+            ranges[i].value=Math.round(Math.random()*127);
+            console.log("CC="+cc, ranges[i].value);
+            sendMidiCC(+$('select#midiChannel').val(),cc,ranges[i].value);
+        }
+
+        //random Algorithm
+        var algonum=Math.round(Math.random()*12)+1;
+        $('#algorithm').val(algonum);
+        sendMidiCC(+$('select#midiChannel').val(),8,algonum);
 	});
 
+    var patches=[];
+    function getPatches(){
+        console.info('getPatches()');
+        $.post('ctrl.php',{'do':'list'},function(json){
+            console.log(json);
+            patches=json.files;
+        }).error(function(e){
+            console.error(e.responseText);
+        });
+    }
 
-	console.info("opafm.js");
+	getPatches();
 });
