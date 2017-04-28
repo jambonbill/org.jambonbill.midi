@@ -10,8 +10,13 @@ $dat=[];
 $dat['POST']=$_POST;
 switch($_POST['do']){
 
+
+
 	case 'list':
 		$dat['files']=glob("xml/*.xml");
+		exit(json_encode($dat));
+
+	case 'load':
 		exit(json_encode($dat));
 
 	case 'save':
