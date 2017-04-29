@@ -4,6 +4,8 @@ $htm='<div class="row">';
 $htm.='<div class="col-md-12">';
 $htm.='<a href=#btn id=btnRandom class="btn btn-default">Random patch</a> ';
 $htm.='<a href=#btn id=btnKill class="btn btn-default">Kill all notes</a> ';
+$htm.='<a href=#btn id=btnResend class="btn btn-default">Send all</a> ';
+$htm.='<a href=#btn id=btnDownload class="btn btn-default">Download</a> ';
 $htm.='</div>';
 $htm.='</div>';
 

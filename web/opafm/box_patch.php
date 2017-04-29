@@ -51,6 +51,7 @@ $htm.='</div>';
 
 
 $box=new LTE\Box;
+$box->id('boxPatch');
 $box->title('Patch');
 $box->body($htm);
 

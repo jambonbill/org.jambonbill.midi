@@ -10,17 +10,20 @@ echo "<pre>";
 $files=glob("xml/*.xml");
 
 $f=$files[0];
-$xml=simplexml_load_file($f);
+echo patchName($f);
 
-if ($xml === false) {
 
-    echo "Failed loading XML: ";
+function patch($filename='') {
 
-    foreach(libxml_get_errors() as $error) {
-        echo "<br>", $error->message;
-    }
+	$xml=simplexml_load_file($filename);
 
-} else {
-    print_r($xml);
+	if ($xml === false) {
+		echo "Failed loading XML: ";
+    	foreach(libxml_get_errors() as $error) {
+        	echo "<br>", $error->message;
+    	}
+    	return;
+	}
+	print_r($xml);
+	return trim($xml->name);
 }
-

@@ -108,11 +108,14 @@ $(function(){
     }
 
     // Send control change
-    var sendMidiCC=function(chan,ccNumber,value)
-    {
+    var sendMidiCC=function(chan,ccNumber,value){
+
         if(chan<0||chan>16){
             return false;
         }
+
+        if(ccNumber==NaN)return false;
+        if(value==NaN)return false;
 
         var portId=$('select#midiOutput').val();
         var output=midiAccess.outputs.get(portId);
@@ -170,21 +173,26 @@ $(function(){
 		selectAlgorithm(e.currentTarget.dataset.id);
 	});
 
-	function selectAlgorithm(n){
+
+    function selectAlgorithm(n){
 		console.info('selectAlgorithm(n)',n);
 		//$("button.algorithm").find("[data-id='"+n+"']").removeClass('active');
 		//$("button.algorithm").find("[data-id='"+n+"']").addClass('active');
         sendMidiCC(+$('select#midiChannel').val(),8,n);
 	}
 
+
     $('select#algorithm').change(function(){
         selectAlgorithm($('select#algorithm').val());
     });
 
-	$('input').change(function(e){
+
+    $('input').change(function(e){
 		var val=e.currentTarget.value;
 		var name=e.currentTarget.name;
 		var CC=e.currentTarget.dataset.cc;
+        if(!CC)return false;
+        localStorage['CC'+CC]=val;
 		$(this).prev().html(name+" : "+e.currentTarget.value*2);
         //console.info('CC='+CC,"value="+val);
         sendMidiCC(+$('select#midiChannel').val(),CC,val);
@@ -213,10 +221,53 @@ $(function(){
         sendMidiCC(+$('select#midiChannel').val(),8,algonum);
     });
 
-	$('#btnOpen').click(function(){
-		console.info('btnOpen');
+
+    $('#btnOpen').click(function(){
+
+        console.info('btnOpen', patches);
+
+        function displayPatchList(){
+
+            console.info('displayPatchList()');
+
+            var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
+            htm+='<thead>';
+            htm+='<th>File</th>';
+            htm+='<th>Name</th>';
+            htm+='</thead>';
+            htm+='<tbody>';
+            for(var i in patches){
+                var o=patches[i];
+                htm+='<tr data-filename="'+o.file+'">';
+                htm+='<td>'+o.file;
+                htm+='<td>'+o.name;
+            }
+            htm+='</tbody>';
+            htm+='</table>';
+
+            $('#modalPatches .modal-body').html(htm);
+            $('#modalPatches tbody>tr').click(function(e){
+                $('#modalPatches').modal('hide');
+                loadPatch(e.currentTarget.dataset.filename);
+            });
+        }
+
+        displayPatchList();
+
         $('#modalPatches').modal('show');
 	});
+
+    function loadPatch(filename){
+        console.info('loadPatch(filename)',filename);
+        $('.overlay').show();
+        $.post('ctrl.php',{'do':'load','filename':filename},function(json){
+            $('.overlay').hide();
+            console.log(json);
+
+        }).error(function(e){
+            console.error(e.responseText);
+        });
+    }
 
 	$('#btnSave').click(function(){
 		console.info('btnSave');
@@ -242,7 +293,7 @@ $(function(){
             var cc=ranges[i].dataset.cc;
             if(cc<16)continue;
             ranges[i].value=Math.round(Math.random()*127);
-            console.log("CC="+cc, ranges[i].value);
+            $(ranges[i]).prev().html(ranges[i].name+": "+ranges[i].value*2);
             sendMidiCC(+$('select#midiChannel').val(),cc,ranges[i].value);
         }
 
@@ -252,12 +303,30 @@ $(function(){
         sendMidiCC(+$('select#midiChannel').val(),8,algonum);
 	});
 
+    $('#btnResend').click(function(){
+        var ranges=$('input[type=range]');
+        for(var i=0;i<ranges.length;i++){
+            if(!ranges[i].dataset){
+                console.warn(i);
+                continue;
+            }
+
+            $(ranges[i]).prev().html(ranges[i].name+": "+ranges[i].value*2);
+
+            var cc=ranges[i].dataset.cc;
+            if(cc<16)continue;
+
+            sendMidiCC(+$('select#midiChannel').val(),cc,ranges[i].value);
+        }
+    });
+
+
     var patches=[];
     function getPatches(){
         console.info('getPatches()');
         $.post('ctrl.php',{'do':'list'},function(json){
             console.log(json);
-            patches=json.files;
+            patches=json.list;
         }).error(function(e){
             console.error(e.responseText);
         });
