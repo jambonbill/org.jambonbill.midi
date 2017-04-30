@@ -7,7 +7,7 @@ $htm='<div class="row">';
 $htm.='<div class="col-xs-6 col-sm-3 col-lg-2">';//NAME
 $htm.='<div class="form-group">';
 $htm.='<label>Name</label>';
-$htm.='<input class="form-control" placeholder="Patch name" id=patchname maxlength=8>';
+$htm.='<input class="form-control" value="default" placeholder="Patch name" id=patchname maxlength=8>';
 $htm.='</div>';
 $htm.='</div>';
 
