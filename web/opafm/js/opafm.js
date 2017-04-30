@@ -289,6 +289,14 @@ $(function(){
 
 	$('#btnSave').click(function(){
 		console.info('btnSave');
+        var data = JSON.stringify(makeJSON());
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
+        element.setAttribute('download', "FM_"+$('#patchname').val()+".json");
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
 	});
 
 	$('#btnRandom').click(function(){
@@ -346,8 +354,59 @@ $(function(){
         }
     }
 
+    function makeJSON(){
+        
+        var js={
+            'name':'',
+            'ccs':[]
+        };
+        
+        var ranges=$('input[type=range]');
+        for(var i=0;i<ranges.length;i++){
+            
+            if(!ranges[i].dataset){
+                console.warn(i);
+                continue;
+            }
+            
+            var cc=ranges[i].dataset.cc;
+            var val=+ranges[i].value;
+            js.ccs[cc]=val;
+        }
+        return js;
+    }
+
+
     $('#btnDownload').click(function(){
         alert("Not yet!");
+    });
+
+    
+    $('#btnLoad').click(function(){//81
+        var p=prompt("Enter program number to load",0);
+        if(p>104)return;
+        console.info('opa.loadInternal');
+        sendMidiCC(+$('select#midiChannel').val(),81,p);
+    });
+
+    
+    $('#btnStore').click(function(){//80
+        var p=prompt("Enter program number to STORE",0);
+        if(p>104)return;
+        console.info('opa.storeInternal');
+        sendMidiCC(+$('select#midiChannel').val(),82,p);
+    });
+
+    
+    $('#btnKill1').click(function(){//82
+        console.warn("allNotesOff");
+        sendMidiCC(+$('select#midiChannel').val(),82,0);
+    });
+
+    
+    $('#btnKill2').click(function(){//83
+        console.warn("allSoundsOff");
+        sendMidiCC(+$('select#midiChannel').val(),83,0);
     });
 
 
