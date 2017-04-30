@@ -43,51 +43,53 @@ $htm.='</div></div>';
 $htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>IniLevel</label>';
-$htm.='<input type=range data-cc='.($OP*16+3).' value=0 max=127 name=IniLevel>';
+$htm.='<input type=range data-cc='.($OP*16+3).' max=127 name=IniLevel>';
 $htm.='</div></div>';
 
 
 $htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Attack</label>';
-$htm.='<input type=range data-cc='.($OP*16+4).' value=0 max=127 name=Attack>';
+$htm.='<input type=range data-cc='.($OP*16+4).' max=127 name=Attack>';
 $htm.='</div></div>';
 
 $htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Decay</label>';
-$htm.='<input type=range data-cc='.($OP*16+5).' value=0 max=127 name=Decay>';
+$htm.='<input type=range data-cc='.($OP*16+5).' max=127 name=Decay>';
 $htm.='</div></div>';
 
 $htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Sustain</label>';
-$htm.='<input type=range data-cc='.($OP*16+6).' value=0 max=127 name=Sustain>';
+$htm.='<input type=range data-cc='.($OP*16+6).' max=127 name=Sustain>';
 $htm.='</div></div>';
 
 $htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>Release</label>';
-$htm.='<input type=range data-cc='.($OP*16+7).' value=0 max=127 name=Release>';
+$htm.='<input type=range data-cc='.($OP*16+7).' max=127 name=Release>';
 $htm.='</div></div>';
 
 $htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>LFO Speed</label>';
-$htm.='<input type=range data-cc='.($OP*16+8).' value=0 max=127 name="LFOSpd">';
+$htm.='<input type=range data-cc='.($OP*16+8).' max=127 name="LFOSpd">';
 $htm.='</div></div>';
 
 $htm.='<div class=col-xs-3>';
 $htm.='<div class="form-group">';
 $htm.='<label>LFO Amount</label>';
-$htm.='<input type=range data-cc='.($OP*16+9).' value=0 max=127 name="LFOAmnt">';
+$htm.='<input type=range data-cc='.($OP*16+9).' max=127 name="LFOAmnt">';
 $htm.='</div></div>';
 
+
 if ($OP==4) {
+
     $htm.='<div class=col-xs-3>';
     $htm.='<div class="form-group">';
     $htm.='<label>Feedback</label>';
-    $htm.='<input type=range data-cc='.($OP*16+10).' value=0 max=127 name=Feedback>';
+    $htm.='<input type=range data-cc='.($OP*16+10).' max=127 name=Feedback>';
     $htm.='</div></div>';
 
     $htm.='<div class=col-xs-3>';
