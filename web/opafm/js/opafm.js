@@ -1,5 +1,4 @@
 // jambonbill opafm.js
-// http://www.w3.org/TR/webmidi/#examples-of-web-midi-api-usage-in-javascript
 $(function(){
 
 	$.onMIDIInit=function(midi) {
@@ -67,9 +66,8 @@ $(function(){
         if (detected) {
             $('#midiOutput').val(detected);
         }
-        // Auto Forward midi notes to the output
 
-        $('.overlay').hide();
+        init();
     }
 
     $.onMIDIReject=function(err) {
@@ -107,8 +105,8 @@ $(function(){
         _notes=nn;
     }
 
-    // Send control change
-    var sendMidiCC=function(chan,ccNumber,value){
+
+    var sendMidiCC=function(chan,ccNumber,value){// Send control change
 
         if(chan<0||chan>16){
             return false;
@@ -118,11 +116,14 @@ $(function(){
         if(value==NaN)return false;
 
         var portId=$('select#midiOutput').val();
+
         var output=midiAccess.outputs.get(portId);
+
         if (!output) {
             console.error('!output');
             return false;
         }
+
         output.send( [0xB0+chan, +ccNumber, +value] );
         console.info('sendMidiCC',+chan,+ccNumber,+value);
         return true;
@@ -176,8 +177,7 @@ $(function(){
 
     function selectAlgorithm(n){
 		console.info('selectAlgorithm(n)',n);
-		//$("button.algorithm").find("[data-id='"+n+"']").removeClass('active');
-		//$("button.algorithm").find("[data-id='"+n+"']").addClass('active');
+        ccStore(8,n);
         sendMidiCC(+$('select#midiChannel').val(),8,n);
 	}
 
@@ -192,11 +192,29 @@ $(function(){
 		var name=e.currentTarget.name;
 		var CC=e.currentTarget.dataset.cc;
         if(!CC)return false;
-        localStorage['CC'+CC]=val;
-		$(this).prev().html(name+" : "+e.currentTarget.value*2);
+        //localStorage['CC'+CC]=val;
+		ccStore(CC,val);
+        $(this).prev().html(name+" : "+e.currentTarget.value*2);
         //console.info('CC='+CC,"value="+val);
         sendMidiCC(+$('select#midiChannel').val(),CC,val);
 	});
+
+
+    /**
+     * CC Storage interface
+     * @param  {[type]} cc    [description]
+     * @param  {[type]} value [description]
+     * @return {[type]}       [description]
+     */
+    function ccStore(cc,value){
+        //could use cookie if localstorage is not available
+        if(cc===NaN)return false;
+        if(cc>127)return false;
+        if(value){
+            localStorage['CC'+cc]=value;
+        }
+        return localStorage['CC'+cc];
+    }
 
 
     $('#btnNew').click(function(){
@@ -278,8 +296,6 @@ $(function(){
         $('#patchname').val("RANDOM");
         var ranges=$('input[type=range]');
 
-
-
         for(var i=0;i<ranges.length;i++){
 
             if(!ranges[i].dataset){
@@ -304,6 +320,53 @@ $(function(){
 	});
 
     $('#btnResend').click(function(){
+        sendAll();
+    });
+
+    function sendAll(){
+
+        console.info('sendAll()');
+
+        //Volume
+        //Algorithm
+        //Panning
+        //Flags
+
+        // Operators //
+        var ranges=$('input[type=range]');
+        for(var i=0;i<ranges.length;i++){
+            if(!ranges[i].dataset){
+                console.warn(i);
+                continue;
+            }
+            $(ranges[i]).prev().html(ranges[i].name+": "+ranges[i].value*2);
+            var cc=ranges[i].dataset.cc;
+            if(cc<16)continue;
+            sendMidiCC(+$('select#midiChannel').val(),cc,ranges[i].value);
+        }
+    }
+
+    $('#btnDownload').click(function(){
+        alert("Not yet!");
+    });
+
+
+    function init(){
+        console.info('init()');
+
+        //reload last patch
+
+        //Patch Name
+
+        //Algorithm
+        var val=ccStore(8);
+        if(val)$('select#algorithm').val(val);
+
+        //Volume
+        //var vol=ccStore(9);
+        //if(vol)$('select#algorithm').val(vol);
+
+
         var ranges=$('input[type=range]');
         for(var i=0;i<ranges.length;i++){
             if(!ranges[i].dataset){
@@ -311,15 +374,22 @@ $(function(){
                 continue;
             }
 
-            $(ranges[i]).prev().html(ranges[i].name+": "+ranges[i].value*2);
-
             var cc=ranges[i].dataset.cc;
             if(cc<16)continue;
 
-            sendMidiCC(+$('select#midiChannel').val(),cc,ranges[i].value);
-        }
-    });
 
+
+            var val=ccStore(cc);
+
+            if(val){
+                ranges[i].value=val;
+                $(ranges[i]).prev().html(ranges[i].name+": "+val*2);
+                //sendMidiCC(+$('select#midiChannel').val(),cc,val);
+            }
+        }
+        sendAll();
+        $('.overlay').hide();
+    }
 
     var patches=[];
     function getPatches(){
@@ -333,4 +403,5 @@ $(function(){
     }
 
 	getPatches();
+
 });
