@@ -239,43 +239,48 @@ $(function(){
         sendMidiCC(+$('select#midiChannel').val(),8,algonum);
     });
 
-
+    
     $('#btnOpen').click(function(){
-
         console.info('btnOpen', patches);
-
-        function displayPatchList(){
-
-            console.info('displayPatchList()');
-
-            var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
-            htm+='<thead>';
-            htm+='<th>File</th>';
-            htm+='<th>Name</th>';
-            htm+='</thead>';
-            htm+='<tbody>';
-            for(var i in patches){
-                var o=patches[i];
-                htm+='<tr data-filename="'+o.file+'">';
-                htm+='<td>'+o.file;
-                htm+='<td>'+o.name;
-            }
-            htm+='</tbody>';
-            htm+='</table>';
-
-            $('#modalPatches .modal-body').html(htm);
-            $('#modalPatches tbody>tr').click(function(e){
-                $('#modalPatches').modal('hide');
-                loadPatch(e.currentTarget.dataset.filename);
-            });
-        }
-
-        displayPatchList();
-
-        $('#modalPatches').modal('show');
+        $('#modalOpen').modal('show');
+        $('#loadFromJSON').click();
 	});
 
-    function loadPatch(filename){
+    $('#loadFromJSON').change(function(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        var file = evt.target.files[0];
+        var reader = new FileReader();
+        var data = false;
+        reader.onload = (function(theFile) {
+            return function(e) {
+                data = JSON.parse(e.target.result);
+                if (!data) return;
+                refreshEditorByJSON(data);
+            }
+        })(file);
+        reader.readAsText(file);
+        $('#modalOpen').modal('hide');
+    });
+
+    function refreshEditorByJSON(data){
+        console.log(data);
+        $('#patchname').val(data.name);
+        for(var cc in data.ccs){
+            console.log(cc,data.ccs[cc]);
+            if (cc) {
+                //$('#').val(cc);
+                ccStore(cc,data.ccs[cc]);
+                //sendMidiCC(cc,val);
+            }
+        }
+        // now update interface
+        // TODO
+    };
+
+
+    
+    function loadXmlPatch(filename){
         console.info('loadPatch(filename)',filename);
         $('.overlay').show();
         $.post('ctrl.php',{'do':'load','filename':filename},function(json){
@@ -287,6 +292,34 @@ $(function(){
         });
     }
 
+    /*
+    function displayPatchList(){
+
+        console.info('displayPatchList()');
+
+        var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
+        htm+='<thead>';
+        htm+='<th>File</th>';
+        htm+='<th>Name</th>';
+        htm+='</thead>';
+        htm+='<tbody>';
+        for(var i in patches){
+            var o=patches[i];
+            htm+='<tr data-filename="'+o.file+'">';
+            htm+='<td>'+o.file;
+            htm+='<td>'+o.name;
+        }
+        htm+='</tbody>';
+        htm+='</table>';
+
+        $('#modalPatches .modal-body').html(htm);
+        $('#modalPatches tbody>tr').click(function(e){
+            $('#modalPatches').modal('hide');
+            loadPatch(e.currentTarget.dataset.filename);
+        });
+    }
+    */
+   
 	$('#btnSave').click(function(){
 		console.info('btnSave');
         var data = JSON.stringify(makeJSON());
@@ -357,7 +390,7 @@ $(function(){
     function makeJSON(){
         
         var js={
-            'name':'',
+            'name':$('#patchname').val(),
             'ccs':[]
         };
         
@@ -368,7 +401,6 @@ $(function(){
                 console.warn(i);
                 continue;
             }
-            
             var cc=ranges[i].dataset.cc;
             var val=+ranges[i].value;
             js.ccs[cc]=val;
@@ -411,6 +443,7 @@ $(function(){
 
 
     function init(){
+        
         console.info('init()');
 
         //reload last patch
