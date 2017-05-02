@@ -22,7 +22,8 @@ echo $admin;
 		<div class='col-sm-12'>
 		<?php
 		include "box_patch.php";
-		include "modal_patch.php";
+		include "modal_loadjson.php";
+		//include "modal_patch.php";
 		?>
 		</div>
 	</div>
