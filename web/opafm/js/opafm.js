@@ -1,11 +1,35 @@
 // jambonbill opafm.js
+/*
+var sdump=event.data;
+console.log('sdump.length='+sdump.length);
+if (sdump.length==1036) {
+    notification("Sysex dump received","now calm down");
+    console.log(sdump);
+    SID.load(sdump);
+    var data=SID.decode();
+    console.log(data);
+    var blob = new Blob([sdump], {type: "application/octet-stream"});
+    return;
+}
+
+var hstr='';
+for(var i in sdump){
+    //console.log(sdump[i]);
+    var hx=sdump[i].toString(16);
+    if(hx.length==1)hx='0'+hx;
+    hstr+=hx.toUpperCase();
+}
+*/
+
 $(function(){
 
-	$.onMIDIInit=function(midi) {
+    "use strict";
+
+    $.onMIDIInit=function(midi) {
         midiAccess = midi;
 
         $.MIDIMessageEventHandler=function(event){
-
+            var sdump=event.data;
             var msg=event.data[0];
             var midichannel=event.data[0] & 0x0f;
             var type=msg & 0xf0;
@@ -33,6 +57,18 @@ $(function(){
 
                 default:
                     //console.info('$.MIDIMessageEventHandler(event)',event);
+                    var hstr='';
+                    for(var i in sdump){
+                        //console.log(sdump[i]);
+                        var hx=sdump[i].toString(16);
+                        if(hx.length==1)hx='0'+hx;
+                        hstr+=hx.toUpperCase();
+                    }
+
+                    if (hstr=='F000007E4B000FF7') {
+                        notification("Ping received!","now we're talking");
+                    }
+
                     break;
             }
         }
@@ -239,7 +275,7 @@ $(function(){
         sendMidiCC(+$('select#midiChannel').val(),8,algonum);
     });
 
-    
+
     $('#btnOpen').click(function(){
         console.info('btnOpen', patches);
         $('#modalOpen').modal('show');
@@ -279,7 +315,7 @@ $(function(){
     };
 
 
-    
+
     function loadXmlPatch(filename){
         console.info('loadPatch(filename)',filename);
         $('.overlay').show();
@@ -319,7 +355,7 @@ $(function(){
         });
     }
     */
-   
+
 	$('#btnSave').click(function(){
 		console.info('btnSave');
         var data = JSON.stringify(makeJSON());
@@ -331,6 +367,23 @@ $(function(){
         element.click();
         document.body.removeChild(element);
 	});
+
+
+    $('#btnPing').click(function(){
+
+        // Make sure you send the ping to the arduino board !
+        var _portId=$('select#midiOutput').val();
+        if (!_portId) {
+            console.warn('!portid');
+            return;
+        }
+
+        console.log('click ping');
+        var device_number=0x00;
+        var output = midiAccess.outputs.get(_portId);
+        output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);
+    });
+
 
 	$('#btnRandom').click(function(){
 		console.info('btnRandom');
@@ -388,15 +441,15 @@ $(function(){
     }
 
     function makeJSON(){
-        
+
         var js={
             'name':$('#patchname').val(),
             'ccs':[]
         };
-        
+
         var ranges=$('input[type=range]');
         for(var i=0;i<ranges.length;i++){
-            
+
             if(!ranges[i].dataset){
                 console.warn(i);
                 continue;
@@ -413,7 +466,7 @@ $(function(){
         alert("Not yet!");
     });
 
-    
+
     $('#btnLoad').click(function(){//81
         var p=prompt("Enter program number to load",0);
         if(p>104)return;
@@ -421,7 +474,7 @@ $(function(){
         sendMidiCC(+$('select#midiChannel').val(),81,p);
     });
 
-    
+
     $('#btnStore').click(function(){//80
         var p=prompt("Enter program number to STORE",0);
         if(p>104)return;
@@ -429,13 +482,13 @@ $(function(){
         sendMidiCC(+$('select#midiChannel').val(),82,p);
     });
 
-    
+
     $('#btnKill1').click(function(){//82
         console.warn("allNotesOff");
         sendMidiCC(+$('select#midiChannel').val(),82,0);
     });
 
-    
+
     $('#btnKill2').click(function(){//83
         console.warn("allSoundsOff");
         sendMidiCC(+$('select#midiChannel').val(),83,0);
@@ -443,7 +496,7 @@ $(function(){
 
 
     function init(){
-        
+
         console.info('init()');
 
         //reload last patch
