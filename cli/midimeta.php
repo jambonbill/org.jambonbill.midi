@@ -3,37 +3,57 @@
 require __DIR__."/../vendor/autoload.php";
 require __DIR__."/../src/MIDI/midi.class.php";
 
-$file='mid/daftpunk.mid';
+$files=glob('mid/*.mid');
+shuffle($files);
+$file=$files[0];
 
-echo "<li>file=$file";
+echo "file=$file\n";
+echo "md5=".md5_file($file)."\n";
 
 $midi = new Midi();
 $midi->importMid($file);
 
 
 $trackcount=$midi->getTrackCount();
-echo "<li>trackcount=$trackcount";
+echo "trackcount=$trackcount\n";
 
 $tracks=$midi->getTracks();
-print_r($tracks);
+//print_r($tracks);
 
 //$names=$midi->getTrackNames();
 //echo "TrackNames=";print_r($names);
 
-$track = $midi->getTrack(0);
+$STATS=[];
+$TEXTS=[];
+$TRACKNAMES=[];
+$LYRICS=[];
 
-// list of meta events that we are interested in (adjust!)
-$texttypes = array('Text','Copyright','TrkName','InstrName','Lyric','Marker','Cue');
+$texttypes = array('Text','Copyright','TrkName','InstrName','Lyric','Marker','Cue');// list of meta events
 
-$nothing = 1;
-foreach ($track as $msgStr){
-	$msg = explode(' ',$msgStr);
-	if ($msg[1]=='Meta'&&in_array($msg[2],$texttypes)){
-		echo $msg[2].': '.substr($msgStr,strpos($msgStr,'"'))."\n";
-		$nothing = 0;
+for($i=0;$i<$trackcount;$i++){
+
+	//echo "TRACK[$i]\n";
+
+	$track = $midi->getTrack($i);
+
+	$nothing = 1;
+	foreach ($track as $msgStr){
+		$msg = explode(' ',$msgStr);
+
+		if ($msg[1]=='Meta'&&!in_array($msg[2],$texttypes))continue;
+
+		@$STATS[$msg[2]]++;
+
+		if ($msg[1]=='Meta'){
+			echo $msg[2].': '.substr($msgStr,strpos($msgStr,'"'))."\n";
+			$nothing = 0;
+		}
 	}
+
+	if ($nothing) {
+		echo 'No events found!';
+	}
+
 }
 
-if ($nothing) {
-	echo 'No events found!';
-}
+print_r($STATS);
