@@ -35,6 +35,10 @@ class MIDI
 
     }
 
+    public function db(){
+        return $db;
+    }
+
     public function create(){
 
     }
