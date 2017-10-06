@@ -6,10 +6,12 @@ require __DIR__."/../src/MIDI/midi.class.php";
 $files=glob('source/*.mid');
 shuffle($files);
 $file=$files[0];
+$MD5=md5_file($file);
 
 echo "file=$file\n";
 echo "filesize=".filesize($file)."\n";
-echo "md5=".md5_file($file)."\n";
+
+echo "MD5=".$MD5."\n";
 
 $midi = new Midi();
 $midi->importMid($file);
@@ -70,11 +72,13 @@ for($i=0;$i<$trackcount;$i++){
 echo "INFO=".$INFO."\n";
 echo strlen($INFO)." bytes info\n";
 //echo "STATS ";print_r($STATS);
+$folder=substr($MD5,0,1);
+echo "<li>folder=$folder\n";
 
-//rename($file, "../midifiles/$foldes/$md5");
-//updateDb//
+if(rename($file, "../midifiles/$folder/$MD5")){
+	//ok
+}else{
+	exit("Error renaming $file");
+}
 
-$sql="INSERT INTO midifiles m_filename, m_filesize, m_copyright, m_md5, m_tracks, m_ppqn, m_bpm, m_duration, m_metadata, m_updated ";
-$sql="VALUES ();";
 
-echo "$sql\n";

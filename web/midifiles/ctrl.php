@@ -11,27 +11,10 @@ switch($_POST['do']){
 
 	case 'browse':
 
-		$f=glob("../../midifiles/*.mid");
-
-		$midi = new Midi();
-
-		foreach($f as $file){
-
-			$midi->importMid($file);
-
-			$f=[];
-			$f['name']=basename($file);
-			$f['size']=filesize($file);
-
-			// get midifile info //
-			$f['bpm']=$midi->getBpm();//returns tempo as beats per minute (0 if tempo not set).
-			$f['timebase']=$midi->getTimebase();//returns timebase value.
-			$f['trackCount']=$midi->getTrackCount();//returns number of tracks.
-
-			$dat['files'][]=$f;
-		}
-
+		//dbsearch
 		exit(json_encode($dat));
+
+
 
 	case 'wget':
 		$dat['post']=$_POST;

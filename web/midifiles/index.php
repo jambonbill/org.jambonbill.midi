@@ -11,7 +11,7 @@ echo $admin;
 ?>
 <section class="content-header">
   <h1><i class='fa fa-list'></i> Midifiles
-  <small></small>
+  <small>count files</small>
   </h1>
 </section>
 
