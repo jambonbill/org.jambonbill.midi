@@ -9,11 +9,13 @@
     ],
     "autoload": {
         "psr-0": {
-            "LTE": "src/",
             "MIDI": "src/"
         }
     },
     "require": {
-        "php": ">=5.5.9"
+        "php": ">=7.0.0",
+        "ext-pdo":"*",
+        "monolog/monolog": "~1.1",
+        "jambonbill/lteturbo": ">=1.0"
     }
 }

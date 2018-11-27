@@ -1,0 +1,59 @@
+{
+
+	"header":{
+   		"text":"Midi tools",
+   		"class":"header"
+   	},
+
+   	"monitor":{
+		"text":"Monitor",
+		"icon":"fa fa-search",
+		"url":"monitor/"
+   	},
+
+    "router":{
+      "text":"Router",
+      "icon":"fa fa-terminal",
+      "url":"router/"
+    },
+
+   	"keyboard":{
+		"text":"Keyboard",
+		"icon":"fa fa-keyboard-o",
+		"url":"keyboard/"
+   	},
+
+
+   	"jasmid":{
+		"text":"Jasmid",
+		"icon":"fa fa-music",
+		"url":"jasmid/"
+   	},
+
+    "cc":{
+    "text":"Control Changes",
+    "icon":"fa fa-terminal",
+    "url":"control_changes/"
+    },
+
+
+   	"sysex":{
+		"text":"Sysex",
+		"icon":"fa fa-terminal",
+		"url":"sysex/"
+   	},
+
+   	"mbsidv2":{
+  		"text":"MbSidV2",
+  		"icon":"fa fa-terminal",
+  		"url":"mbsidv2/"
+   	},
+
+    "opafm":{
+      "text":"OPA FM editor",
+      "icon":"fa fa-terminal",
+      "url":"opafm/"
+    }
+
+
+}
