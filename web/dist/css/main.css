@@ -1,0 +1,154 @@
+div.ttip {
+    position: absolute;
+    width: 280px;
+    color: #fff;
+    padding: 8px;
+    font: 12px sans-serif;
+    background: #111;
+    border: solid 0px #aaa;
+    border-radius: 4px;
+    pointer-events: none;
+    -webkit-box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.5);
+}
+
+div.ttip hr {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+div.ttip th {
+    font-weight: bold;
+    color: white;
+    font-size: 13px;
+}
+
+div.ttip td {
+    color: #ddd;
+    font-size: 12px;
+    padding: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+div.ttip tr:nth-child(even) {
+    background-color: #333;
+}
+
+.axis {
+    shape-rendering: crispEdges;
+}
+
+.crisp {
+    shape-rendering: crispEdges;
+}
+
+.text-muted {
+    font-style: italic;
+    color: #333 !important;
+}
+
+.rowSelected {
+    color: black;
+    font-weight: bold;
+    background-color: #F0F0F0;
+}
+
+.problemblue {
+    color: #0073b7;
+}
+
+.videored {
+    color: #c00;
+}
+
+.staryellow {
+    color: #ffcc00;
+}
+
+/* MAIN */
+.content-header {
+    max-width: 1100px;
+}
+
+.content {
+    max-width: 1100px;
+    min-height: 30px;
+}
+
+/* FFI WP */
+
+/* WP STYLE - https://first-finance.institute/en/ */
+div.ffilogo-header {
+    background-image: url(../img/white-stripe-dataviz.jpg);
+}
+
+div.ffi-header {
+    font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    /*background-image: url(../img/white-stripe-dataviz.jpg);*/
+    background-color: #ffffff;
+    margin: #ffcc00;
+}
+
+footer {
+    min-height: 200px;
+    color: #BFBFBF;
+    background-color: #363839;
+    border-color: #e9eaee;
+    background-image: url("../img/bgfooter.jpg");
+    background-repeat: repeat;
+    background-position: center center;
+    background-attachment: scroll;
+    background-size: cover;
+    -webkit-background-size: cover;
+}
+
+h4.widget-title {
+    color: #DDDDDD;
+    font-size: 14px;
+}
+
+.textwidget > a {
+    color: #BFBFBF;
+}
+
+.textwidget > a:hover {
+    color: #fab717;
+}
+
+th.header {
+    background-image: url(../img/small.gif);
+    cursor: pointer;
+    font-weight: bold;
+    background-repeat: no-repeat;
+    background-position: center right;
+    padding-left: 20px;
+    margin-left: -1px;
+}
+
+th.headerSortUp {
+    background-image: url(../img/small_asc.gif);
+}
+
+th.headerSortDown {
+    background-image: url(../img/small_desc.gif);
+
+}
+
+body{
+    margin-top:55px;
+}
+
+body.mobile-app .main-header .logo {
+    display: none;
+}
