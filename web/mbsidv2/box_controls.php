@@ -17,12 +17,12 @@ $htm='<div class=row>';
 
 $htm.='<div class=col-sm-6>';
 $htm.="<label>Input</label>";
-$htm.="<select class='form-control' id=midiInput readonly></select>";
+$htm.="<select class='form-control form-control-sm' id=midiInput readonly></select>";
 $htm.='</div>';
 
 $htm.='<div class=col-sm-6>';
 $htm.="<label>Output</label>";
-$htm.="<select class='form-control' id=midiOutput readonly></select>";
+$htm.="<select class='form-control form-control-sm' id=midiOutput readonly></select>";
 $htm.='</div>';
 
 $htm.='</div>';
@@ -36,12 +36,12 @@ $box->body($htm);
 
 $btns=[];
 $btns[]='<div class="button-group">';
-$btns[]="<a href=# class='btn btn-default' id=btnPing>Ping</a> ";
+$btns[]="<a href=# class='btn btn-sm btn-default' id=btnPing>Ping</a> ";
 //$btns[]="<a href=# class='btn btn-default' id=btnPlay><i class='fa fa-play'></i></a> ";
 //$btns[]="<a href=# class='btn btn-default' id=btnStop><i class='fa fa-stop'></i></a> ";
-$btns[]="<a href=# class='btn btn-default' id=btnReq1>patch dump req</a> ";
-$btns[]="<a href=# class='btn btn-default' id=btnReq2>cur. patch req</a> ";
-$btns[]="<a href=# class='btn btn-default' id=btnReq3>bank request</a> ";
+$btns[]="<a href=# class='btn btn-sm btn-default' id=btnReq1>patch dump req</a> ";
+$btns[]="<a href=# class='btn btn-sm btn-default' id=btnReq2>cur. patch req</a> ";
+$btns[]="<a href=# class='btn btn-sm btn-default' id=btnReq3>bank request</a> ";
 $btns[]="</div>";
 $box->footer($btns);
 

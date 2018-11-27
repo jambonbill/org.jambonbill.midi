@@ -16,7 +16,7 @@ $htm[]='</div>';
 
 $box=new LTE\Box;
 $box->id('boxSetup');
-$box->icon('fa fa-edit');
+//$box->icon('fa fa-edit');
 $box->title('Setup');
 $box->body($htm);
 $box->footer('<a href=# class="btn btn-default"><i class="fa fa-times"></i> Save</a>');

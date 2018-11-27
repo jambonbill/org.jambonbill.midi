@@ -17,8 +17,8 @@ echo $admin;
 <div class=row>
 	<div class='col-md-12'>
 		<?php
-		include "box_setup.php";
-		include "box_routes.php";
+		require "box_setup.php";
+		require "box_routes.php";
 		?>
 	</div>
 </div>

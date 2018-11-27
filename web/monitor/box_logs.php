@@ -7,7 +7,7 @@ $box=new LTE\Box;
 $box->title("Incoming midi events");
 $box->icon("fa fa-list");
 $box->id("boxIncoming");
-$box->boxTools("<button class=\"btn btn-box-tool\" title='Clear' id=btnClearLogs><i class='fa fa-times'></i></button> ");
+//$box->boxTools("<button class=\"btn btn-box-tool\" title='Clear' id=btnClearLogs><i class='fa fa-times'></i></button> ");
 
 $box->body("<pre>Waiting...</pre>");
 $box->collapsable(true);

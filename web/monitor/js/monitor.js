@@ -10,12 +10,61 @@ D = Channel Pressure
 E = Pitch Wheel
  */
 
-
 $(function(){
     
+    let _midiAccess=null;  // the MIDIAccess object.
+    let _midiChannel=0;
+    let _midiInputs;
+    let _midiOutputs;
+    let _midiReady=false;
+
     var continues=0;//bpm counter
     var filters=[];
     var logs=[];
+
+    if (navigator.requestMIDIAccess){
+        navigator.requestMIDIAccess().then( onMIDIInit, onMIDIReject );
+    }else{
+        console.warn("No MIDI support present in your browser");
+    }
+
+    function onMIDIInit(midi) {
+        //console.log('onMIDIInit(midi)',midi);
+        _midiAccess = midi;
+
+        var haveAtLeastOneDevice=false;
+        var inputs=_midiAccess.inputs.values();
+        var outputs=_midiAccess.outputs.values();
+        
+        _midiInputs=[];
+        for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
+            haveAtLeastOneDevice = true;
+            _midiInputs.push(input.value);
+
+        }
+        _midiOutputs=[];
+        for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
+            console.log(output);
+            _midiOutputs.push(output.value);
+        }
+
+        if (!haveAtLeastOneDevice){
+            console.warn("No MIDI input devices present.");
+        }else{
+            console.info('MIDI ready');
+            _midiReady=true;
+            $('.overlay').hide();
+            //displayInputs();
+            //displayOutputs();
+        }
+    }
+
+       
+    function onMIDIReject(err) {
+        console.error("MIDI system failed to start.");
+    }
+
+    
     
     $.onMIDIInit=function(midi) {                    
         console.info('onMIDIInit');
@@ -48,29 +97,10 @@ $(function(){
         
         
 
-        $('.overlay').hide();
+        
     }
-    /*
-    $.MIDIMessageEventHandler(event) {
-        //var msg=event.data[0] & 0xf0;
-        console.info('$.MIDIMessageEventHandler(event)');
-        var msg=event.data[0];
-        var midichannel=event.data[0] & 0x0f;
-        var type=msg & 0xf0;
-        if(type==0xf0){
-            continues++;
-        }
+    
 
-        
-        for(i in filters){// Filter here
-            if(type==filters[i])return;
-        }
-        
-        //logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
-        logs.push({'t':new Date(),'msg':msg,'e':event});
-        dispLog();//
-    }
-    */
     
     function msgType(msg){      
         var msg=msg & 0xf0;
@@ -99,7 +129,7 @@ $(function(){
     function dispLog(){
         if(logs.length>20)logs.shift();
         
-        var htm='<table class="table table-hover table-condensed">';
+        let htm='<table class="table table-hover table-sm">';
         
         htm+='<thead>';
         htm+='<th width=100>Time</th>';

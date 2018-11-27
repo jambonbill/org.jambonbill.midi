@@ -19,11 +19,15 @@ echo $admin;
 
 <div class='row'>
 	<div class='col-sm-5'>
-	<?php include "box_inputs.php";?>
-	<?php include "box_filter.php";?>
+	<?php 
+	require "box_inputs.php";
+	require "box_filter.php";
+	?>
 	</div>
 	<div class='col-sm-7'>
-	<?php include "box_logs.php";?>
+	<?php 
+	require "box_logs.php";
+	?>
 	</div>
 </div>
 

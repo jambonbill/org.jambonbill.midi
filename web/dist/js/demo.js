@@ -131,6 +131,7 @@ function change_layout(cls) {
   $("body").toggleClass(cls);
   $.AdminLTE.layout.fixSidebar();  
 }
+
 function change_skin(cls) {  
   $.each(my_skins, function (i) {
     $("body").removeClass(my_skins[i]);
@@ -140,6 +141,7 @@ function change_skin(cls) {
   store('skin', cls);
   return false;
 }
+
 function store(name, val) {
   if (typeof (Storage) !== "undefined") {
     localStorage.setItem(name, val);

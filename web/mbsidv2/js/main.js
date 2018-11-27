@@ -147,7 +147,7 @@ $(function(){
 
 		//console.info('displayPatches()',_files);
 
-		var htm='<table class="table table-condensed table-hover" style="cursor:pointer">';
+		var htm='<table class="table table-sm table-hover" style="cursor:pointer">';
 
 		htm+='<thead>';
 		htm+='<th>Filename</th>';
