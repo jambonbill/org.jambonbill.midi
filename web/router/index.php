@@ -13,7 +13,7 @@ echo $admin;
 <section class="container">
 
 	<h1>MIDI Router</h1>
-
+	<hr />
 	<div class=row>
 		<div class='col-md-12'>
 			<?php
@@ -26,3 +26,6 @@ echo $admin;
 </section>
 
 <script type="text/javascript" src='js/router.js'></script>
+<?php
+$admin->footer("pouet");
+$admin->end();

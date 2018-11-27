@@ -38,10 +38,11 @@ $(function(){
         
         _midiInputs=[];
         for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
+            input.value.onmidimessage = MIDIMessageEventHandler;
             haveAtLeastOneDevice = true;
             _midiInputs.push(input.value);
-
         }
+
         
         /*
         _midiOutputs=[];
@@ -60,6 +61,42 @@ $(function(){
         }
     }
 
+    /*
+    http://www.gweep.net/~prefect/eng/reference/protocol/midispec.html
+    Messages :
+    8 = Note Off 
+    9 = Note On 
+    A = AfterTouch (ie, key pressure) 
+    B = Control Change 
+    C = Program (patch) change 
+    D = Channel Pressure 
+    E = Pitch Wheel
+     */
+    var continues=0;//bpm counter
+    function MIDIMessageEventHandler(event) {
+      
+        //var msg=event.data[0] & 0xf0;
+        var msg=event.data[0];
+        var midichannel=event.data[0] & 0x0f;
+        var type=msg & 0xf0;
+        
+        if(type==0xf0){
+            continues++;
+        }
+
+        // Filter here
+        for(i in filters){
+            if(type==filters[i])return;
+        }
+        
+        console.log(event);
+
+        //logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
+        logs.push({'t':new Date(),'msg':msg,'e':event});
+
+        dispLog();
+    }
+
     function init(){
         console.log('init()');
         for(let i in _midiInputs){
@@ -70,6 +107,11 @@ $(function(){
             o.text=a.name;
             s.add(o);
         }
+
+        if(_midiInputs.length>4){
+            $('select#midiInput').attr('size', _midiInputs.length);
+        }
+        
         $('.overlay').hide();
     }
 

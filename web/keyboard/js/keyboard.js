@@ -32,7 +32,7 @@ $(function(){
     	_midiInputs=[];
         for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
             //console.log("input",input);
-            //input.value.onmidimessage = MIDIMessageEventHandler;//maybe later
+            input.value.onmidimessage = MIDIMessageEventHandler;
             haveAtLeastOneDevice = true;
             _midiInputs.push({'id':input.value.id,'name':input.value.name});
 
@@ -56,35 +56,132 @@ $(function(){
         console.error("MIDI system failed to start.");
     }
 
-	function displayKeyMap()
-	{
-	    console.log('displayKeyMap()');
-	    let htm='<table class="table table-condensed">';
-	    htm+='<thead>';
-	    htm+='<th>Key</th>';
-	    htm+='<th>Note</th>';
-	    htm+='<th>Value</th>';
-	    htm+='</thead>';
-	    htm+='<tbody>';
-	    for (let i=0;i<kmap.length;i++) {
-	        if(!kmap[i])continue;
-	        var n=$.keyCodeToMidiNote(i);
-	        htm+="<tr>"
-	        htm+="<td>"+i;
-	        htm+="<td>"+notestr[n];
-	        htm+="<td>"+n;
-	    }
-	    htm+='</tbody>';
-	    htm+='</table>';
-	    $('#boxLog .box-body').html(htm);
-	}
+    
+    /*  
+    0x80     Note Off
+    0x90     Note On
+    0xA0     Aftertouch
+    0xB0     Continuous controller
+    0xC0     Patch change
+    0xD0     Channel Pressure
+    0xE0     Pitch bend
+    0xF0     (non-musical commands)
+    */
+    function MIDIMessageEventHandler(event) {//incoming midi events
+    
+        var msg=event.data[0] & 0xf0;
+        //if(msg==240)return; //??
+        var midichannel=event.data[0] & 0x0f;
 
-	/*
-	function setPortId(id){
-		console.info('setPortId()',id);
-		_portId=id;
-	}
-	*/
+        // Mask off the lower nibble (MIDI channel)
+        switch (event.data[0] & 0xf0) {
+        
+
+            case 0x80://note off
+                var f=_hooks[midichannel].noteoff;
+                if(typeof(f)=='function'){
+                    f(event.data);
+                }
+                return;
+
+
+            case 0x90://note on
+                //console.log("note on",event.data[1]);
+                var f=_hooks[midichannel].noteon;
+                if(typeof(f)=='function'){
+                    f(event.data);
+                }          
+                break;
+
+            case 0xb0:// CC - Control Change
+                var ccNum=event.data[1];
+                var f=_hooks[midichannel].cc[ccNum];
+                if(!_ccs[midichannel])_ccs[midichannel]=[];
+                _ccs[midichannel][ccNum]=event.data[2];//test
+                if(typeof(f)=='function'){
+                    f(event.data);
+                }
+                break;
+            
+            case 0xC0:// Prg Change
+                var f=_hooks[midichannel].prgchange;
+                if(typeof(f)=='function'){
+                    f(event.data);
+                }
+                break;
+                break;
+            
+            case 0xe0://pitch
+                var f=_hooks[midichannel].pitch;
+                if(typeof(f)=='function'){
+                    f(event.data);
+                }
+                break;
+
+            case 0xf0:// Other (time)
+                //if(event.data[0]==251){
+                if(event.data[0]==248){
+                    
+                    if(_playing&&_ticks%24==0&&_beats%4==0){
+                        // BAR //
+                        var f=_onBar;
+                        f(_bars);
+                        _bars++;
+                    }
+                    
+                    if(_playing&&_ticks%24==0){
+                        //Beat//
+                        //console.info("(ON)BEAT");
+                        var f=_onBeat;
+                        f(_beats);
+                        _beats++;
+                    }
+                    _ticks++;
+                    var f=_onTick;
+                    //f(event.data);
+                    f(_ticks);
+                }
+                
+                // MIDI START //
+                if(event.data[0]==250){
+                    _ticks=0;
+                    _beats=0;
+                    //console.warn("MIDI Start "+event.data[0]);
+                    _playing=true;
+                    var f=_onStart;
+                    f(event.data);
+                }
+
+                // MIDI CONTINUE //
+                if(event.data[0]==251){
+                    _playing=true;
+                    var f=_onContinue;
+                    f(event.data);
+                }
+                
+
+                // MIDI STOP //
+                if(event.data[0]==252){
+                    _playing=false;
+                    _ticks=0;
+                    _beats=0;
+                    _bars=0;
+                    var f=_onStop;
+                    f(event.data);
+                }
+                
+                var f=_hooks[0].mtc;
+                if(typeof(f)=='function'){
+                    f(event.data);
+                }
+                break;
+
+            default:
+                console.warn("MIDIMessageEventHandler",event.data);
+                break;
+        }  
+    }
+	
 
 	function prgChange(n,midiChannel){
 
@@ -104,6 +201,7 @@ $(function(){
 		output.send( msg );
 		_prg=n;
 	}
+
 
 	function midiNoteToString(n){
 	    let note=n%12;
@@ -127,14 +225,10 @@ $(function(){
 		if(!midiChannel)midiChannel=_midiChannel;
 		
 		for(let i=0;i<_notes.length;i++){
-			if(_notes[i]==noteNumber){
-				//console.warn("Already playing !");
-				return;//dont play it twice
-			}
+			if(_notes[i]==noteNumber)return;//dont play it twice
 		}
 
-		console.log('noteOn() '+midiNoteToString(noteNumber), noteNumber, midiChannel);
-
+		//console.log('noteOn() '+midiNoteToString(noteNumber), noteNumber, midiChannel);
 		let noteOnMessage = [0x90+midiChannel, noteNumber, 0x7f];    // note on, middle C, full velocity
 		let output = _midiAccess.outputs.get(_portId);
 		output.send( noteOnMessage );
@@ -149,19 +243,18 @@ $(function(){
 		}
 
 		if(!_portId||!noteNumber){
-			console.warn(!_portId||!noteNumber);
+			//console.warn(!_portId||!noteNumber);
 			return;
 		}
 
 		if(!midiChannel)midiChannel=_midiChannel;
 
-		console.log('noteOff()', noteNumber, midiChannel);
+		//console.log('noteOff()', noteNumber, midiChannel);
 
-		//var midiChan=+$('#midiChannel').val();
 		let output = _midiAccess.outputs.get(_portId);
 
-		// note off
-		output.send( [0x80+midiChannel, noteNumber, 0x40]);
+		
+		output.send( [0x80+midiChannel, noteNumber, 0x40]);// note off
 
 		// remove from the note buffer
 		let nn=[];
@@ -183,24 +276,13 @@ $(function(){
 		}
 	}
 
-
-    function setOctave(n){
-    	_octave=+n;
-        console.info("Octave "+_octave);
-        $("#octave").val(_octave);
-    }
-
-	$("#octave").change(function(e){setOctave(+$("#octave").val())});
-
-    $('#btnMapping').click(function(){
-        displayKeyMap();
-    });
-
+    
 
     function selectMidiChannel(n){
     	console.info('selectMidiChannel(n)',n);
     	_midiChannel=+n;
     }
+
 
     function init(){
     	
@@ -220,6 +302,7 @@ $(function(){
 
 	        let htm='Key:'+e.keyCode;
 			let n=keyCodeToMidiNote(e.keyCode);
+
 			if (typeof(n)=='number') {
 
 				let nid=n%12;
@@ -228,6 +311,10 @@ $(function(){
 				noteOn(midinote,_midiChannel);
 
 				htm=midiNoteToString(midinote) + " midinote("+midinote+") on channel "+_midiChannel;
+	            let chord=readChord();
+	            if(chord){
+	            	htm+="<br /><lryi>Chord:"+chord;
+	            }
 	            $('#boxLog .box-body').html(htm);
 
 			} else {
@@ -235,9 +322,7 @@ $(function(){
 	            if (e.keyCode>=112&&e.keyCode<=115) {//F1234-Keys
 
 	                console.log("F"+e.keyCode);
-
 	                setOctave(e.keyCode-111);
-
 	                e.stopPropagation();
 	                e.preventDefault();
 	                return;
@@ -254,8 +339,23 @@ $(function(){
 	                	break;
 	            }
 			}
-
 		});
+
+		window.readChord=function(){//try to compute chord 'string'
+			
+			if(_notes.length<2)return;
+			_notes.sort();
+			//console.log(_notes);
+			let arp=[];
+			arp.push(0);
+			let f=_notes[0];
+			for(let i=1;i<_notes.length;i++){				
+				let t=_notes[i];
+				let d=t-f;
+				arp.push(d);
+			}
+			return arp.join(',');
+		}
 
 		$("body").keyup(function(e) {
 			let n=keyCodeToMidiNote(e.keyCode);
@@ -302,8 +402,15 @@ $(function(){
 		}
     }
 
-    
+    $('select#octave').change(function(){
+    	setOctave($('select#octave').val());
+    });
 
+    window.setOctave=function(oct){
+		console.log('setOctave',oct);
+    	$('select#octave').val(oct);
+    	_octave=oct;
+    }
    
 
 	window.popMidiOutput=function(){

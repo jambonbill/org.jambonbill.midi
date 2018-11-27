@@ -3,12 +3,12 @@
 $htm='<div class=row>';
 
 $htm.='<div class="col-md-6 col-lg-4">';
-$htm.='<label>Input</label>';
+$htm.='<label>Source</label>';
 $htm.='<select class="form-control form-control-sm" id=midiInputs size=4></select>';
 $htm.='</div>';
 
 $htm.='<div class="col-md-6 col-lg-4">';
-$htm.='<label>Output</label>';
+$htm.='<label>Destination</label>';
 $htm.='<select class="form-control form-control-sm" id=midiOutputs size=4></select>';
 $htm.='</div>';
 

@@ -13,6 +13,7 @@ echo $admin;
 ?>
 <section class="container">
   <h1>MIDI Keyboard</h1>
+  <hr />
 </section>
 
 <section class="container">
