@@ -1,5 +1,7 @@
 {
 	"name":"midi.jambonbill.org",
+    "type": "project",
+    "license": "AGPLV3",
 	"authors": [
         {
             "name": "Jambonbill",
