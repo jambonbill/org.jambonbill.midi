@@ -32,9 +32,9 @@ $(function(){
         //console.log('onMIDIInit(midi)',midi);
         _midiAccess = midi;
 
-        var haveAtLeastOneDevice=false;
-        var inputs=_midiAccess.inputs.values();
-        var outputs=_midiAccess.outputs.values();
+        let haveAtLeastOneDevice=false;
+        let inputs=_midiAccess.inputs.values();
+        let outputs=_midiAccess.outputs.values();
         
         _midiInputs=[];
         for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
@@ -42,65 +42,42 @@ $(function(){
             _midiInputs.push(input.value);
 
         }
+        
+        /*
         _midiOutputs=[];
         for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
             console.log(output);
             _midiOutputs.push(output.value);
         }
-
+        */
+        
         if (!haveAtLeastOneDevice){
             console.warn("No MIDI input devices present.");
         }else{
             console.info('MIDI ready');
             _midiReady=true;
-            $('.overlay').hide();
-            //displayInputs();
-            //displayOutputs();
+            init();    
         }
     }
 
-       
-    function onMIDIReject(err) {
-        console.error("MIDI system failed to start.");
-    }
-
-    
-    
-    $.onMIDIInit=function(midi) {                    
-        console.info('onMIDIInit');
-        midiAccess = midi;
-        
-        $.MIDIMessageEventHandler=function(event){
-            
-            var msg=event.data[0];
-            var midichannel=event.data[0] & 0x0f;
-            var type=msg & 0xf0;
-            if(type==0xf0){
-                continues++;
-                return;
-            }
-            console.info('$.MIDIMessageEventHandler(event)',event);
-            logs.push({'t':new Date(),'msg':msg,'e':event});
-            dispLog();//
-        }
-
-        var ins=$.midiInputs();
-        var out=$.midiOutputs();
-        for(var i in ins){
-            var a=ins[i];
+    function init(){
+        console.log('init()');
+        for(let i in _midiInputs){
+            let a=_midiInputs[i];
             var s=document.getElementById("midiInput");
             var o=document.createElement("option");
             o.value=a.id;
             o.text=a.name;
             s.add(o);
         }
-        
-        
-
-        
+        $('.overlay').hide();
     }
-    
 
+       
+    function onMIDIReject(err) {
+        console.error("MIDI system failed to start.");
+    }
+ 
     
     function msgType(msg){      
         var msg=msg & 0xf0;
@@ -189,10 +166,10 @@ $(function(){
         console.log(filters);
     });
 
+    /*
     $('#btnRecord').click(function(){
         console.log('btnRecord');
-
     });
+    */
 
-    
 });

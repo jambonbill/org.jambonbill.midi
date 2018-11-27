@@ -21,15 +21,15 @@ echo $admin;
 
 <div class='row'>
 
-	<div class='col-sm-6'>
+	<div class='col-md-6'>
 	<?php
-	include "box_send.php";
+	require "box_send.php";
 	?>
 	</div>
 
-	<div class='col-sm-6'>
+	<div class='col-md-6'>
 	<?php
-	include "box_receive.php";
+	require "box_receive.php";
 	?>
 	</div>
 
@@ -39,5 +39,7 @@ echo $admin;
 <script type="text/javascript" src='js/sysex.js'></script>
 
 <?php
+require "modal_sysex.php";
+
 $admin->footer("Midimon - Sysex");
 $admin->end();

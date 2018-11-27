@@ -1,6 +1,61 @@
 $(function(){
 
-	var _sysex=[];
+	'use strict';
+
+	let _midiAccess=null;  // the MIDIAccess object.
+    let _midiChannel=0;
+    let _midiInputs;
+    let _midiOutputs;
+    let _midiReady=false;
+	let _sysex=[];
+
+	if (navigator.requestMIDIAccess){
+        navigator.requestMIDIAccess().then( onMIDIInit, onMIDIReject );
+    }else{
+        console.warn("No MIDI support present in your browser");
+    }
+
+    function onMIDIInit(midi) {
+        //console.log('onMIDIInit(midi)',midi);
+        _midiAccess = midi;
+
+        let haveAtLeastOneDevice=false;
+        let inputs=_midiAccess.inputs.values();
+        let outputs=_midiAccess.outputs.values();
+        
+        _midiInputs=[];
+        for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
+            haveAtLeastOneDevice = true;
+            _midiInputs.push(input.value);
+
+        }
+        
+        _midiOutputs=[];
+        for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
+            console.log(output);
+            _midiOutputs.push(output.value);
+        }        
+        
+        if (!haveAtLeastOneDevice){
+            console.warn("No MIDI input devices present.");
+        }else{
+            console.info('MIDI ready');
+            _midiReady=true;
+            init();    
+        }
+    }
+
+    function init(){
+        console.log('init()');
+        
+        $('.overlay').hide();
+    }
+
+       
+    function onMIDIReject(err) {
+        console.error("MIDI system failed to start.");
+    }
+
 
 	$('#btnLoadSysex').click(function(){
 		console.log('#btnLoadSysex');
@@ -33,19 +88,7 @@ $(function(){
 		notification("Sent","n bytes sent to "+_portId);
 	});
 
-	/*
-	$('#btnPing').click(function(){//F0 00 00 7E 4B <device number> 0F F7
-
-		if (!_portId) {
-			console.warn('!portid');
-			return;
-		}
-		console.log('click ping');
-		var device_number=0x00;
-		var output = midiAccess.outputs.get(_portId);
-		output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);
-	});
-	*/
+	
 
 	$('#loadFromFile').change(function(evt) {
 
@@ -87,7 +130,7 @@ $(function(){
 	});
 
 
-
+	/*
 	$.onMIDIInit=function(midi) {                
         
         midiAccess = midi;
@@ -144,7 +187,6 @@ $(function(){
 	    		hstr+=hx.toUpperCase();
 	    	}
 	    }
-
-
     }
+    */
 });

@@ -30,12 +30,7 @@
 		"url":"jasmid/"
    	},
 
-    "cc":{
-    "text":"Control Changes",
-    "icon":"fa fa-terminal",
-    "url":"control_changes/"
-    },
-
+    
 
    	"sysex":{
 		"text":"Sysex",

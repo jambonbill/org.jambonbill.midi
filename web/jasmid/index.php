@@ -16,7 +16,7 @@ echo $admin;
   </h1>
 </section>
 
-<section class="content">
+<section class="container">
 
 <div class='row'>
 	<div class='col-sm-6'>
@@ -44,6 +44,8 @@ echo $admin;
 	?>
 	</div>
 </div>
+
+</section>
 
 <script type="text/javascript" src="js/stream.js"></script>
 <script type="text/javascript" src="js/midifile.js"></script>

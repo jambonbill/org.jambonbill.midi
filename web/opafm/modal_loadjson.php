@@ -1,12 +1,11 @@
 <?php
 // Modal Load Json
-$htm=[];
-$htm[]='<form enctype="multipart/form-data" class="form-control">';
-$htm[]='<input type="file" id="loadFromJSON" accept=".json" required><br />';
-$htm[]='<input type="submit" value="Upload json file" name="submit" id=btnSubmit class="form-control"><br />';
-$htm[]='</form>';
-$htm[]='<br />';
-$htm[]='<br />';
+$htm='<form enctype="multipart/form-data" class="form-control">';
+$htm.='<input type="file" id="loadFromJSON" accept=".json" required><br />';
+$htm.='<input type="submit" value="Upload json file" name="submit" id=btnSubmit class="form-control"><br />';
+$htm.='</form>';
+$htm.='<br />';
+$htm.='<br />';
 
 
 $modal=new LTE\Modal;

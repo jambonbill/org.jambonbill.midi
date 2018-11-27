@@ -25,92 +25,136 @@ $(function(){
 
     "use strict";
 
-    $.onMIDIInit=function(midi) {
-        midiAccess = midi;
+    let _midiAccess=null;  // the MIDIAccess object.
+    let _midiChannel=0;
+    let _midiInputs;
+    let _midiOutputs;
+    let _midiReady=false;
+    let _sysex=[];
 
-        $.MIDIMessageEventHandler=function(event){
-            var sdump=event.data;
-            var msg=event.data[0];
-            var midichannel=event.data[0] & 0x0f;
-            var type=msg & 0xf0;
-            var a=event.data[1];
-            var b=event.data[2];
-            switch(type){
+    if (navigator.requestMIDIAccess){
+        navigator.requestMIDIAccess().then( onMIDIInit, onMIDIReject );
+    }else{
+        console.warn("No MIDI support present in your browser");
+    }
 
-                case 0x80://note off
-                    noteOff(a);
-                    //$('footer.main-footer').html("Incoming Note off "+a + " Velo:"+b);
-                    break;
+    function onMIDIInit(midi) {
+        //console.log('onMIDIInit(midi)',midi);
+        _midiAccess = midi;
 
-                case 0x90://note on
-                    noteOn(a,b);
-                    //$('footer.main-footer').html("Incoming Note on "+a + " Val:"+b);
-                    break;
+        let haveAtLeastOneDevice=false;
+        let inputs=_midiAccess.inputs.values();
+        let outputs=_midiAccess.outputs.values();
+        
+        _midiInputs=[];
+        for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
+            haveAtLeastOneDevice = true;
+            _midiInputs.push(input.value);
 
-                case 0xc0://'Program change'
-                    //$('footer.main-footer').html("Incoming Prg change #"+a);
-                    break;
+        }
+        
+        _midiOutputs=[];
+        for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
+            console.log(output);
+            _midiOutputs.push(output.value);
+        }        
+        
+        if (!haveAtLeastOneDevice){
+            console.warn("No MIDI input devices present.");
+        }else{
+            console.info('MIDI ready');
+            _midiReady=true;
+            init();    
+        }
+    }
 
-                case 0xe0://'Pitch wheel'
-                    pitchBend(a,b);
-                    break;
-
-                default:
-                    //console.info('$.MIDIMessageEventHandler(event)',event);
-                    var hstr='';
-                    for(var i in sdump){
-                        //console.log(sdump[i]);
-                        var hx=sdump[i].toString(16);
-                        if(hx.length==1)hx='0'+hx;
-                        hstr+=hx.toUpperCase();
-                    }
-
-                    if (hstr=='F000007E4B000FF7') {
-                        notification("Ping received!","now we're talking");
-                    }
-
-                    break;
-            }
+    function init(){
+        
+        console.log('init()');
+        
+         for(var i in _midiInputs){
+            var a=_midiInputs[i];
+            var s=document.getElementById("midiInput");
+            var o=document.createElement("option");
+            o.value=a.id;
+            o.text=a.name;
+            s.add(o);
         }
 
-        var ins=$.midiInputs();
-		var out=$.midiOutputs();
-
-        for(var i in ins){
-			var a=ins[i];
-			var s=document.getElementById("midiInput");
-		    var o=document.createElement("option");
-		    o.value=a.id;
-		    o.text=a.name;
-		    s.add(o);
-		}
-
         var detected=false;
-		for(var i in out){
-			var a=out[i];
-			var s=document.getElementById("midiOutput");
-		    var o=document.createElement("option");
-		    o.value=a.id;
-		    o.text=a.name;
-		    s.add(o);
+        for(var i in _midiOutputs){
+            var a=_midiOutputs[i];
+            var s=document.getElementById("midiOutput");
+            var o=document.createElement("option");
+            o.value=a.id;
+            o.text=a.name;
+            s.add(o);
             if(/Arduino/.test(a.name)){
                 detected=a.id;
             }
-		}
+        }
 
         // Try to select the Arduino from the midi out list //
         if (detected) {
             $('#midiOutput').val(detected);
         }
 
-        init();
+        $('.overlay').hide();
     }
 
-    $.onMIDIReject=function(err) {
-        console.error("The MIDI system failed to start.",err);
-        alert("The MIDI system failed to start");
+       
+    function onMIDIReject(err) {
+        console.error("MIDI system failed to start.");
     }
 
+    
+    function MIDIMessageEventHandler(event){
+        
+        var sdump=event.data;
+        var msg=event.data[0];
+        var midichannel=event.data[0] & 0x0f;
+        var type=msg & 0xf0;
+        var a=event.data[1];
+        var b=event.data[2];
+        switch(type){
+
+            case 0x80://note off
+                noteOff(a);
+                //$('footer.main-footer').html("Incoming Note off "+a + " Velo:"+b);
+                break;
+
+            case 0x90://note on
+                noteOn(a,b);
+                //$('footer.main-footer').html("Incoming Note on "+a + " Val:"+b);
+                break;
+
+            case 0xc0://'Program change'
+                //$('footer.main-footer').html("Incoming Prg change #"+a);
+                break;
+
+            case 0xe0://'Pitch wheel'
+                pitchBend(a,b);
+                break;
+
+            default:
+                //console.info('$.MIDIMessageEventHandler(event)',event);
+                var hstr='';
+                for(var i in sdump){
+                    //console.log(sdump[i]);
+                    var hx=sdump[i].toString(16);
+                    if(hx.length==1)hx='0'+hx;
+                    hstr+=hx.toUpperCase();
+                }
+
+                if (hstr=='F000007E4B000FF7') {
+                    notification("Ping received!","now we're talking");
+                }
+
+                break;
+        }
+    }
+
+    
 
     function noteOn(midinote,velocity){
 
@@ -123,7 +167,7 @@ $(function(){
         var velo=0x7f;
         if(velocity)velo=velocity;
         var noteOnMessage = [0x90+chan, midinote, velo];    // note on, middle C, full velocity
-        var output = midiAccess.outputs.get(portId);
+        var output = _midiAccess.outputs.get(portId);
         output.send( noteOnMessage );
         _notes.push(midinote);
     }
@@ -132,7 +176,7 @@ $(function(){
         //console.info('noteOff(midinote)');
         var chan=+$('select#midiChannel').val();
         var portId=$('select#midiOutput').val();
-        var output = midiAccess.outputs.get(portId);
+        var output = _midiAccess.outputs.get(portId);
         output.send( [0x80+chan, midinote, 0x40]);// note off
         var nn=[];//new note buffer
         for(var i in _notes){
@@ -152,8 +196,7 @@ $(function(){
         if(value==NaN)return false;
 
         var portId=$('select#midiOutput').val();
-
-        var output=midiAccess.outputs.get(portId);
+        var output=_midiAccess.outputs.get(portId);
 
         if (!output) {
             console.error('!output');
@@ -323,7 +366,7 @@ $(function(){
             $('.overlay').hide();
             console.log(json);
 
-        }).error(function(e){
+        }).fail(function(e){
             console.error(e.responseText);
         });
     }
@@ -542,7 +585,7 @@ $(function(){
         $.post('ctrl.php',{'do':'list'},function(json){
             console.log(json);
             patches=json.list;
-        }).error(function(e){
+        }).fail(function(e){
             console.error(e.responseText);
         });
     }
