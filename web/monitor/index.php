@@ -5,7 +5,7 @@ session_start();
 
 require __DIR__."/../../vendor/autoload.php";
 
-$admin = new LTE\AdminLte2;
+$admin = new LTE\Admin(__DIR__."/../../config/config.json");
 $admin->title("MIDI monitor");
 echo $admin;
 ?>

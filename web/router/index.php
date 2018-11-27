@@ -6,7 +6,7 @@ session_start();
 require __DIR__."/../../vendor/autoload.php";
 require __DIR__."/../../src/MIDI/midi.class.php";
 
-$admin = new LTE\AdminLte2();
+$admin = new LTE\Admin(__DIR__."/../../config/config.json");
 $admin->title("MIDI router");
 echo $admin;
 ?>

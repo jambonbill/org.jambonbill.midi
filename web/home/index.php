@@ -3,9 +3,8 @@ header('Content-Type: text/html; charset=utf-8');
 session_start();
 
 require __DIR__."/../../vendor/autoload.php";
-//require __DIR__."/../../src/MIDI/midi.class.php";
 
-$admin = new LTE\AdminLte2();
+$admin = new LTE\Admin(__DIR__."/../../config/config.json");
 $admin->title("midi.jambonbill.org");
 
 include "meta.php";
