@@ -23,7 +23,7 @@ echo $admin;
 		
 		<div class='col-sm-12'>
 		<?php
-		//require "midi_channels.php";
+		require "midi_channels.php";
 		?>
 		</div>
 		
