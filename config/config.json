@@ -1,5 +1,6 @@
 {
 	"title":"MIDI",
+	"description":"Online MIDI Tools by jambonbill",
 	"homeurl":"index.php",
 	"favicon":"favicon.ico",
 	"menusearch":false,
@@ -24,6 +25,6 @@
 		"layout-boxed":false,
 		"sidebar-collapse":false
 	},
-
+	"meta":"meta.json",
 	"menu":"menu.json"
 }
