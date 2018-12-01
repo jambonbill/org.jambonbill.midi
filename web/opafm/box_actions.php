@@ -6,6 +6,7 @@ $htm.='<a href=#btn id=btnRandom class="btn btn-sm btn-default">Random patch</a>
 $htm.='<a href=#btn id=btnResend class="btn btn-sm btn-default">Send all</a> ';
 $htm.='<a href=#btn id=btnDownload class="btn btn-sm btn-default">Download</a> ';
 $htm.='<a href=#btn id=btnPing class="btn btn-sm btn-default">Ping</a> ';
+$htm.='<a href=#btn id=btnPanic class="btn btn-sm btn-default">Panic</a> ';
 
 $htm.='<div class="btn-group pull-right">';
 $htm.='<a href=#btn id=btnLoad class="btn btn-sm btn-default">Load Internal</a> ';

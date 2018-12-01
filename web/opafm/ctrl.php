@@ -12,7 +12,8 @@ $dat['POST']=$_POST;
 switch($_POST['do']){
 
 
-	case 'list'://list patch
+	case 'patchlist'://list patch
+	//case 'list'://list patch
 		$files=glob("xml/*.xml");
 		$dat['list']=[];
 		foreach($files as $file){
@@ -39,6 +40,7 @@ switch($_POST['do']){
 		$dat['post']=$_POST;
 		exit(json_encode($dat));
 }
+
 
 function patch($filename=''){
 	$xml=simplexml_load_file($filename);

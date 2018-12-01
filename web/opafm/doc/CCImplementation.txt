@@ -1,5 +1,8 @@
 OPAFM Program Parameters as CC implemetation
 by jambonbill
+--
+http://fredslab.net/opa/opa_reference_manual_0.1.pdf
+
 
 
 OPA_PROGRAM_PARAMETERS

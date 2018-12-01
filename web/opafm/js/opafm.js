@@ -39,7 +39,9 @@ $(function(){
     }
 
     function onMIDIInit(midi) {
-        //console.log('onMIDIInit(midi)',midi);
+        
+        console.log('onMIDIInit(midi)',midi);
+        
         _midiAccess = midi;
 
         let haveAtLeastOneDevice=false;
@@ -50,12 +52,11 @@ $(function(){
         for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
             haveAtLeastOneDevice = true;
             _midiInputs.push(input.value);
-
         }
         
         _midiOutputs=[];
         for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
-            console.log(output);
+            //console.log(output);
             _midiOutputs.push(output.value);
         }        
         
@@ -64,28 +65,31 @@ $(function(){
         }else{
             console.info('MIDI ready');
             _midiReady=true;
-            init();    
+            init();
         }
     }
 
-    function init(){
+    function onMIDIReject(err){console.error("MIDI system failed to start")}
+
+    window.init=function(){
         
         console.log('init()');
         
-         for(var i in _midiInputs){
-            var a=_midiInputs[i];
-            var s=document.getElementById("midiInput");
-            var o=document.createElement("option");
+         for(let i in _midiInputs){
+            let a=_midiInputs[i];
+            let s=document.getElementById("midiInput");
+            let o=document.createElement("option");
             o.value=a.id;
             o.text=a.name;
             s.add(o);
         }
 
         var detected=false;
-        for(var i in _midiOutputs){
-            var a=_midiOutputs[i];
-            var s=document.getElementById("midiOutput");
-            var o=document.createElement("option");
+        for(let i in _midiOutputs){
+            let a=_midiOutputs[i];
+            //console.log(a);
+            let s=document.getElementById("midiOutput");
+            let o=document.createElement("option");
             o.value=a.id;
             o.text=a.name;
             s.add(o);
@@ -99,13 +103,45 @@ $(function(){
             $('#midiOutput').val(detected);
         }
 
+
+        //reload last patch
+
+        //Patch Name
+
+        //Algorithm
+        var val=ccStore(8);
+        //if(val)$('select#algorithm').val(val);
+
+        // Volume
+        // var vol=ccStore(9);
+        // if(vol)$('select#algorithm').val(vol);
+
+        var ranges=$('input[type=range]');
+        for(var i=0;i<ranges.length;i++){
+            
+            if(!ranges[i].dataset){
+                console.warn(i);
+                continue;
+            }
+
+            var cc=ranges[i].dataset.cc;
+            if(cc<16)continue;
+
+            var val=ccStore(cc);
+
+            if(val){
+                ranges[i].value=val;
+                $(ranges[i]).prev().html(ranges[i].name+": "+val*2);
+                //sendMidiCC(+$('select#midiChannel').val(),cc,val);
+            }
+        }
+        //sendAll();
+
         $('.overlay').hide();
     }
 
-       
-    function onMIDIReject(err) {
-        console.error("MIDI system failed to start.");
-    }
+        
+    
 
     
     function MIDIMessageEventHandler(event){
@@ -158,28 +194,28 @@ $(function(){
 
     function noteOn(midinote,velocity){
 
-        for(var i in _notes)
+        for(let i in _notes)
             if(_notes[i]==midinote)return;//dont play it twice
 
         //console.info('noteOn(midinote)');
-        var chan=+$('select#midiChannel').val();
-        var portId=$('select#midiOutput').val();
-        var velo=0x7f;
+        let chan=+$('select#midiChannel').val();
+        let portId=$('select#midiOutput').val();
+        let velo=0x7f;
         if(velocity)velo=velocity;
-        var noteOnMessage = [0x90+chan, midinote, velo];    // note on, middle C, full velocity
-        var output = _midiAccess.outputs.get(portId);
+        let noteOnMessage = [0x90+chan, midinote, velo];    // note on, middle C, full velocity
+        let output = _midiAccess.outputs.get(portId);
         output.send( noteOnMessage );
         _notes.push(midinote);
     }
 
     function noteOff(midinote){
         //console.info('noteOff(midinote)');
-        var chan=+$('select#midiChannel').val();
-        var portId=$('select#midiOutput').val();
-        var output = _midiAccess.outputs.get(portId);
+        let chan=+$('select#midiChannel').val();
+        let portId=$('select#midiOutput').val();
+        let output = _midiAccess.outputs.get(portId);
         output.send( [0x80+chan, midinote, 0x40]);// note off
-        var nn=[];//new note buffer
-        for(var i in _notes){
+        let nn=[];//new note buffer
+        for(let i in _notes){
             if(_notes[i]!=midinote)nn.push(_notes[i]);
         }
         _notes=nn;
@@ -188,6 +224,9 @@ $(function(){
 
     var sendMidiCC=function(chan,ccNumber,value){// Send control change
 
+        console.log('sendMidiCC',chan,ccNumber,value);
+
+
         if(chan<0||chan>16){
             return false;
         }
@@ -195,8 +234,8 @@ $(function(){
         if(ccNumber==NaN)return false;
         if(value==NaN)return false;
 
-        var portId=$('select#midiOutput').val();
-        var output=_midiAccess.outputs.get(portId);
+        let portId=$('select#midiOutput').val();
+        let output=_midiAccess.outputs.get(portId);
 
         if (!output) {
             console.error('!output');
@@ -212,7 +251,7 @@ $(function(){
     function pitchBend(coarse, fine){
         var chan=+$('select#midiChannel').val();
         var portId=$('select#midiOutput').val();
-        var output=midiAccess.outputs.get(portId);
+        var output=_midiAccess.outputs.get(portId);
         if (!output) {
             console.error('!output');
             return false;
@@ -234,7 +273,7 @@ $(function(){
         if (["INPUT","SELECT","TEXTAREA"].indexOf(e.target.nodeName) !== -1){
           if(e.target.type!='range')return;
         }
-        var n=$.keyCodeToMidiNote(e.keyCode);
+        var n=keyCodeToMidiNote(e.keyCode);
         if(typeof(n)!='number')return;
         noteOn(n+(_octave*12));
     });
@@ -243,27 +282,35 @@ $(function(){
         if (["INPUT","SELECT","TEXTAREA"].indexOf(e.target.nodeName) !== -1) {
             if(e.target.type!='range')return;
         }
-        var n=$.keyCodeToMidiNote(e.keyCode);
+        var n=keyCodeToMidiNote(e.keyCode);
         if(typeof(n)!='number')return;
         noteOff(n+(_octave*12));
     });
 
-	$('button.algorithm').click(function(e){
+    
+    window.panic=function(){//kill all playing notes in case something is stuck
+        console.warn('panic');
+        for(let i in _notes)
+            noteOff(_notes[i]);                    
+    }
+
+	
+    $('button.algorithm').click(function(e){
 		//console.log(e.currentTarget.dataset.id);
 		selectAlgorithm(e.currentTarget.dataset.id);
 	});
 
 
-    function selectAlgorithm(n){
-		console.info('selectAlgorithm(n)',n);
+    
+    window.selectAlgorithm=function(n){
+		console.info('selectAlgorithm('+n+')');
         ccStore(8,n);
-        sendMidiCC(+$('select#midiChannel').val(),8,n);
+        let chan=+$('select#midiChannel').val();
+        sendMidiCC(chan, 8, n);
+        $('#btnAlgorithm').text('Algorithm #'+(n+1));
+        $('#modalAlgorithm').modal('hide');
 	}
-
-
-    $('select#algorithm').change(function(){
-        selectAlgorithm($('select#algorithm').val());
-    });
+    
 
 
     $('input').change(function(e){
@@ -279,22 +326,34 @@ $(function(){
 	});
 
 
+    
     /**
-     * CC Storage interface
+     * CC Storage interface (get/set)
      * @param  {[type]} cc    [description]
      * @param  {[type]} value [description]
      * @return {[type]}       [description]
      */
     function ccStore(cc,value){
-        //could use cookie if localstorage is not available
+        
         if(cc===NaN)return false;
         if(cc>127)return false;
         if(value){
-            localStorage['CC'+cc]=value;
+            localStorage['OPACC'+cc]=value;
         }
-        return localStorage['CC'+cc];
+        return localStorage['OPACC'+cc];
     }
 
+
+    $('#btnAlgorithm').click(function(){
+        console.log('click');
+        $('#modalAlgorithm').modal('show');
+    });
+
+    /*
+    $('select#algorithm').change(function(){
+        selectAlgorithm($('select#algorithm').val());
+    });
+    */
 
     $('#btnNew').click(function(){
         if(!confirm("Clear all ?"))return;
@@ -319,10 +378,10 @@ $(function(){
     });
 
 
-    $('#btnOpen').click(function(){
+    $('#btnOpenXML').click(function(){
         console.info('btnOpen', patches);
-        $('#modalOpen').modal('show');
-        $('#loadFromJSON').click();
+        $('#modalPatches').modal('show');
+        //$('#loadFromJSON').click();
 	});
 
     $('#loadFromJSON').change(function(evt) {
@@ -402,13 +461,13 @@ $(function(){
 	$('#btnSave').click(function(){
 		console.info('btnSave');
         var data = JSON.stringify(makeJSON());
-        var element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
-        element.setAttribute('download', "FM_"+$('#patchname').val()+".json");
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+        var el = document.createElement('a');
+        el.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
+        el.setAttribute('download', "FM_"+$('#patchname').val()+".json");
+        el.style.display = 'none';
+        document.body.appendChild(el);
+        el.click();
+        document.body.removeChild(el);
 	});
 
 
@@ -423,8 +482,18 @@ $(function(){
 
         console.log('click ping');
         var device_number=0x00;
-        var output = midiAccess.outputs.get(_portId);
-        output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);
+        var output = _midiAccess.outputs.get(_portId);
+        try{
+            output.send( [0xF0,0x00,0x00,0x7E,0x4B, device_number, 0x0F,0xF7]);    
+        }
+        catch(e){
+            console.error(e.message);
+        }
+        
+    });
+
+    $('#btnPanic').click(function(){
+        panic();
     });
 
 
@@ -538,46 +607,7 @@ $(function(){
     });
 
 
-    function init(){
-
-        console.info('init()');
-
-        //reload last patch
-
-        //Patch Name
-
-        //Algorithm
-        var val=ccStore(8);
-        if(val)$('select#algorithm').val(val);
-
-        //Volume
-        //var vol=ccStore(9);
-        //if(vol)$('select#algorithm').val(vol);
-
-
-        var ranges=$('input[type=range]');
-        for(var i=0;i<ranges.length;i++){
-            if(!ranges[i].dataset){
-                console.warn(i);
-                continue;
-            }
-
-            var cc=ranges[i].dataset.cc;
-            if(cc<16)continue;
-
-
-
-            var val=ccStore(cc);
-
-            if(val){
-                ranges[i].value=val;
-                $(ranges[i]).prev().html(ranges[i].name+": "+val*2);
-                //sendMidiCC(+$('select#midiChannel').val(),cc,val);
-            }
-        }
-        sendAll();
-        $('.overlay').hide();
-    }
+   
 
     var patches=[];
     function getPatches(){
