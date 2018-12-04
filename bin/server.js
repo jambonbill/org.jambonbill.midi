@@ -76,35 +76,21 @@ wsServer.on('request', function(request) {
            
             // log and broadcast the message
             
-            console.log('From ' + userName + ': ' + message.utf8Data);
-        
-            // we want to keep history of all sent messages
-            var obj = {
-                //time: (new Date()).getTime(),
-                text: message.utf8Data,
-                author: userName
-            };
-            
-            //history.push(obj);
-            //history = history.slice(-100);
-
-            // broadcast message to all connected clients
-            var json = JSON.stringify({hello:'world'});
-            
-            for(let i in clients){
-                //if(i==index)continue;//do not send to sender
-                //clients[i].sendUTF(json);                   
-                clients[i].send(json);
-            }
         } else{
             
-            //console.warn('message type is', message.type);
+            console.warn('message type is', message.type);
             
             let bin=message.binaryData;
-            console.warn(message.binaryData,bin[0],bin[1],bin[2]);
-
+            if(bin.length==3){
+                console.log(bin[0],bin[1],bin[2]);    
+            }else if(bin.length==2){
+                console.log(bin[0],bin[1]);    
+            }else{
+                console.log(message.binaryData);
+            }
+            
             for(let i in clients){
-                //if(i==index)continue;//do not send to sender              
+                if(i==index)continue;//do not send to sender
                 clients[i].send(message.binaryData);
             }
         }
