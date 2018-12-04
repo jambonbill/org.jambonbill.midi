@@ -1,0 +1,11 @@
+{
+  "name": "MIDI-over-WS",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "websocket": "latest"
+  },
+  "scripts": {
+    "start": "nodemon server.js"
+  }
+}
