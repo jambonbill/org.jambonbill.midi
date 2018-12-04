@@ -16,46 +16,39 @@ $(function () {
     let host='127.0.0.1';
     let port=1337;
     let url='ws://'+host+':'+port;
+    let connection=null;
+
+    connect(url);//go
     
-    let connection = new WebSocket(url);
+    function connect(url){
+        
+        console.log("Connect to "+url);
+        
+        connection = new WebSocket(url);
         connection.binaryType = "arraybuffer";
 
-    window.con=function(){return connection};
+        connection.onopen = function () {
+            console.log("Connection is open");
+        };
+        
+        connection.onerror = function (error) {
+            console.error('connection.onerror');
+        };
 
-    connection.onopen = function () {
-        console.log("Connection is open!");
-    };
-    
-    connection.onerror = function (error) {
-        console.error('connection.onerror');
-        // just in there were some problems with connection...
-        content.html($('<p>', {
-            text: 'Sorry, but there\'s some problem with your '
-             + 'connection or the server is down.'
-        }));
-    };
-  
+        connection.onmessage = function (message) {
+            
+            let event={};//simulate midi vocabulary, so we can forward to MIDIMessageEventHandler
+            event.data = new Uint8Array(message.data);
+            console.log(event.data);
+        };
+    }
+
+   
     // most important part - incoming messages
+    /*
     connection.onmessage = function (message) {
         
-        //console.log(typeof(message.data),message.data);
-        
-        // try to parse JSON message. Because we know that the server
-        // always returns JSON this should work without any problem but
-        // we should make sure that the massage is not chunked or
-        // otherwise damaged.
-        /*
-        try {
-            console.log(message.data);
-            var json = JSON.parse(message.data);
-        } catch (e) {
-            console.log('Invalid JSON: ', message.data);
-            return;
-        }
-        */
-        //console.log(typeof(message.data));
-
-        let event={};//simulate midi vocabulary
+        let event={};//simulate midi vocabulary, so we can forward to MIDIMessageEventHandler
             event.data = new Uint8Array(message.data);
         
         console.log(event.data, event.data.length);
@@ -92,7 +85,7 @@ $(function () {
         }
     };
     
-
+    */
   
 
     window.noteOn=function(midiChannel, note,velocity){
