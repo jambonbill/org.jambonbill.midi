@@ -14,11 +14,7 @@ var http = require('http');
  * Global variables
  */
 
-// latest 100 messages
-//var history=[];
-
-// list of currently connected clients (users)
-var clients=[];
+var clients=[];// list of currently connected clients (users)
 
 
 /**
@@ -33,6 +29,7 @@ server.listen(webSocketsServerPort, function() {
   console.log((new Date()) + " Server is listening on port " + webSocketsServerPort);
 });
 
+
 /**
  * WebSocket server
  */
@@ -42,10 +39,6 @@ var wsServer = new webSocketServer({
     // http://tools.ietf.org/html/rfc6455#page-6
     httpServer: server
 });
-
-function rnd(n){
-    return Math.round(Math.random()*n);
-}
 
 // This callback function is called every time someone
 // tries to connect to the WebSocket server
@@ -60,22 +53,15 @@ wsServer.on('request', function(request) {
     // we need to know client index to remove them on 'close' event
     var index = clients.push(connection) - 1;
     var userName = 'User#'+clients.length;
-    //var userColor = false;
     
     console.log((new Date()) + ' Connection accepted.');
+    console.log(clients.length + ' client(s) Connected.');
     
-    // send back chat history
-    //if (history.length > 0) {
-    //    connection.sendUTF(JSON.stringify({ type: 'history', data: history} ));
-    //}
-
     // user sent some message
     connection.on('message', function(message) {
         
         if (message.type === 'utf8') { // accept only text
-           
-            // log and broadcast the message
-            
+            // WUT ?
         } else{
             
             console.warn('message type is', message.type);
@@ -99,12 +85,10 @@ wsServer.on('request', function(request) {
     // user disconnected
     connection.on('close', function(connection) {
 
-        if (userName !== false) {
-
-            console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");
-            // remove user from the list of connected clients
-            clients.splice(index, 1);
-
-        }
+        //if (userName !== false) {
+            console.log((new Date()) + " Peer " + connection.remoteAddress + " disconnected.");            
+            clients.splice(index, 1);// remove user from the list of connected clients
+            console.log(clients.length + ' client(s) Connected.');
+        //}
     });
 });
