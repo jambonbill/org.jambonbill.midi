@@ -7,24 +7,21 @@
 	"css":[
 		"dist/bootstrap/css/bootstrap.min.css",
     	"dist/css/font-awesome/4.3.0/font-awesome.min.css",
-    	"dist/css/AdminLTE.css",
-    	"dist/css/skins/skin-black.min.css"
+    	"dist/css/adminlte.css"
 	],
 	"js":[
-	    "dist/plugins/jQuery/jquery-3.3.1.min.js",
-	    "dist/plugins/jQuery/jquery-tablesorter.min.js",
-	    "dist/plugins/jQueryUI/jquery-ui-1.10.3.min.js",
+	    "dist/js/jquery-3.2.1.min.js",
+	    "dist/js/jquery-tablesorter.min.js",
 	    "dist/plugins/slimScroll/jquery.slimscroll.min.js",
-	    "dist/plugins/popper.js/popper.min.js",
+	    "dist/js/popper.min.js",
     	"dist/bootstrap/js/bootstrap.min.js",
-    	"dist/js/app.min.js"
+    	"dist/js/adminlte.js"
 	],
-	"layout":{
-		"skin":"skin-black",
-		"fixed":false,
-		"layout-boxed":false,
-		"sidebar-collapse":false
+
+	"navbar":{
+		"search":true
 	},
+
 	"meta":"meta.json",
 	"menu":"menu.json"
 }

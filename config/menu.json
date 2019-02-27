@@ -2,7 +2,8 @@
 
 	"header":{
    		"text":"Midi tools",
-   		"class":"header"
+   		"class":"header",
+      "url":"#"
    	},
 
    	"monitor":{
@@ -30,7 +31,7 @@
 		"url":"jasmid/"
    	},
 
-    
+
 
    	"sysex":{
 		"text":"Sysex",
