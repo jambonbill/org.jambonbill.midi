@@ -27,22 +27,21 @@ $htm.='</div>';
 
 $htm.='</div>';
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("Controls");
 $box->icon("fa fa-list");
 $box->id("boxControls");
-$box->collapsable(true);
+$box->p0(true);
 $box->body($htm);
 
-$btns=[];
-$btns[]='<div class="button-group">';
-$btns[]="<a href=# class='btn btn-sm btn-default' id=btnPing>Ping</a> ";
+$btns='<div class="button-group">';
+$btns.="<a href=# class='btn btn-sm btn-default' id=btnPing>Ping</a> ";
 //$btns[]="<a href=# class='btn btn-default' id=btnPlay><i class='fa fa-play'></i></a> ";
 //$btns[]="<a href=# class='btn btn-default' id=btnStop><i class='fa fa-stop'></i></a> ";
-$btns[]="<a href=# class='btn btn-sm btn-default' id=btnReq1>patch dump req</a> ";
-$btns[]="<a href=# class='btn btn-sm btn-default' id=btnReq2>cur. patch req</a> ";
-$btns[]="<a href=# class='btn btn-sm btn-default' id=btnReq3>bank request</a> ";
-$btns[]="</div>";
+$btns.="<a href=# class='btn btn-sm btn-default' id=btnReq1>patch dump req</a> ";
+$btns.="<a href=# class='btn btn-sm btn-default' id=btnReq2>cur. patch req</a> ";
+$btns.="<a href=# class='btn btn-sm btn-default' id=btnReq3>bank request</a> ";
+$btns.="</div>";
 $box->footer($btns);
 
 echo $box;

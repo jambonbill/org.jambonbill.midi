@@ -51,13 +51,13 @@ $(function(){
         }
     }
 
-       
+
     function onMIDIReject(err) {
         console.error("MIDI system failed to start.");
     }
 
-    
-    /*  
+
+    /*
     0x80     Note Off
     0x90     Note On
     0xA0     Aftertouch
@@ -68,120 +68,39 @@ $(function(){
     0xF0     (non-musical commands)
     */
     function MIDIMessageEventHandler(event) {//incoming midi events
-    
+
         var msg=event.data[0] & 0xf0;
         //if(msg==240)return; //??
         var midichannel=event.data[0] & 0x0f;
 
         // Mask off the lower nibble (MIDI channel)
         switch (event.data[0] & 0xf0) {
-        
+
 
             case 0x80://note off
-                var f=_hooks[midichannel].noteoff;
-                if(typeof(f)=='function'){
-                    f(event.data);
-                }
                 return;
 
 
             case 0x90://note on
-                //console.log("note on",event.data[1]);
-                var f=_hooks[midichannel].noteon;
-                if(typeof(f)=='function'){
-                    f(event.data);
-                }          
                 break;
 
             case 0xb0:// CC - Control Change
-                var ccNum=event.data[1];
-                var f=_hooks[midichannel].cc[ccNum];
-                if(!_ccs[midichannel])_ccs[midichannel]=[];
-                _ccs[midichannel][ccNum]=event.data[2];//test
-                if(typeof(f)=='function'){
-                    f(event.data);
-                }
                 break;
-            
+
             case 0xC0:// Prg Change
-                var f=_hooks[midichannel].prgchange;
-                if(typeof(f)=='function'){
-                    f(event.data);
-                }
                 break;
-                break;
-            
+
             case 0xe0://pitch
-                var f=_hooks[midichannel].pitch;
-                if(typeof(f)=='function'){
-                    f(event.data);
-                }
                 break;
 
             case 0xf0:// Other (time)
-                //if(event.data[0]==251){
-                if(event.data[0]==248){
-                    
-                    if(_playing&&_ticks%24==0&&_beats%4==0){
-                        // BAR //
-                        var f=_onBar;
-                        f(_bars);
-                        _bars++;
-                    }
-                    
-                    if(_playing&&_ticks%24==0){
-                        //Beat//
-                        //console.info("(ON)BEAT");
-                        var f=_onBeat;
-                        f(_beats);
-                        _beats++;
-                    }
-                    _ticks++;
-                    var f=_onTick;
-                    //f(event.data);
-                    f(_ticks);
-                }
-                
-                // MIDI START //
-                if(event.data[0]==250){
-                    _ticks=0;
-                    _beats=0;
-                    //console.warn("MIDI Start "+event.data[0]);
-                    _playing=true;
-                    var f=_onStart;
-                    f(event.data);
-                }
-
-                // MIDI CONTINUE //
-                if(event.data[0]==251){
-                    _playing=true;
-                    var f=_onContinue;
-                    f(event.data);
-                }
-                
-
-                // MIDI STOP //
-                if(event.data[0]==252){
-                    _playing=false;
-                    _ticks=0;
-                    _beats=0;
-                    _bars=0;
-                    var f=_onStop;
-                    f(event.data);
-                }
-                
-                var f=_hooks[0].mtc;
-                if(typeof(f)=='function'){
-                    f(event.data);
-                }
                 break;
 
             default:
-                console.warn("MIDIMessageEventHandler",event.data);
                 break;
-        }  
+        }
     }
-	
+
 
 	function prgChange(n,midiChannel){
 
@@ -221,9 +140,9 @@ $(function(){
 			console.warn('noteOn() !noteNumber');
 			return;
 		}
-		
+
 		if(!midiChannel)midiChannel=_midiChannel;
-		
+
 		for(let i=0;i<_notes.length;i++){
 			if(_notes[i]==noteNumber)return;//dont play it twice
 		}
@@ -253,7 +172,7 @@ $(function(){
 
 		let output = _midiAccess.outputs.get(_portId);
 
-		
+
 		output.send( [0x80+midiChannel, noteNumber, 0x40]);// note off
 
 		// remove from the note buffer
@@ -276,18 +195,23 @@ $(function(){
 		}
 	}
 
-    
 
-    function selectMidiChannel(n){
-    	console.info('selectMidiChannel(n)',n);
+
+    window.selectMidiChannel=function(n)
+    {
+    	console.info('selectMidiChannel('+n+')');
     	_midiChannel=+n;
+    	$('ul>li').removeClass("active");
+	    //$(this).addClass("active");
+	    $("ul").find("[data-channel='" + n +"']").addClass("active");
+
     }
 
 
     function init(){
-    	
+
     	console.info('init');
-		
+
 		// Keyboard //
 		$("body").keydown(function(e) {
 
@@ -342,14 +266,14 @@ $(function(){
 		});
 
 		window.readChord=function(){//try to compute chord 'string'
-			
+
 			if(_notes.length<2)return;
 			_notes.sort();
 			//console.log(_notes);
 			let arp=[];
 			arp.push(0);
 			let f=_notes[0];
-			for(let i=1;i<_notes.length;i++){				
+			for(let i=1;i<_notes.length;i++){
 				let t=_notes[i];
 				let d=t-f;
 				arp.push(d);
@@ -365,9 +289,9 @@ $(function(){
 
 		// Midi channel selector //
 	    $('ul>li').click(function(e){
-	    	$('ul>li').removeClass("active");
-	    	$(this).addClass("active");
 	    	selectMidiChannel(e.currentTarget.dataset.channel);
+	    	//$('ul>li').removeClass("active");
+	    	//$(this).addClass("active");
 	    });
 
     	$('#btnTest').click(function(){
@@ -377,7 +301,7 @@ $(function(){
 			},500);
 		});
 
-		
+
 
 		$('#btnMidiPanic').click(function(){
 			midiPanic(_midiChannel);
@@ -388,7 +312,7 @@ $(function(){
 			prgChange(+$('#prgs').val(),_midiChannel);
 		});
 
-		
+
 		$('select#octave').attr('disabled',false);
 		$('select#prgs').attr('disabled',false);
 		//$('#btnSelectOutput').attr('readonly',false);
@@ -411,7 +335,7 @@ $(function(){
     	$('select#octave').val(oct);
     	_octave=oct;
     }
-   
+
 
 	window.popMidiOutput=function(){
 		//console.log('popMidiOutput', portId);
@@ -429,7 +353,7 @@ $(function(){
     }
 
 	function selectOutput(pid){
-		
+
 		let id=$('select#outputs').val();
 
 		console.log("Select port id#", id, pid);
@@ -439,7 +363,7 @@ $(function(){
 		}
 
 		$('#modalMIDIOutput').modal('hide');
-		
+
 		let selectId=false;
 		for(let i in _midiOutputs){
 			let o=_midiOutputs[i];
@@ -447,11 +371,11 @@ $(function(){
 				_portId=id;
 				localStorage.setItem('keyboardPortId', _portId);
 				selectId=_portId;
-				$('#btnMIDIOutput').text(o.name);		
-				$('#btnMIDIOutput').attr('disabled',false);		
+				$('#btnMIDIOutput').text(o.name);
+				$('#btnMIDIOutput').attr('disabled',false);
 			}
 		}
 		return selectId;
 	}
-	
+
 });

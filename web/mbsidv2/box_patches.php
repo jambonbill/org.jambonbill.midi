@@ -1,8 +1,8 @@
 <?php
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("MBSID Patches");
 $box->id("boxPatches");
-$box->collapsable(true);
+$box->p0(true);
 $box->body("<pre>please wait</pre>");
 $box->loading(1);
 echo $box;

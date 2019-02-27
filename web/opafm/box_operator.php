@@ -40,7 +40,7 @@ $htm.='<input type=range data-cc='.($OP*16+2).' value=0 max=127 name=fine>';
 $htm.='</div></div>';
 */
 
-$htm.='<div class=col-sm-3>';
+$htm.='<div class=col-sm-4>';
 $htm.='<div class="form-group">';
 $htm.='<label>IniLevel</label>';
 $htm.='<input type=range data-cc='.($OP*16+3).' max=127 name=IniLevel>';

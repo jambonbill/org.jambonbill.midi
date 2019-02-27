@@ -10,20 +10,24 @@ $admin = new LTE\Admin(__DIR__."/../../config/config.json");
 $admin->title("MIDI router");
 echo $admin;
 ?>
-<section class="container">
+<div class="content-wrapper">
 
-	<h1>MIDI Router</h1>
-	<hr />
-	<div class=row>
-		<div class='col-md-12'>
-			<?php
-			require "box_setup.php";
-			require "box_routes.php";
-			?>
+	<section class="container">
+		<h1>MIDI Router</h1>
+	</section>
+
+	<section>
+		<div class=row>
+			<div class='col-md-12'>
+				<?php
+				require "box_setup.php";
+				require "box_routes.php";
+				?>
+			</div>
 		</div>
-	</div>
+	</section>
 
-</section>
+</div>
 
 <script type="text/javascript" src='js/router.js'></script>
 <?php

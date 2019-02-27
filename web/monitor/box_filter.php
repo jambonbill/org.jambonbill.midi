@@ -9,22 +9,22 @@ $items[]=[0xc0,'Program Change'];
 $items[]=[0xe0,'Pitch'];
 $items[]=[0xf0,'Continue'];
 
-$htm=[]; 
+$htm=[];
 foreach($items as $item){
-	
+
 	$htm[]='<div class="checkbox">';
 	$htm[]='<label><input type="checkbox" class=filters value="'.$item[0].'">'.$item[1].'</label>';
 	$htm[]='</div>';
 }
-    
 
 
-$box=new LTE\Box;
+
+$box=new LTE\Card;
 $box->title("Event filter(s)");
 $box->icon("fa fa-filter");
 $box->id("boxFilters");
 //$box->boxTools("<button class=\"btn btn-box-tool\" title='Clear'><i class='fa fa-times'></i></button> ");
 $box->body($htm);
-$box->collapsable(1);
+//$box->collapsable(1);
 $box->loading(1);
 echo $box;

@@ -1,5 +1,5 @@
 <?php
-// MIDI 
+// MIDI
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 
@@ -11,43 +11,44 @@ $admin->title("MIDI Keyboard");
 echo $admin;
 
 ?>
-<section class="container">
-  <h1>MIDI Keyboard</h1>
-  <hr />
-</section>
+<div class="content-wrapper">
+	<section class="container">
+	  <h1>MIDI Keyboard</h1>
+	  <hr />
+	</section>
 
-<section class="container">
-	
+	<section class="container">
 
-	<div class='row'>
-		
-		<div class='col-sm-12'>
-		<?php
-		require "midi_channels.php";
-		?>
+
+		<div class='row'>
+
+			<div class='col-sm-12'>
+			<?php
+			require "midi_channels.php";
+			?>
+			</div>
+
+			<div class='col-sm-6'>
+			<?php
+			require "box_keyboard.php";
+			?>
+			</div>
+			<div class='col-sm-6'>
+			<?php
+			require "box_messages.php";
+			?>
+			</div>
 		</div>
-		
-		<div class='col-sm-6'>
-		<?php
-		require "box_keyboard.php";
-		?>
-		</div>
-		<div class='col-sm-6'>
-		<?php
-		require "box_messages.php";
-		?>
-		</div>		
-	</div>
 
-	<div class='row'>
-		<div class='col-sm-6'>
-		<?php
-		//require "box_keymap.php";
-		?>
+		<div class='row'>
+			<div class='col-sm-6'>
+			<?php
+			//require "box_keymap.php";
+			?>
+			</div>
 		</div>
-	</div>
-</section>
-
+	</section>
+</div>
 <script type="text/javascript" src='js/keymap.js'></script>
 <script type="text/javascript" src='js/keyboard.js'></script>
 

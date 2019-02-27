@@ -16,7 +16,6 @@ echo $admin;
 <section class="container">
   <h1>OPA.FM Shield Patch editor
   </h1>
-  <hr />
 </section>
 
 <section class="container">
@@ -25,7 +24,7 @@ echo $admin;
 
 		<div class='col-sm-12'>
 		<?php
-		require "box_patch.php";		
+		require "box_patch.php";
 		?>
 		</div>
 

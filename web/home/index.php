@@ -11,23 +11,23 @@ include "meta.php";
 
 echo $admin;
 ?>
-<section class="container">
-<h1>midi.jambonbill.org</h1>
-<!--
-Here is a collection of web 'apps' that i wrote to help me work with the midi protocol.<br />
-After many years, i was tired of using crappy softwares designed for specific equipments or operating systems.<br />
-Enjoy !
--->
+<div class="content-wrapper">
 
-<div class=row>
-	<div class="col-sm-6">
+
+	<section class="container">
+		<h1>midi.jambonbill.org</h1>
+	</section>
+
+	<section class="container">
+		<div class=row>
+			<div class="col-sm-6">
 	<?php
-	$box=new LTE\Box;
-	$box->title('Available input(s)');
+	$box=new LTE\Card;
+	$box->title('Input(s)');
 	$box->id('boxInputs');
 	$box->body();
 	$box->footer('<a href=#btn id=btnRefresh1 class="btn btn-default">refresh</a>');
-	//$box->collapsable(true);
+	$box->p0(true);
 	$box->loading(1);
 	echo $box;//Hello, this is a snippet.
 	?>
@@ -35,18 +35,20 @@ Enjoy !
 
 	<div class="col-sm-6">
 	<?php
-	$box=new LTE\Box;
+	$box=new LTE\Card;
 	$box->id('boxOutputs');
-	$box->title('Available output(s)');
+	$box->title('Output(s)');
 	$box->body();
 	$box->footer('<a href=#btn id=btnRefresh2 class="btn btn-default">refresh</a>');
-	//$box->collapsable(true);
+	$box->p0(true);
 	$box->loading(1);
 	echo $box;//Hello, this is a snippet.
 	?>
 	</div>
-
+	</div>
+</section>
 </div>
+
 
 <script type="text/javascript" src="js/home.js"></script>
 <?php

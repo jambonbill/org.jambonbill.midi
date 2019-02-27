@@ -1,7 +1,7 @@
 $(function(){
-	
+
 	'use strict';
-	
+
 	let _midiAccess=null;  // the MIDIAccess object.
 	let _midiChannel=0;
 	let _midiInputs;
@@ -21,7 +21,7 @@ $(function(){
         var haveAtLeastOneDevice=false;
         var inputs=_midiAccess.inputs.values();
         var outputs=_midiAccess.outputs.values();
-    	
+
     	_midiInputs=[];
         for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
             haveAtLeastOneDevice = true;
@@ -44,7 +44,7 @@ $(function(){
         }
     }
 
-       
+
     function onMIDIReject(err) {
         console.error("MIDI system failed to start.");
     }
@@ -74,7 +74,7 @@ $(function(){
 			htm='<pre>none</pre>';
 		}
 
-		$('#boxInputs .box-body').html(htm);
+		$('#boxInputs .card-body').html(htm);
 		$('#boxInputs table').tablesorter();
 		$('#boxInputs .overlay').hide();
     }
@@ -89,7 +89,7 @@ $(function(){
 		htm+='</thead>';
 
 		htm+='<tbody>';
-		
+
 		for(let i in _midiOutputs){
 			let o=_midiOutputs[i];
 			console.log(o);
@@ -102,7 +102,7 @@ $(function(){
 		if(_midiOutputs.length==0){
 			htm='<pre>none</pre>';
 		}
-		$('#boxOutputs .box-body').html(htm);
+		$('#boxOutputs .card-body').html(htm);
 		$('#boxOutputs .overlay').hide();
 		$('#boxOutputs table').tablesorter();
     }

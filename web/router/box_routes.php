@@ -1,5 +1,5 @@
 <?php
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->id('boxRoutes');
 //$box->icon('fa fa-edit');
 $box->title('Routes');

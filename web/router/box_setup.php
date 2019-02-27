@@ -14,7 +14,7 @@ $htm.='</div>';
 
 $htm.='</div>';
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->id('boxSetup');
 //$box->icon('fa fa-edit');
 $box->title('Sources');

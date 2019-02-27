@@ -1,6 +1,6 @@
 var SID;//global scope for console debug
 $(function(){
-	
+
 	$.MIDIMessageEventHandler=function(event){
 
     	//var msg=event.data[0] & 0xf0;
@@ -22,7 +22,7 @@ $(function(){
         	//saveAs(blob, "patch__.syx");
         	//var objectUrl = URL.createObjectURL(blob);
         	//window.open(objectUrl);
-    		
+
     		return;
     	}
 
@@ -55,7 +55,7 @@ $(function(){
     	//parse event, and make notifications
     	//notification("Incoming sysex",hstr.toUpperCase());
     }
-    
+
 
     function init(){
     	console.log('init()');
@@ -68,7 +68,7 @@ $(function(){
 		    opt.text = o.name;
 		    x.add(opt);
 		}
-    	
+
     	var ops=$.midiOutputs();
 		for(var i in ops){
 			var o=ops[i];
@@ -81,7 +81,7 @@ $(function(){
 
 		$('select#midiInput, select#midiOutput').attr('disabled',false);
 		$('select#midiInput, select#midiOutput').attr('readonly',false);
-		
+
 		$('select#midiInput').change(function(e){
 			console.log(e.currentTarget.value);
 			$.cookie('inputId',e.currentTarget.value);
@@ -122,7 +122,7 @@ $(function(){
     	return true;
     }
 
-   
+
 
 	var engines=['Lead','Bassline','Drum','Multi'];
 	var _files;
@@ -175,12 +175,12 @@ $(function(){
 		htm+='</table>';
 		htm+='<i class="text-muted">'+_files.length+' patches</i>';
 
-		$("#boxPatches .box-title").html(_files.length+" patche(s)");
-		$("#boxPatches .box-body").html(htm);
+		$("#boxPatches .card-title").html(_files.length+" patche(s)");
+		$("#boxPatches .card-body").html(htm);
 		$("table").tablesorter();
 
 		$("#boxPatches tbody>tr").click(function(e){
-			var filename=e.currentTarget.dataset.filename;	
+			var filename=e.currentTarget.dataset.filename;
 			if(!filename)return;
 			preview(filename);
 		});
@@ -189,9 +189,9 @@ $(function(){
 
 	function preview(filename){
 		console.info('preview()',filename);
-	
+
 		$("#myModal").modal('show');
-		
+
 		$("#boxPatches .overlay").show();
 		$.post('ctrl.php',{'do':'preview','file':filename},function(json){
 			$("#boxPatches .overlay").hide();
@@ -232,11 +232,11 @@ $(function(){
 		});
 	});
 
-	
+
 
 
 	$('#btnPing').click(function(){//F0 00 00 7E 4B <device number> 0F F7
-		
+
 		var _portId=$('#midiOutput').val();
 		if (!_portId) {
 			console.warn('!portid');
@@ -315,7 +315,7 @@ $(function(){
     // Request the current patch edit buffer (direct read from RAM)
 	// F0 00 00 7E 4B <device-number> 01 08 00 00 F7
 	$('#btnReq2').click(function(){
-		
+
 		var _portId=$('#midiOutput').val();
 		if(!_portId){
 			console.warn('!portid');
@@ -330,7 +330,7 @@ $(function(){
 
 	});
 
-	
+
 	/*
 	  03/a) F0 00 00 7E 4B <device-number> 03 00 <bank> F7
         Request a dump of the whole patch <bank> (128 patches)
@@ -341,7 +341,7 @@ $(function(){
 		var device_number=0x00;
 		var bank=0x00;
 		bank=prompt("Get bank number",bank)
-		
+
 		var output = midiAccess.outputs.get(_portId);
 		output.send( [0xF0,0x00,0x00,0x7E,0x4B,device_number,0x03,0x00,+bank,0xF7] );
 	});
