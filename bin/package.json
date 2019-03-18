@@ -6,6 +6,6 @@
     "websocket": "latest"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon midiserver.js"
   }
 }
