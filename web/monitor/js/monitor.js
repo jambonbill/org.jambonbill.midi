@@ -89,7 +89,7 @@ $(function(){
             if(type==filters[i])return;
         }
 
-        console.log(event);
+        //console.log(event);
 
         //logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
         logs.push({'t':new Date(),'msg':msg,'e':event});
@@ -151,7 +151,7 @@ $(function(){
         let htm='<table class="table table-hover table-sm">';
 
         htm+='<thead>';
-        htm+='<th width=100>Time</th>';
+        htm+='<th width=130>Time</th>';
         htm+='<th>Type</th>';
         htm+='<th width=50>Msg</th>';
         htm+='<th width=50>Chn</th>';

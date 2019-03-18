@@ -1,4 +1,8 @@
 <?php
+/**
+ * Box
+ * @var array
+ */
 $btn=[];
 $btn[]="<a href=#btn id=btnClear class='btn btn-default pull-right'>Clear</a>";
 $btn[]="<a href=#btn id=btnFilter class='btn btn-default'><i class='fa fa-user'></i> Filter</a>";
@@ -11,7 +15,7 @@ $box->id("boxIncoming");
 
 $box->body("<pre>Waiting...</pre>");
 
-$htm='<button class="btn btn-sm btn-default">Clear</button>';
+$htm='<button class="btn btn-sm btn-default" id="btnClearLogs">Clear logs</button>';
 
 $box->footer($htm);
 $box->p0(true);
