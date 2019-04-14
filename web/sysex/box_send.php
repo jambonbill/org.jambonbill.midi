@@ -1,6 +1,6 @@
 <?php
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->id("boxSend");
 $box->title("Send");
 $box->icon("fa fa-text");
@@ -31,5 +31,5 @@ $btns.='</div>';
 
 $box->footer($btns);
 $box->loading(true);
-$box->collapsable(true);
+//$box->collapsable(true);
 echo $box;

@@ -1,6 +1,6 @@
 <?php
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("File");
 $box->icon("fa fa-file-o");
 $box->id("boxFile");

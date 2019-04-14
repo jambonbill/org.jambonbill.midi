@@ -2,16 +2,15 @@
 
 $htm='<canvas id="screen">';
 
-$btns=[];
-$btns[]="<div class='col-md-6'>";
-$btns[]="<select class='form-control' id=trackSelect><option>Select track</select>";
-$btns[]="</div>";
-$btns[]="<a href=#btn class='btn btn-default' onclick=drawMidiTrack(0)>draw</a>";
+$btns="<div class='col-md-6'>";
+$btns.="<select class='form-control form-control-sm' id=trackSelect><option>Select track</select>";
+$btns.="</div>";
+$btns.="<button class='btn btn-sm btn-default' onclick=drawMidiTrack(0)>draw</button>";
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("Canvas");
 $box->id("boxCanvas");
-$box->collapsable(1);
+//$box->collapsable(1);
 $box->body($htm);
 $box->footer($btns);
 

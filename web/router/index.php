@@ -10,13 +10,14 @@ $admin = new LTE\Admin(__DIR__."/../../config/config.json");
 $admin->title("MIDI router");
 echo $admin;
 ?>
+
 <div class="content-wrapper">
 
 	<section class="container">
 		<h1>MIDI Router</h1>
 	</section>
 
-	<section>
+	<section class="container">
 		<div class=row>
 			<div class='col-md-12'>
 				<?php

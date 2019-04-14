@@ -103,7 +103,7 @@ if ($OP==4) {
 $htm.='</div>';//endrow
 
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("Operator ".$OP);
 //$box->icon("fa fa-filter");
 $box->id("boxOperator$OP");

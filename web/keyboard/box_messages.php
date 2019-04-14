@@ -3,7 +3,7 @@
  * [$box description]
  * @var LTE
  */
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("Messages");
 $box->icon("fa fa-terminal");
 $box->id("boxLog");

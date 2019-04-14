@@ -19,7 +19,7 @@ foreach($items as $item){
     
 
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("Event filter(s)");
 $box->icon("fa fa-filter");
 $box->id("boxFilters");

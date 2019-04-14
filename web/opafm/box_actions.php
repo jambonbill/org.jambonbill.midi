@@ -18,7 +18,7 @@ $htm.='</div>';
 $htm.='</div>';
 $htm.='</div>';
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("Actions");
 $box->id("boxActions");
 $box->body($htm);

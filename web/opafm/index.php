@@ -13,42 +13,46 @@ require "META.php";
 echo $admin;
 ?>
 
-<section class="container">
-  <h1>OPA.FM Shield Patch editor
-  </h1>
-</section>
+<div class="content-wrapper">
 
-<section class="container">
+	<section class="container">
+	  <h1>OPA.FM Shield Patch editor
+	  </h1>
+	</section>
 
-	<div class='row'>
+	<section class="container">
 
-		<div class='col-sm-12'>
-		<?php
-		require "box_patch.php";
-		?>
+		<div class='row'>
+
+			<div class='col-sm-12'>
+			<?php
+			require "box_patch.php";
+			?>
+			</div>
+
 		</div>
 
-	</div>
-
-	<div class='row'>
-		<?php
-		for($OP=1;$OP<=4;$OP++) {
-			echo '<div class="col-md-6">';
-			include "box_operator.php";
-			echo '</div>';
-		}
-		?>
-	</div>
-
-	<div class='row'>
-		<div class='col-sm-12'>
-		<?php
-		require "box_actions.php";
-		?>
+		<div class='row'>
+			<?php
+			for($OP=1;$OP<=4;$OP++) {
+				echo '<div class="col-md-6">';
+				include "box_operator.php";
+				echo '</div>';
+			}
+			?>
 		</div>
-	</div>
 
-</section>
+		<div class='row'>
+			<div class='col-sm-12'>
+			<?php
+			require "box_actions.php";
+			?>
+			</div>
+		</div>
+
+	</section>
+
+</div>
 
 <style type="text/css">
 input[type=range]{cursor:pointer;}

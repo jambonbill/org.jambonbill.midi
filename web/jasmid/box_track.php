@@ -1,5 +1,5 @@
 <?php
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("Track");
 $box->icon("fa fa-list");
 $box->id("boxTrack");

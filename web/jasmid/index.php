@@ -10,42 +10,47 @@ $admin->title("Jasmid");
 echo $admin;
 ?>
 <link href="./css/main.css" rel="stylesheet" type="text/css" />
-<section class="content-header">
-  <h1><i class='fa fa-music'></i> Jasmid
-  <small><a href=# id=btnBrowse>Browse</a></small>
-  </h1>
-</section>
 
-<section class="container">
+<div class="content-wrapper">
 
-<div class='row'>
-	<div class='col-sm-6'>
-	<?php
-	//include "box_file.php";
-	//include "box_files.php";
-	include "box_tracks.php";
-	?>
+	<section class="content-header">
+	  <h1><i class='fa fa-music'></i> Jasmid
+	  <small><a href=# id=btnBrowse>Browse</a></small>
+	  </h1>
+	</section>
+
+	<section class="container">
+
+	<div class='row'>
+		<div class='col-sm-6'>
+		<?php
+		//include "box_file.php";
+		//include "box_files.php";
+		include "box_tracks.php";
+		?>
+		</div>
+
+		<div class='col-sm-6'>
+		<?php 
+		//include "box_filter.php";
+		include "box_track.php";
+		include "box_preview.php";
+		?>
+		</div>
+
 	</div>
 
-	<div class='col-sm-6'>
-	<?php 
-	//include "box_filter.php";
-	include "box_track.php";
-	include "box_preview.php";
-	?>
+	<div class='row'>
+		<div class='col-sm-12'>
+		<?php 
+		include "box_canvas.php";
+		?>
+		</div>
 	</div>
+
+	</section>
 
 </div>
-
-<div class='row'>
-	<div class='col-sm-12'>
-	<?php 
-	include "box_canvas.php";
-	?>
-	</div>
-</div>
-
-</section>
 
 <script type="text/javascript" src="js/stream.js"></script>
 <script type="text/javascript" src="js/midifile.js"></script>

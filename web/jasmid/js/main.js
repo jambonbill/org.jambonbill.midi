@@ -55,7 +55,7 @@ function get_files(){
 		//console.log(json);
 		_files=json.files;
 		fileList();
-	}).error(function(e){
+	}).fail(function(e){
 		console.warn(e.responseText);
 	});
 	
@@ -222,8 +222,8 @@ function showTracks(){
 	htm+="</tfoot>";
 	htm+="</table>";
 	
-	$('#boxTracks .box-title').html(midiFile.tracks.length+" tracks <small>"+midiFile.header.ticksPerBeat+" ticks per beat</small>");
-	$('#boxTracks .box-body').html(htm);
+	$('#boxTracks .card-title').html(midiFile.tracks.length+" tracks <small>"+midiFile.header.ticksPerBeat+" ticks per beat</small>");
+	$('#boxTracks .card-body').html(htm);
 	
 	$('#tableTracks tbody>tr').click(function(e){
 		_track=e.currentTarget.dataset.track;

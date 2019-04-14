@@ -47,7 +47,7 @@ $htm.='</div>';
 $htm.='</div>';
 
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->id('boxPatch');
 $box->title('Patch');
 $box->body($htm);

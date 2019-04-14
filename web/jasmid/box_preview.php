@@ -16,11 +16,11 @@ $htm.="</tbody>";
 $htm.="</table>";
 
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("Preview");
 //$box->icon("fa fa-list");
 $box->id("boxPreview");
-$box->collapsable(1);
-$box->collapsed(true);
+//$box->collapsable(1);
+$box->p0(1);
 $box->body($htm);
 echo $box;

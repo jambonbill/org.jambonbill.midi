@@ -28,15 +28,14 @@ $htm.="</div>";
 
 $htm.="</div>";
 
-$box=new LTE\Box;
+$box=new LTE\Card;
 $box->title("Keyboard");
 $box->icon("fa fa-keyboard-o");
 $box->id("boxKeyboard");
 $box->body($htm);
 
-$btns=[];
-$btns[]="<a href=#btn class='btn btn-sm btn-default' id=btnTest>Test middle C</a> ";
-$btns[]="<a href=#btn class='btn btn-sm btn-danger pull-right' id=btnMidiPannic><i class='fa fa-times'></i> Panic</a>";
+$btns="<button class='btn btn-sm btn-default' id=btnTest>Test middle C</button> ";
+$btns.="<button class='btn btn-sm btn-danger pull-right' id=btnMidiPannic><i class='fa fa-times'></i> Panic</button>";
 
 $box->footer($btns);
 echo $box;
