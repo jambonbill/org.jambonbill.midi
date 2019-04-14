@@ -19,7 +19,20 @@
 	],
 
 	"navbar":{
-		"search":true
+		"search":true,
+		"items":[
+			{
+				"text":"{email}",
+				"title":"User",
+				"url":"#"
+			},
+			{
+				"text":"Log-out",
+				"title":"Log out",
+				"icon":"fa fa-sign-out",
+				"url":"../login/logout.php"
+			}
+		]
 	},
 
 	"meta":"meta.json",
