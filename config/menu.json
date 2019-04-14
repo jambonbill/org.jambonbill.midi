@@ -3,7 +3,7 @@
 	"header":{
    		"text":"Midi tools",
    		"class":"header",
-      "url":"#"
+        "url":"#"
    	},
 
    	"monitor":{
@@ -13,9 +13,9 @@
    	},
 
     "router":{
-      "text":"Router",
-      "icon":"fa fa-terminal",
-      "url":"router/"
+        "text":"Router",
+        "icon":"fa fa-terminal",
+        "url":"router/"
     },
 
    	"keyboard":{
@@ -26,17 +26,22 @@
 
 
    	"jasmid":{
-		"text":"Jasmid",
-		"icon":"fa fa-music",
-		"url":"jasmid/"
+		    "text":"Jasmid",
+		    "icon":"fa fa-music",
+		    "url":"jasmid/"
    	},
 
+    "sampler":{
+        "text":"Sampler",
+        "icon":"fa fa-volume-up",
+        "url":"sampler/"
+    },
 
 
    	"sysex":{
-		"text":"Sysex",
-		"icon":"fa fa-terminal",
-		"url":"sysex/"
+		  "text":"Sysex",
+		  "icon":"fa fa-terminal",
+		  "url":"sysex/"
    	},
 
    	"mbsidv2":{
