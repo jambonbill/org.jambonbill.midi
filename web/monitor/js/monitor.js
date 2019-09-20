@@ -10,16 +10,21 @@ D = Channel Pressure
 E = Pitch Wheel
  */
 
-$(function(){
+$(()=>{
 
+    'use strict';
+
+    let ls=localStorage;
     let _midiAccess=null;  // the MIDIAccess object.
     let _midiChannel=0;
     let _midiInputs;
     let _midiOutputs;
     let _midiReady=false;
-
     var continues=0;//bpm counter
-    var filters=[];
+    var filters={
+        chans:[],
+        types:[]
+    };
     var logs=[];
 
     if (navigator.requestMIDIAccess){
@@ -42,15 +47,6 @@ $(function(){
             haveAtLeastOneDevice = true;
             _midiInputs.push(input.value);
         }
-
-
-        /*
-        _midiOutputs=[];
-        for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
-            console.log(output);
-            _midiOutputs.push(output.value);
-        }
-        */
 
         if (!haveAtLeastOneDevice){
             console.warn("No MIDI input devices present.");
@@ -79,14 +75,20 @@ $(function(){
         var msg=event.data[0];
         var midichannel=event.data[0] & 0x0f;
         var type=msg & 0xf0;
+        //let B1=event.data[1];
+        let B2=event.data[2];
 
         if(type==0xf0){
             continues++;
         }
 
+
+
         // Filter here
-        for(i in filters){
-            if(type==filters[i])return;
+        for(let i in filters.types){
+            //if(type==)
+            if(type==filters.types[i])return;
+            if(type==144&&!B2&&filters.types[i]==128)return;//Fake note off (a `note on` with 0 velocity is a `note off`)
         }
 
         //console.log(event);
@@ -95,6 +97,13 @@ $(function(){
         logs.push({'t':new Date(),'msg':msg,'e':event});
 
         dispLog();
+    }
+
+    function midiNoteToString(n){
+        let note=n%12;
+        let notes=['C-','C#','D-','D#','E-','F-','F#','G-','G#','A-','A#','B-'];
+        let oct=Math.floor(n/12);
+        return notes[note]+oct;
     }
 
     function init(){
@@ -121,7 +130,7 @@ $(function(){
     }
 
 
-    function msgType(msg){
+    function msgType(msg,b1,b2){
         var msg=msg & 0xf0;
         var msgtypes={
             0x10:'0x10 ?',
@@ -138,7 +147,7 @@ $(function(){
         }
         switch(msg){
             case 0x90:
-                return   msgtypes[msg] + " <i class='text-muted'>C-0</i>";
+                return   msgtypes[msg] + " <i class='text-muted'>"+midiNoteToString(b1)+"</i>";
             case 0xb0:
                 return   msgtypes[msg] + " <i class='text-muted'>#0</i>";
         }
@@ -151,33 +160,37 @@ $(function(){
         let htm='<table class="table table-hover table-sm">';
 
         htm+='<thead>';
-        htm+='<th width=130>Time</th>';
+        //htm+='<th width=140>Time</th>';
         htm+='<th>Type</th>';
-        htm+='<th width=50>Msg</th>';
-        htm+='<th width=50>Chn</th>';
-        htm+='<th width=50>B1</th>';
-        htm+='<th width=50>B2</th>';
+        htm+='<th width=60>Msg</th>';
+        htm+='<th width=50 style="text-align:right">Chn</th>';
+        htm+='<th width=60 style="text-align:right">B1</th>';
+        htm+='<th width=60 style="text-align:right">B2</th>';
         htm+='</thead>';
 
         htm+='<tbody>';
-        for(var i=0;i<logs.length;i++){
-          var d=logs[i].t;
-          var msg=logs[i].e.data[0];
-          var midichannel=msg & 0x0f;
-          htm+='<tr>';
-          htm+='<td>'+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"-"+d.getMilliseconds();
+        for(let i=0;i<logs.length;i++){
+          let o=logs[i];
+          let t=o.t;
+          let msg=o.e.data[0];
+          let midichannel=msg & 0x0f;
+          let B1=o.e.data[1];
+          let B2=o.e.data[2];
 
+          htm+='<tr>';
+          //htm+='<td>'+t.getHours()+":"+t.getMinutes()+":"+t.getSeconds()+"-"+t.getMilliseconds();
           //var msgtype=table-condensed
 
-          htm+='<td>'+msgType(msg);
+          htm+='<td>'+msgType(msg,B1,B2);
           htm+='<td>0x'+msg.toString(16);
 
-          htm+='<td>'+(midichannel+1);
-          htm+='<td>';
-          if(logs[i].e.data[1])htm+=logs[i].e.data[1];
+          htm+='<td style="text-align:right">'+(midichannel+1);
 
-          htm+='<td>';
-          if(logs[i].e.data[2])htm+=logs[i].e.data[2];
+          htm+='<td style="text-align:right">';//B1
+          if(B1)htm+=B1;
+
+          htm+='<td style="text-align:right">';//B2
+          if(B2)htm+=B2;
           //htm+='<td>';
         }
         htm+='</tbody>';
@@ -200,18 +213,24 @@ $(function(){
 
     $('input.filters').click(function(){
         //console.log('btnFilter');
-        filters=[];
+        filters.types=[];//global
         $('input.filters').each(function(i,e){
-          if(e.checked)filters.push(+e.value);
+          if(e.checked)filters.types.push(+e.value);
           //console.log(i,e.value,e.checked);
         });
         console.log(filters);
+        ls.setItem("midifilters",JSON.stringify(filters));
     });
 
-    /*
-    $('#btnRecord').click(function(){
-        console.log('btnRecord');
-    });
-    */
+    //Load
+    let flt=ls.getItem("midifilters");
+    if (flt) {
+        let filtrs=JSON.parse(flt);
+        console.log("JSON Filters",filtrs);
+        for(let i in filtrs.types){
+            $(":checkbox[value="+filtrs.types[i]+"]").prop("checked","true");
+        }
+        filters=filtrs;
+    }
 
 });
