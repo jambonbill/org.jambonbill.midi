@@ -22,9 +22,10 @@ foreach($items as $item){
 
 
 $box=new LTE\Card;
-$box->title("Event filter(s)");
-$box->icon("fa fa-filter");
 $box->id("boxFilters");
+$box->icon("fa fa-filter");
+$box->title("Event filter(s)");
+
 //$box->boxTools("<button class=\"btn btn-box-tool\" title='Clear'><i class='fa fa-times'></i></button> ");
 $box->body($htm);
 

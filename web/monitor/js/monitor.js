@@ -19,9 +19,10 @@ $(()=>{
     let _midiChannel=0;
     let _midiInputs;
     let _midiOutputs;
-    let _midiReady=false;
+    let _ready=false;
     var continues=0;//bpm counter
     var filters={
+        solochan:-1,
         chans:[],
         types:[]
     };
@@ -37,25 +38,48 @@ $(()=>{
         //console.log('onMIDIInit(midi)',midi);
         _midiAccess = midi;
 
-        let haveAtLeastOneDevice=false;
-        let inputs=_midiAccess.inputs.values();
-        let outputs=_midiAccess.outputs.values();
+        listInputs();
+        listOutputs();
 
-        _midiInputs=[];
-        for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
-            input.value.onmidimessage = MIDIMessageEventHandler;
-            haveAtLeastOneDevice = true;
-            _midiInputs.push(input.value);
+        function listInputs(){
+            _midiInputs=[];
+            let inputs=midi.inputs.values();
+            for ( let input = inputs.next(); input && !input.done; input = inputs.next()) {
+                //console.log("input",input);
+                input.value.onmidimessage = onMIDIMessage;
+                _midiInputs.push({'id':input.value.id,'name':input.value.name});
+            }
+            return true;
         }
 
-        if (!haveAtLeastOneDevice){
+        function listOutputs(){
+            _midiOutputs=[];
+            let outputs=midi.outputs.values();
+            for ( let output = outputs.next(); output && !output.done; output = outputs.next()) {
+                _midiOutputs.push({'id':output.value.id,'name':output.value.name});
+            }
+            return true;
+        }
+
+        midi.onstatechange=function(d){
+            if(!_ready)return false;
+            let p=d.port;
+            console.info(p.type, p.name, p.connection);
+            //console.log("onstatechange d",d.port);
+            listInputs();
+            listOutputs();
+            //console.log('_midiAccess.onstatechange', _midiInputs.length, _midiOutputs.length);
+        };
+
+        if (_midiInputs.length==0){
             console.warn("No MIDI input devices present.");
         }else{
             console.info('MIDI ready');
-            _midiReady=true;
+            _ready=true;
             init();
         }
     }
+
 
     /*
     http://www.gweep.net/~prefect/eng/reference/protocol/midispec.html
@@ -69,11 +93,12 @@ $(()=>{
     E = Pitch Wheel
      */
     var continues=0;//bpm counter
-    function MIDIMessageEventHandler(event) {
+    function onMIDIMessage(event) {
 
         //var msg=event.data[0] & 0xf0;
         var msg=event.data[0];
         var midichannel=event.data[0] & 0x0f;
+        let chan=msg & 0x0f;
         var type=msg & 0xf0;
         //let B1=event.data[1];
         let B2=event.data[2];
@@ -82,7 +107,7 @@ $(()=>{
             continues++;
         }
 
-
+        if(filters.solochan>-1&&filters.solochan!=chan)return;//
 
         // Filter here
         for(let i in filters.types){
@@ -222,6 +247,10 @@ $(()=>{
         ls.setItem("midifilters",JSON.stringify(filters));
     });
 
+    $('#filtChan').change(()=>{
+        filters.solochan=+$('#filtChan').val();
+    });
+
     //Load
     let flt=ls.getItem("midifilters");
     if (flt) {
@@ -230,6 +259,13 @@ $(()=>{
         for(let i in filtrs.types){
             $(":checkbox[value="+filtrs.types[i]+"]").prop("checked","true");
         }
+
+
+        if(filtrs.solochan>-1){
+            console.log("solochan#"+filtrs.solochan);
+            $('#filtChan').val(filtrs.solochan);
+        }
+
         filters=filtrs;
     }
 
