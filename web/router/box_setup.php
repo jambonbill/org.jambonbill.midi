@@ -1,4 +1,8 @@
 <?php
+/**
+ * Box sources
+ * @var string
+ */
 
 $htm='<div class=row>';
 
@@ -17,7 +21,7 @@ $htm.='</div>';
 $box=new LTE\Card;
 $box->id('boxSetup');
 //$box->icon('fa fa-edit');
-$box->title('Sources');
+//$box->title('Sources');
 $box->body($htm);
 $box->footer('<a href=# class="btn btn-sm btn-default"><i class="fa fa-plus-circle"></i> Create route</a>');
 //$box->collapsable(1);

@@ -18,23 +18,33 @@ $(function(){
         //console.log('onMIDIInit(midi)',midi);
         _midiAccess = midi;
 
-        var haveAtLeastOneDevice=false;
-        var inputs=_midiAccess.inputs.values();
-        var outputs=_midiAccess.outputs.values();
+        //var haveAtLeastOneDevice=false;
+        //var inputs=_midiAccess.inputs.values();
+        //var outputs=_midiAccess.outputs.values();
 
-    	_midiInputs=[];
-        for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
-            haveAtLeastOneDevice = true;
-            _midiInputs.push(input.value);
+    	listInputs();
+        listOutputs();
 
+        function listInputs(){
+            _midiInputs=[];
+            let inputs=midi.inputs.values();
+            for ( let input = inputs.next(); input && !input.done; input = inputs.next()) {
+            	//console.log(input.value);
+                _midiInputs.push(input.value);
+            }
+            return true;
         }
-  		_midiOutputs=[];
-        for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
-        	console.log(output);
-            _midiOutputs.push(output.value);
+
+        function listOutputs(){
+            _midiOutputs=[];
+            let outputs=midi.outputs.values();
+            for ( let output = outputs.next(); output && !output.done; output = outputs.next()) {
+                _midiOutputs.push(output.value);
+            }
+            return true;
         }
 
-        if (!haveAtLeastOneDevice){
+        if (!_midiInputs.length){
             console.warn("No MIDI input devices present.");
         }else{
             console.info('MIDI ready');
@@ -42,6 +52,17 @@ $(function(){
             displayInputs();
     		displayOutputs();
         }
+
+        midi.onstatechange=function(d){
+            if(!_midiReady)return false;
+            let p=d.port;
+            console.info(p.type, p.name, p.connection);
+            //console.log("onstatechange d",d.port);
+            listInputs();
+            listOutputs();
+            displayInputs();
+    		displayOutputs();
+        };
     }
 
 
@@ -53,9 +74,10 @@ $(function(){
 		//console.info('displayInputs()');
 		let htm='<table class="table table-sm table-hover" style="cursor:pointer">';
 		htm+='<thead>';
+		htm+='<th>#</th>';
 		htm+='<th>Name</th>';
 		htm+='<th>Manufacturer</th>';
-		//htm+='<th>State</th>';
+		htm+='<th></th>';
 		htm+='</thead>';
 
 		htm+='<tbody>';
@@ -64,9 +86,10 @@ $(function(){
 			var o=ins[i];
 			//console.log(o);
 			htm+='<tr title="'+o.id+'">';
+			htm+='<td><i class="text-muted">'+i;
 			htm+='<td>'+o.name;
 			htm+='<td>'+o.manufacturer;
-			//htm+='<td>'+o.state;
+			htm+='<td style="text-align:right"><i class="text-muted">'+o.state;
 		}
 		htm+='</tbody>';
 
@@ -83,20 +106,22 @@ $(function(){
     	//console.info('displayOutputs()');
 		let htm='<table class="table table-sm table-hover" style="cursor:pointer">';
 		htm+='<thead>';
+		htm+='<th>#</th>';
 		htm+='<th>Name</th>';
 		htm+='<th>Manufacturer</th>';
-		//htm+='<th>State</th>';
+		htm+='<th></th>';
 		htm+='</thead>';
 
 		htm+='<tbody>';
 
 		for(let i in _midiOutputs){
 			let o=_midiOutputs[i];
-			console.log(o);
+			//console.log(o);
 			htm+='<tr title="'+o.id+'">';
+			htm+='<td><i class="text-muted">'+i;
 			htm+='<td>'+o.name;
 			htm+='<td>'+o.manufacturer;
-			//htm+='<td>'+o.state;
+			htm+='<td style="text-align:right"><i class="text-muted">'+o.state;
 		}
 		htm+='</tbody>';
 		if(_midiOutputs.length==0){
@@ -107,10 +132,11 @@ $(function(){
 		$('#boxOutputs table').tablesorter();
     }
 
-    $('#btnRefresh1,#btnRefresh2').click(function(){
+
+    window.refresh=function(){
     	displayInputs();
     	displayOutputs();
-    });
+    };
 
     console.log('home.js', _midiAccess);
 });

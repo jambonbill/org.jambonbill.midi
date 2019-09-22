@@ -1,11 +1,5 @@
 {
 
-	"header":{
-   		"text":"Midi tools",
-   		"class":"header",
-        "url":"#"
-   	},
-
    	"monitor":{
 		"text":"Monitor",
 		"icon":"fa fa-search",
@@ -14,47 +8,46 @@
 
     "router":{
         "text":"Router",
-        "icon":"fa fa-terminal",
+        "icon":"fas fa-random",
         "url":"router/"
     },
 
    	"keyboard":{
-		"text":"Keyboard",
-		"icon":"fa fa-keyboard-o",
+		 "text":"Keyboard",
+		"icon":"far fa-keyboard",
 		"url":"keyboard/"
    	},
 
-
-   	"jasmid":{
-		    "text":"Jasmid",
-		    "icon":"fa fa-music",
-		    "url":"jasmid/"
-   	},
-
-    "sampler":{
-        "text":"Sampler",
-        "icon":"fa fa-volume-up",
-        "url":"sampler/"
+    "player":{
+        "text":"Player",
+        "icon":"fa fa-play",
+        "url":"player/"
     },
 
-
-   	"sysex":{
-		  "text":"Sysex",
-		  "icon":"fa fa-terminal",
-		  "url":"sysex/"
-   	},
-
-   	"mbsidv2":{
-  		"text":"MbSidV2",
-  		"icon":"fa fa-terminal",
-  		"url":"mbsidv2/"
-   	},
-
-    "opafm":{
-      "text":"OPA FM editor",
-      "icon":"fa fa-terminal",
-      "url":"opafm/"
+    "other":{
+        "text":"other",
+        "icon":"far fa-folder-open",
+        "sub":[{
+            "text":"Jasmid",
+            "icon":"fa fa-music",
+            "url":"jasmid/"
+        },{
+            "text":"Sampler",
+            "icon":"fa fa-volume-up",
+            "url":"sampler/"
+        },{
+            "text":"Sysex",
+            "icon":"fa fa-terminal",
+            "url":"sysex/"
+        },{
+            "text":"MbSidV2",
+            "icon":"fa fa-terminal",
+            "url":"mbsidv2/"
+        },{
+          "text":"OPA FM editor",
+          "icon":"fa fa-terminal",
+          "url":"opafm/"
+        }]
     }
-
 
 }

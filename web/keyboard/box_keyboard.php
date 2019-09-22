@@ -1,5 +1,5 @@
 <?php
-//Box keyboard 
+//Box keyboard
 
 $htm="<div class='row'>";
 
@@ -29,8 +29,8 @@ $htm.="</div>";
 $htm.="</div>";
 
 $box=new LTE\Card;
-$box->title("Keyboard");
-$box->icon("fa fa-keyboard-o");
+//$box->title("Keyboard");
+$box->icon("far fa-keyboard");
 $box->id("boxKeyboard");
 $box->body($htm);
 

@@ -94,13 +94,11 @@ $(()=>{
      */
     var continues=0;//bpm counter
     function onMIDIMessage(event) {
-
         //var msg=event.data[0] & 0xf0;
         var msg=event.data[0];
-        var midichannel=event.data[0] & 0x0f;
         let chan=msg & 0x0f;
         var type=msg & 0xf0;
-        //let B1=event.data[1];
+        let B1=event.data[1];
         let B2=event.data[2];
 
         if(type==0xf0){
@@ -117,10 +115,7 @@ $(()=>{
         }
 
         //console.log(event);
-
-        //logs.push({'t':new Date(),'msg':msg,'chn':midichannel,'b1':event.data[1],'b2':event.data[2]});
         logs.push({'t':new Date(),'msg':msg,'e':event});
-
         dispLog();
     }
 

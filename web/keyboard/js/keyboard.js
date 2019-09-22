@@ -26,81 +26,52 @@ $(function(){
         //console.log('onMIDIInit(midi)',midi);
         _midiAccess = midi;
 
-        var haveAtLeastOneDevice=false;
-        var inputs=_midiAccess.inputs.values();
-        var outputs=_midiAccess.outputs.values();
-    	_midiInputs=[];
-        for ( var input = inputs.next(); input && !input.done; input = inputs.next()) {
-            //console.log("input",input);
-            input.value.onmidimessage = MIDIMessageEventHandler;
-            haveAtLeastOneDevice = true;
-            _midiInputs.push({'id':input.value.id,'name':input.value.name});
-
-        }
-  		_midiOutputs=[];
-        for ( var output = outputs.next(); output && !output.done; output = outputs.next()) {
-            _midiOutputs.push({'id':output.value.id,'name':output.value.name});
+        function listInputs(){
+            _midiInputs=[];
+            let inputs=midi.inputs.values();
+            for ( let input = inputs.next(); input && !input.done; input = inputs.next()) {
+            	//console.log(input.value);
+                _midiInputs.push(input.value);
+            }
+            return true;
         }
 
-        if (!haveAtLeastOneDevice){
-            console.warn("No MIDI input devices present.");
+        function listOutputs(){
+            _midiOutputs=[];
+            let outputs=midi.outputs.values();
+            for ( let output = outputs.next(); output && !output.done; output = outputs.next()) {
+                _midiOutputs.push(output.value);
+            }
+            return true;
+        }
+
+		listInputs();
+        listOutputs();
+
+        if (!_midiOutputs){
+            console.warn("No MIDI output device present.");
         }else{
             console.info('MIDI ready');
             _midiReady=true;
             init();//init APP
         }
+
+        midi.onstatechange=function(d){
+            if(!_midiReady)return false;
+            let p=d.port;
+            console.info(p.type, p.name, p.connection);
+            //console.log("onstatechange d",d.port);
+            listInputs();
+            listOutputs();
+            //displayInputs();
+    		displayOutputs();
+        };
     }
 
 
     function onMIDIReject(err) {
         console.error("MIDI system failed to start.");
     }
-
-
-    /*
-    0x80     Note Off
-    0x90     Note On
-    0xA0     Aftertouch
-    0xB0     Continuous controller
-    0xC0     Patch change
-    0xD0     Channel Pressure
-    0xE0     Pitch bend
-    0xF0     (non-musical commands)
-    */
-    function MIDIMessageEventHandler(event) {//incoming midi events
-
-        var msg=event.data[0] & 0xf0;
-        //if(msg==240)return; //??
-        var midichannel=event.data[0] & 0x0f;
-
-        // Mask off the lower nibble (MIDI channel)
-        switch (event.data[0] & 0xf0) {
-
-
-            case 0x80://note off
-                return;
-
-
-            case 0x90://note on
-                break;
-
-            case 0xb0:// CC - Control Change
-                break;
-
-            case 0xC0:// Prg Change
-                break;
-
-            case 0xe0://pitch
-                break;
-
-            case 0xf0:// Other (time)
-                break;
-
-            default:
-                break;
-        }
-    }
-
 
 	function prgChange(n,midiChannel){
 
@@ -167,14 +138,9 @@ $(function(){
 		}
 
 		if(!midiChannel)midiChannel=_midiChannel;
-
 		//console.log('noteOff()', noteNumber, midiChannel);
-
 		let output = _midiAccess.outputs.get(_portId);
-
-
 		output.send( [0x80+midiChannel, noteNumber, 0x40]);// note off
-
 		// remove from the note buffer
 		let nn=[];
 		for(let i=0;i<_notes.length;i++){
@@ -316,8 +282,8 @@ $(function(){
 		$('select#octave').attr('disabled',false);
 		$('select#prgs').attr('disabled',false);
 		//$('#btnSelectOutput').attr('readonly',false);
-		$('select#outputs').dblclick(()=>selectOutput());
-		$('#btnSelectOutput').click(()=>selectOutput());
+		//$('select#outputs').dblclick(()=>selectOutput());
+		//$('#btnSelectOutput').click(()=>selectOutput());
 		$('#btnMIDIOutput').click(popMidiOutput);
 
 		let pid=localStorage.getItem('keyboardPortId');
@@ -340,35 +306,69 @@ $(function(){
 	window.popMidiOutput=function(){
 		//console.log('popMidiOutput', portId);
 		$('#modalMIDIOutput').modal('show');
-		$('select#outputs').empty();
-		let selectId=null;
-	    for(let i in _midiOutputs){
-	        let o=_midiOutputs[i];
-	        $('select#outputs').append($('<option>', {value:o.id,text:o.name}));
-	    }
-	    if(_midiOutputs.length>4){
-	    	$('select#outputs').attr('size', _midiOutputs.length);
-	    }
-	    $('select#outputs').focus();
+		displayOutputs();
+    }
+
+    function displayOutputs(){
+
+        console.info('displayOutputs()');
+        let dat=_midiOutputs;
+
+        let htm='<table class="table table-sm table-hover" style="cursor:pointer">';
+        let num=0;
+
+        htm+='<thead>';
+        htm+='<th width=20>#</th>';
+        htm+='<th>Output name</th>';
+        htm+='</thead>';
+
+        htm+='<tbody>';
+        for(let i in dat){
+
+            let o=dat[i];
+            console.log(o);
+            htm+='<tr data-id="'+o.id+'" title="'+o.id+'">';
+            htm+='<td><i class="text-muted">'+i;
+            //htm+='<td>'+o.id;
+            htm+='<td>'+o.name;
+
+            if (o.manufacturer) {
+            	htm+=' <i class="text-muted">'+o.manufacturer+'</i>';
+            }
+
+            num++;
+        }
+        htm+='</tbody>';
+        htm+='</table>';
+
+        if (num>0) {
+            //htm+='<i class="text-muted">'+dat.length+' record(s)</i>';
+        } else {
+    		htm='<div class="p-4"><div class="alert alert-secondary" role="alert">no data</div></div>';
+        }
+
+
+        $('#modalMIDIOutput .modal-body').html(htm);
+        $('#modalMIDIOutput table').tablesorter();
+        $('#modalMIDIOutput tbody>tr').click(function(){
+        	//$('.overlay').show();
+            console.log($(this).data('id'));
+            selectOutput($(this).data('id'));
+        });
     }
 
 	function selectOutput(pid){
 
-		let id=$('select#outputs').val();
-
-		console.log("Select port id#", id, pid);
-
-		if(pid){
-			id=pid;
-		}
+		//let id=$('select#outputs').val();
+		console.log("selectOutput(pid)", pid);
 
 		$('#modalMIDIOutput').modal('hide');
 
 		let selectId=false;
 		for(let i in _midiOutputs){
 			let o=_midiOutputs[i];
-			if(o.id==id){
-				_portId=id;
+			if (o.id==pid) {
+				_portId=pid;
 				localStorage.setItem('keyboardPortId', _portId);
 				selectId=_portId;
 				$('#btnMIDIOutput').text(o.name);

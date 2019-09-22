@@ -23,10 +23,10 @@ echo $admin;
 			<div class="col-sm-6">
 	<?php
 	$box=new LTE\Card;
-	$box->title('Input(s)');
+	$box->title('MIDI input(s)');
 	$box->id('boxInputs');
 	$box->body();
-	$box->footer('<a href=#btn id=btnRefresh1 class="btn btn-default">refresh</a>');
+	//$box->footer('<a href=#btn id=btnRefresh1 class="btn btn-default">refresh</a>');
 	$box->p0(true);
 	$box->loading(1);
 	echo $box;//Hello, this is a snippet.
@@ -37,9 +37,9 @@ echo $admin;
 	<?php
 	$box=new LTE\Card;
 	$box->id('boxOutputs');
-	$box->title('Output(s)');
+	$box->title('MIDI output(s)');
 	$box->body();
-	$box->footer('<a href=#btn id=btnRefresh2 class="btn btn-default">refresh</a>');
+	//$box->footer('<a href=#btn id=btnRefresh2 class="btn btn-default">refresh</a>');
 	$box->p0(true);
 	$box->loading(1);
 	echo $box;//Hello, this is a snippet.

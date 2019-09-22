@@ -1,4 +1,8 @@
 <?php
+/**
+ * Box routes
+ * @var LTE
+ */
 $box=new LTE\Card;
 $box->id('boxRoutes');
 //$box->icon('fa fa-edit');
