@@ -13,7 +13,6 @@ echo $admin;
 ?>
 <div class="content-wrapper">
 
-
 	<section class="container">
 		<h1>midi.jambonbill.org</h1>
 	</section>
@@ -21,34 +20,19 @@ echo $admin;
 	<section class="container">
 		<div class=row>
 			<div class="col-sm-6">
-	<?php
-	$box=new LTE\Card;
-	$box->title('MIDI input(s)');
-	$box->id('boxInputs');
-	$box->body();
-	//$box->footer('<a href=#btn id=btnRefresh1 class="btn btn-default">refresh</a>');
-	$box->p0(true);
-	$box->loading(1);
-	echo $box;//Hello, this is a snippet.
-	?>
-	</div>
+			<?php
+			require "box_inputs.php";
+			?>
+			</div>
 
-	<div class="col-sm-6">
-	<?php
-	$box=new LTE\Card;
-	$box->id('boxOutputs');
-	$box->title('MIDI output(s)');
-	$box->body();
-	//$box->footer('<a href=#btn id=btnRefresh2 class="btn btn-default">refresh</a>');
-	$box->p0(true);
-	$box->loading(1);
-	echo $box;//Hello, this is a snippet.
-	?>
-	</div>
-	</div>
-</section>
+			<div class="col-sm-6">
+			<?php
+			require "box_outputs.php";
+			?>
+			</div>
+		</div>
+	</section>
 </div>
-
 
 <script type="text/javascript" src="js/home.js"></script>
 <?php

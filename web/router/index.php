@@ -22,9 +22,15 @@ echo $admin;
 			<div class='col-md-12'>
 				<?php
 				require "box_setup.php";
+				?>
+			</div>
+
+			<div class='col-12'>
+				<?php
 				require "box_routes.php";
 				?>
 			</div>
+
 		</div>
 	</section>
 

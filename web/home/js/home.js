@@ -76,7 +76,7 @@ $(function(){
 		htm+='<thead>';
 		htm+='<th>#</th>';
 		htm+='<th>Name</th>';
-		htm+='<th>Manufacturer</th>';
+		//htm+='<th>Manufacturer</th>';
 		htm+='<th></th>';
 		htm+='</thead>';
 
@@ -88,7 +88,7 @@ $(function(){
 			htm+='<tr title="'+o.id+'">';
 			htm+='<td><i class="text-muted">'+i;
 			htm+='<td>'+o.name;
-			htm+='<td>'+o.manufacturer;
+			htm+=' <i class="text-muted">'+o.manufacturer+'</i>';
 			htm+='<td style="text-align:right"><i class="text-muted">'+o.state;
 		}
 		htm+='</tbody>';
@@ -108,7 +108,7 @@ $(function(){
 		htm+='<thead>';
 		htm+='<th>#</th>';
 		htm+='<th>Name</th>';
-		htm+='<th>Manufacturer</th>';
+		//htm+='<th>Manufacturer</th>';
 		htm+='<th></th>';
 		htm+='</thead>';
 
@@ -120,7 +120,7 @@ $(function(){
 			htm+='<tr title="'+o.id+'">';
 			htm+='<td><i class="text-muted">'+i;
 			htm+='<td>'+o.name;
-			htm+='<td>'+o.manufacturer;
+			htm+=' <i class="text-muted">'+o.manufacturer+'</i>';
 			htm+='<td style="text-align:right"><i class="text-muted">'+o.state;
 		}
 		htm+='</tbody>';

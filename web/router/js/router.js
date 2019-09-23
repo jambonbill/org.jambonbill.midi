@@ -1,4 +1,4 @@
-$(function(){
+$(()=>{
 
     'use strict';
 
@@ -19,62 +19,127 @@ $(function(){
         //console.log('onMIDIInit(midi)',midi);
         _midiAccess = midi;
 
-        let inputs=_midiAccess.inputs.values();
-        let outputs=_midiAccess.outputs.values();
-        
-        _midiInputs=[];
-        for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
-            //input.value.onmidimessage = MIDIMessageEventHandler;
-            _midiInputs.push(input.value);
+        listInputs();
+        listOutputs();
+
+        function listInputs(){
+            _midiInputs=[];
+            let inputs=midi.inputs.values();
+            for ( let input = inputs.next(); input && !input.done; input = inputs.next()) {
+                //console.log(input.value);
+                _midiInputs.push(input.value);
+            }
+            return true;
         }
-        
-        _midiOutputs=[];
-        for (let output = outputs.next(); output && !output.done; output = outputs.next()) {
-            _midiOutputs.push(output.value);
+
+        function listOutputs(){
+            _midiOutputs=[];
+            let outputs=midi.outputs.values();
+            for ( let output = outputs.next(); output && !output.done; output = outputs.next()) {
+                _midiOutputs.push(output.value);
+            }
+            return true;
         }
-    
-        console.info('MIDI ready');
+
+        midi.onstatechange=function(d){
+            if(!_midiReady)return false;
+            let p=d.port;
+            console.info(p.type, p.name, p.connection);
+            //console.log("onstatechange d",d.port);
+            listInputs();
+            listOutputs();
+            displayInputs();
+            displayOutputs();
+        };
+
         _midiReady=true;
-        init();
-    
+        console.info('MIDI ready');
+        displayInputs();
+        displayOutputs();
+
+        $('.overlay').hide();
+
     }
-       
+
     function onMIDIReject(err) {
         console.error("MIDI system failed to start.");
     }
 
-    function init(){
-        
-        console.log('init()',_midiInputs);
 
-        for(let i in _midiInputs){
-            let o=_midiInputs[i];
-            o.onmidimessage = MIDIMessageEventHandler;
-            $('select#midiInputs').append($('<option>', {value:o.id,text:o.name}));
+    function displayInputs(){
+        //console.info('displayInputs()');
+        let htm='<table class="table table-sm table-hover" style="cursor:pointer">';
+        htm+='<thead>';
+        htm+='<th>#</th>';
+        htm+='<th>input</th>';
+        //htm+='<th>Manufacturer</th>';
+        htm+='<th></th>';
+        htm+='</thead>';
+
+        htm+='<tbody>';
+        var ins=_midiInputs;
+        for(let i in ins){
+            var o=ins[i];
+            //console.log(o);
+            htm+='<tr title="'+o.id+'">';
+            htm+='<td><i class="text-muted">'+i;
+            htm+='<td>'+o.name;
+            htm+=' <i class="text-muted">'+o.manufacturer+'</i>';
+            htm+='<td style="text-align:right"><i class="text-muted">'+o.state;
         }
-        
-        if(_midiInputs.length>4){
-            $('select#midiInputs').attr('size', _midiInputs.length);
+        htm+='</tbody>';
+
+        if(ins.length==0){
+            htm='<pre>none</pre>';
         }
+
+        $('div#sources').html(htm);
+        $('div#sources tbody>tr').click(function(){
+            $('div#sources tbody>tr').removeClass("bg-primary");
+            $(this).addClass("bg-primary");
+        });
+        //$('#boxInputs .overlay').hide();
+    }
+
+    function displayOutputs(){
+        //console.info('displayOutputs()');
+        let htm='<table class="table table-sm table-hover" style="cursor:pointer">';
+        htm+='<thead>';
+        htm+='<th>#</th>';
+        htm+='<th>output</th>';
+        //htm+='<th>Manufacturer</th>';
+        htm+='<th></th>';
+        htm+='</thead>';
+
+        htm+='<tbody>';
 
         for(let i in _midiOutputs){
             let o=_midiOutputs[i];
-            $('select#midiOutputs').append($('<option>', {value:o.id,text:o.name}));
+            //console.log(o);
+            htm+='<tr title="'+o.id+'">';
+            htm+='<td><i class="text-muted">'+i;
+            htm+='<td>'+o.name;
+            htm+=' <i class="text-muted">'+o.manufacturer+'</i>';
+            htm+='<td style="text-align:right"><i class="text-muted">'+o.state;
         }
-        if(_midiOutputs.length>4){
-            $('select#midiOutputs').attr('size', _midiOutputs.length);
+        htm+='</tbody>';
+        if(_midiOutputs.length==0){
+            htm='<pre>none</pre>';
         }
-
-        $('.overlay').hide();
+        $('div#destinations').html(htm);
+        $('div#destinations tbody>tr').click(function(){
+            $('div#destinations tbody>tr').removeClass("bg-primary");
+            $(this).addClass("bg-primary");
+        });
+        //$('#boxOutputs table').tablesorter();
     }
 
     $('select#midiOutputs').change(function(){
-        
         _portId=$('select#midiOutputs').val();
         console.log('change',_portId);
     });
 
-    /*  
+    /*
     0x80     Note Off
     0x90     Note On
     0xA0     Aftertouch
@@ -85,23 +150,23 @@ $(function(){
     0xF0     (non-musical commands)
     */
     function MIDIMessageEventHandler(event){
-        
+
         //console.log(event);
 
         let msg=event.data[0];
         let midichannel=event.data[0] & 0x0f;
         let type=msg & 0xf0;
-    
+
         if(_portId){
             let output = _midiAccess.outputs.get(_portId);
-            output.send( event.data );//maybe ?    
+            output.send( event.data );//maybe ?
         }
-        
+
 
         // Mask off the lower nibble (MIDI channel)
         /*
         switch (event.data[0] & 0xf0) {
-        
+
             case 0x80://note off
                 break;
 
@@ -111,21 +176,21 @@ $(function(){
 
             case 0xb0:// CC - Control Change
                 var ccNum=event.data[1];
-                
+
                 break;
-            
+
             case 0xC0:// Prg Change
                 //let output = _midiAccess.outputs.get(_portId);
                 //let msg = [0xc0+midiChannel, n];
-                //output.send( msg );                
+                //output.send( msg );
                 break;
-            
+
             case 0xe0://pitch
-                
+
                 break;
         }
         */
-        
+
     }
-   
+
 });

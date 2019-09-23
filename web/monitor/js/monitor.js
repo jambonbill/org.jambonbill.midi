@@ -45,9 +45,8 @@ $(()=>{
             _midiInputs=[];
             let inputs=midi.inputs.values();
             for ( let input = inputs.next(); input && !input.done; input = inputs.next()) {
-                //console.log("input",input);
                 input.value.onmidimessage = onMIDIMessage;
-                _midiInputs.push({'id':input.value.id,'name':input.value.name});
+                _midiInputs.push(input.value);
             }
             return true;
         }
@@ -56,7 +55,7 @@ $(()=>{
             _midiOutputs=[];
             let outputs=midi.outputs.values();
             for ( let output = outputs.next(); output && !output.done; output = outputs.next()) {
-                _midiOutputs.push({'id':output.value.id,'name':output.value.name});
+                _midiOutputs.push(output.value);
             }
             return true;
         }
@@ -68,7 +67,7 @@ $(()=>{
             //console.log("onstatechange d",d.port);
             listInputs();
             listOutputs();
-            //console.log('_midiAccess.onstatechange', _midiInputs.length, _midiOutputs.length);
+            displayInputs();
         };
 
         if (_midiInputs.length==0){
@@ -76,7 +75,7 @@ $(()=>{
         }else{
             console.info('MIDI ready');
             _ready=true;
-            init();
+            displayInputs();
         }
     }
 
@@ -126,8 +125,58 @@ $(()=>{
         return notes[note]+oct;
     }
 
+    function displayInputs(){
+
+        console.info('displayInputs');
+        let dat=_midiInputs;
+        let str=$('#search').val();
+        let htm='<table class="table table-sm table-hover" style="cursor:pointer">';
+        let num=0;
+
+        htm+='<thead>';
+        htm+='<th width=20>#</th>';
+        htm+='<th>Input name</th>';
+        htm+='</thead>';
+
+        htm+='<tbody>';
+        for(let i in dat){
+            if(str){
+                let reg=new RegExp(str,'i');
+                let match=false;
+                //if(reg.test(o.xx))match=true;
+                if(!match)continue;
+            }
+            let o=dat[i];
+            console.log(o);
+            htm+='<tr data-id="'+o.id+'">';
+            htm+='<td><i class="text-muted">'+i;
+            htm+='<td>'+o.name;
+            htm+=' <i class="text-muted">'+o.manufacturer+'</i>';
+            num++;
+        }
+        htm+='</tbody>';
+        htm+='</table>';
+
+        if (num>0) {
+            //htm+='<i class="text-muted">'+dat.length+' record(s)</i>';
+        } else {
+        htm='<div class="p-4"><div class="alert alert-secondary" role="alert">no data</div></div>';
+        }
+
+
+        $('#boxInputs .card-body').html(htm);
+        $('#boxInputs table').tablesorter();
+        $('#boxInputs tbody>tr').click(function(){
+            //$('.overlay').show();
+            console.log($(this).data('id'));
+            //document.location.href='';
+        });
+    }
+    /*
     function init(){
+
         console.log('init()');
+
         for(let i in _midiInputs){
             let a=_midiInputs[i];
             var s=document.getElementById("midiInput");
@@ -141,9 +190,9 @@ $(()=>{
             $('select#midiInput').attr('size', _midiInputs.length);
         }
 
-        $('.overlay').hide();
-    }
 
+    }
+    */
 
     function onMIDIReject(err) {
         console.error("MIDI system failed to start.");
@@ -263,5 +312,5 @@ $(()=>{
 
         filters=filtrs;
     }
-
+    $('.overlay').hide();
 });

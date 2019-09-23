@@ -30,7 +30,7 @@ $(function(){
             _midiInputs=[];
             let inputs=midi.inputs.values();
             for ( let input = inputs.next(); input && !input.done; input = inputs.next()) {
-            	//console.log(input.value);
+            	input.value.onmidimessage = onMIDIMessage;
                 _midiInputs.push(input.value);
             }
             return true;
@@ -358,10 +358,8 @@ $(function(){
     }
 
 	function selectOutput(pid){
-
 		//let id=$('select#outputs').val();
 		console.log("selectOutput(pid)", pid);
-
 		$('#modalMIDIOutput').modal('hide');
 
 		let selectId=false;
@@ -377,5 +375,38 @@ $(function(){
 		}
 		return selectId;
 	}
+
+
+	/*
+    http://www.gweep.net/~prefect/eng/reference/protocol/midispec.html
+    Messages :
+    8 = Note Off
+    9 = Note On
+    A = AfterTouch (ie, key pressure)
+    B = Control Change
+    C = Program (patch) change
+    D = Channel Pressure
+    E = Pitch Wheel
+     */
+    var continues=0;//bpm counter
+    function onMIDIMessage(event) {
+        //var msg=event.data[0] & 0xf0;
+        var msg=event.data[0];
+        let chan=msg & 0x0f;
+        var type=msg & 0xf0;
+        let B1=event.data[1];
+        let B2=event.data[2];
+
+        console.log(event.data);
+
+        if(_portId){
+        	let output = _midiAccess.outputs.get(_portId);
+			//let msg = [0xc0+midiChannel, n];
+			output.send( event.data );//forward input to _portId
+        }else{
+        	//
+        }
+
+    }
 
 });

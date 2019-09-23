@@ -8,5 +8,5 @@ $box->title("Messages");
 $box->icon("fa fa-terminal");
 $box->id("boxLog");
 //$box->collapsable(true);
-$box->body("Select midi output");
+$box->body('<i class="text-muted">Select midi output</i>');
 echo $box;
