@@ -149,6 +149,26 @@ $(function(){
 		_notes=nn;
 	}
 
+
+	function bankChange(chan, MSB, LSB){
+
+            // A Bank change is made of two Control messages.
+            // actually, just one (LSB) should be enough
+			console.log('bankChange', chan, MSB, LSB);
+
+            if(!_portId){
+                console.warn('!portID');
+                return false;
+            }
+
+
+
+            let output = _midiAccess.outputs.get(_portId);
+            output.send( [0xB0+chan, 0x00, MSB] );
+            output.send( [0xB0+chan, 0x20, LSB] );
+        }
+
+
 	/**
 	 * Kill all notes on current channel
 	 * @return {[type]} [description]
@@ -182,7 +202,7 @@ $(function(){
 		$("body").keydown(function(e) {
 
 	        if (!_portId) {
-	            $('#boxLog .box-body').html("<i class='fa fa-warning'></i> Select midi output");
+	            $('#boxLog .card-body').html("<i class='fa fa-warning'></i> Select midi output");
 	            $('#midi_outputs').focus();
 	            return;
 	        }
@@ -200,12 +220,12 @@ $(function(){
 				let midinote=n+(+_octave*12);
 				noteOn(midinote,_midiChannel);
 
-				htm=midiNoteToString(midinote) + " midinote("+midinote+") on channel "+_midiChannel;
+				htm='<i class="text-muted">'+midiNoteToString(midinote) + " midinote("+midinote+") on channel "+_midiChannel+'</i>';
 	            let chord=readChord();
 	            if(chord){
 	            	htm+="<br /><lryi>Chord:"+chord;
 	            }
-	            $('#boxLog .box-body').html(htm);
+	            $('#boxLog .card-body').html(htm);
 
 			} else {
 
@@ -268,6 +288,16 @@ $(function(){
 		});
 
 
+		$('#btnBank').click(function(){
+			let n=prompt("Bank number (0-127)", 0);
+			if (n>=0&&n<(128*128)) {
+				console.log("bankChange(0,"+n+");");
+				let MSB=Math.floor(n/128);
+				let LSB=n%128;
+				bankChange(0, MSB, LSB);
+			}
+		});
+
 
 		$('#btnMidiPanic').click(function(){
 			midiPanic(_midiChannel);
@@ -326,7 +356,7 @@ $(function(){
         for(let i in dat){
 
             let o=dat[i];
-            console.log(o);
+            //console.log(o);
             htm+='<tr data-id="'+o.id+'" title="'+o.id+'">';
             htm+='<td><i class="text-muted">'+i;
             //htm+='<td>'+o.id;
@@ -402,7 +432,7 @@ $(function(){
         if(_portId){
         	let output = _midiAccess.outputs.get(_portId);
 			//let msg = [0xc0+midiChannel, n];
-			output.send( event.data );//forward input to _portId
+			//output.send( event.data );//forward input to output (warning, may create some loops)
         }else{
         	//
         }
