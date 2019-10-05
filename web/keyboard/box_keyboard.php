@@ -35,7 +35,8 @@ $box->id("boxKeyboard");
 $box->body($htm);
 
 $btns="<button class='btn btn-sm btn-default' id=btnTest>Test middle C</button> ";
-$btns.="<button class='btn btn-sm btn-danger pull-right' id=btnMidiPannic><i class='fa fa-times'></i> Panic</button>";
+$btns.="<button class='btn btn-sm btn-default' id=btnBank>Bank change</button> ";
+$btns.="<button class='btn btn-sm btn-danger float-right' id=btnMidiPannic><i class='fa fa-times'></i> Panic</button>";
 
 $box->footer($btns);
 echo $box;
