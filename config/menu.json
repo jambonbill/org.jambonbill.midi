@@ -3,25 +3,25 @@
    	"monitor":{
 		"text":"Monitor",
 		"icon":"fa fa-search",
-		"url":"monitor/"
+		"url":"/monitor"
    	},
 
     "router":{
         "text":"Router",
         "icon":"fas fa-random",
-        "url":"router/"
+        "url":"/router"
     },
 
    	"keyboard":{
 		 "text":"Keyboard",
 		"icon":"far fa-keyboard",
-		"url":"keyboard/"
+		"url":"/keyboard"
    	},
 
     "player":{
         "text":"Player",
         "icon":"fa fa-play",
-        "url":"player/"
+        "url":"/player"
     },
 
     "other":{
@@ -30,23 +30,23 @@
         "sub":[{
             "text":"Jasmid",
             "icon":"fa fa-music",
-            "url":"jasmid/"
+            "url":"/jasmid"
         },{
             "text":"Sampler",
             "icon":"fa fa-volume-up",
-            "url":"sampler/"
+            "url":"/sampler"
         },{
             "text":"Sysex",
             "icon":"fa fa-terminal",
-            "url":"sysex/"
+            "url":"/sysex"
         },{
             "text":"MbSidV2",
             "icon":"fa fa-terminal",
-            "url":"mbsidv2/"
+            "url":"/mbsidv2"
         },{
           "text":"OPA FM editor",
           "icon":"fa fa-terminal",
-          "url":"opafm/"
+          "url":"/opafm"
         }]
     }
 

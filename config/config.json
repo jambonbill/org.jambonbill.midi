@@ -3,20 +3,22 @@
 	"description":"Online MIDI Tools by jambonbill",
 	"homeurl":"index.php",
 	"favicon":"favicon.ico",
-	"menusearch":false,
-	"css":[
-		"dist/bootstrap/css/bootstrap.min.css",
-    	"dist/fontawesome-5.9.0/css/all.min.css",
-    	"dist/css/adminlte.css"
-	],
-	"js":[
-	    "dist/js/jquery-3.2.1.min.js",
-	    "dist/js/jquery-tablesorter.min.js",
-	    "dist/plugins/slimScroll/jquery.slimscroll.min.js",
-	    "dist/js/popper.min.js",
-    	"dist/bootstrap/js/bootstrap.min.js",
-    	"dist/js/adminlte.js"
-	],
+
+	"assets":{
+		"css":[
+			"/dist/bootstrap/css/bootstrap.min.css",
+	    	"/dist/fontawesome-5.9.0/css/all.min.css",
+	    	"/dist/css/adminlte.css"
+		],
+		"js":[
+		    "/dist/js/jquery-3.2.1.min.js",
+		    "/dist/js/jquery-tablesorter.min.js",
+		    "/dist/plugins/slimScroll/jquery.slimscroll.min.js",
+		    "/dist/js/popper.min.js",
+	    	"/dist/bootstrap/js/bootstrap.min.js",
+	    	"/dist/js/adminlte.js"
+		]
+	},
 
 	"navbar":{},
 

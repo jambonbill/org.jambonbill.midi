@@ -18,6 +18,6 @@
         "php": ">=7.0.0",
         "ext-pdo":"*",
         "monolog/monolog": "~1.1",
-        "jambonbill/lteturbo": ">=1.0"
+        "jambonbill/lteturbo": ">=1.4"
     }
 }
